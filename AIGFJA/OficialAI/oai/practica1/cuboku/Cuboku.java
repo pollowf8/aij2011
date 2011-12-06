@@ -391,12 +391,11 @@ public class Cuboku implements Movable {
 
 	@Override
 	public int hashCode() {
-		int result = 17;
-		for (int i = 0; i < 8; i++) {
-			int position = i;
-			result = 37 * result + position;
+		int suma=0;
+		for (int i = 0; i < cube.length; i++) {
+			suma=cube[i].hashCode();
 		}
-		return result;
+		return suma;
 	}
 
 	/**

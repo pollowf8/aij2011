@@ -74,6 +74,7 @@ public class JMenuBarJ extends JMenuBar {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							VentanaAI v = (VentanaAI) jOwner;
 							v.estableceLayout(VentanaAI.AICONFIG);
+							v.limpiaProbar();
 						}
 					});
 		}

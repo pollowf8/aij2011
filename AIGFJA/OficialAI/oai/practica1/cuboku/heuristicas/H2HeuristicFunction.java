@@ -24,5 +24,11 @@ public class H2HeuristicFunction implements HeuristicFunction {
 		Cuboku board = (Cuboku) state;
 		return 0;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "h2";
+	}
 
 }

@@ -52,7 +52,7 @@ public enum Orientacion {
 	public static Orientacion getEnum(int a) {
 		return values()[a];
 	}
-	
+
 	/**
 	 * Obtiene la enumeracion a partir de un String
 	 * 
@@ -61,13 +61,13 @@ public enum Orientacion {
 	 * @return la enumeracion que representa <code>a</code>
 	 */
 	public static Orientacion getEnum(String a) {
-		for(int i=0;i<length();i++){
-			if(a.equals(getEnum(i).toString()))
-			return getEnum(i);
+		for (int i = 0; i < length(); i++) {
+			if (a.equals(getEnum(i).toString()))
+				return getEnum(i);
 		}
-		//no es encontro
+		// no es encontro
 		return null;
-		
+
 	}
 
 	/**
@@ -77,6 +77,30 @@ public enum Orientacion {
 	 */
 	public static int length() {
 		return values().length;
+	}
+
+	/**
+	 * Metodo para obtener la longitud de la enumeracion (numero de elementos)
+	 * 
+	 * @return la longitud de la enumeracion
+	 */
+	public static int getInt(Orientacion a) {
+		int ret = 0;
+		switch (a) {
+		case left:
+			ret = 0;
+			break;
+		case right:
+			ret = 1;
+			break;
+		case up:
+			ret = 2;
+			break;
+		case down:
+			ret = 3;
+			break;
+		}
+		return ret;
 	}
 
 	/**

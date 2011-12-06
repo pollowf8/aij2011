@@ -29,16 +29,17 @@ import aima.core.search.framework.SearchAgent;
 public class JPanelAIconfig extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	//props
+	// props
 	private String[] algoritmos = { "1º en Profundidad", "1º en Anchura",
 			"Profundidad limitada", "Coste Uniforme", "Voraz", "A*",
 			"Escalada MaxPendiente" };
 	private String[] files = { "cuboIsi.txt", "hola.txt" };
 	private String[] heuristicas = { "h1", "h2", "h3" };
-	private String[] profs = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+	private String[] profs = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
+			"10" };
 	SearchAgent agent;
 	Properties propiedades;
-	//Componentes
+	// Componentes
 	private JLabel jLeligeFile = null;
 	private JLabel jLeligeAlg = null;
 	private JLabel jLheuristica = null;
@@ -91,7 +92,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 			selec = jCBprof.getSelectedIndex();
 			propiedades.put(AimaUtil.keyProf, String.valueOf(selec + 1));
 		}
-	
+
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 		this.setSize(360, 90);
 		this.setPreferredSize(new Dimension(360, 90));
 		this.setLayout(null);
-		
+
 		jLheuristica = new JLabel();
 		jLheuristica.setBounds(new Rectangle(260, 10, 90, 15));
 		jLheuristica.setText("Elige heuristica:");
@@ -114,7 +115,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 		jLeligeFile = new JLabel();
 		jLeligeFile.setText("Elige Algoritmo:");
 		jLeligeFile.setBounds(new Rectangle(110, 10, 140, 15));
-		
+
 		this.add(jLeligeFile, null);
 		this.add(jLeligeAlg, null);
 		this.add(jLheuristica, null);
@@ -180,6 +181,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 			jCBprof = new JComboBox(profs);
 			jCBprof.setBounds(new Rectangle(110, 60, 90, 20));
 			jCBprof.setSelectedIndex(5);
+			jCBprof.addActionListener(this);
 			jCBprof.setVisible(false);
 		}
 		return jCBprof;

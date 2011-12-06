@@ -64,6 +64,14 @@ public class VentanaAI extends JFrame {
 	}
 
 	/**
+	 * Resetea probar
+	 */
+	public void limpiaProbar() {
+		jPAIdemo.reseteaOuts();
+		
+	}
+	
+	/**
 	 * Metodo que prepara el panel de demo usando el de configuracion
 	 */
 	public void preparaProbar() {
@@ -106,6 +114,7 @@ public class VentanaAI extends JFrame {
 	private Runnable ejecucionAlgoritmo = new Runnable() {
 		@Override
 		public void run() {
+			boolean heuristica=false;
 			switch (alg = (Algoritmo.getEnum(algoritmo))) {
 			case PROFUNDIDAD:
 				searchAgent = AimaUtil.DFSDemo(cuboku);
@@ -120,17 +129,20 @@ public class VentanaAI extends JFrame {
 				searchAgent = AimaUtil.UCDemo(cuboku);
 				break;
 			case VORAZ:
+				heuristica=true;
 				searchAgent = AimaUtil.GBFSDemo(cuboku, h);
 				break;
 			case A:
+				heuristica=true;
 				searchAgent = AimaUtil.AStarDemo(cuboku, h);
 				break;
 			case ESCALADAMAXPEND:
+				heuristica=true;
 				searchAgent = AimaUtil.EMPDemo(cuboku, h);
 				break;
 			}
 			jPAIdemo.setPropiedades(searchAgent, alg, h, cuboku);
-			jPAIdemo.inicializaOuts();
+			jPAIdemo.inicializaOuts(heuristica);
 			jPAIdemo.setEnabledBotones(true);
 		}
 	};

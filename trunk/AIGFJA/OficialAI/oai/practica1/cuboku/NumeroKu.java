@@ -101,7 +101,7 @@ public class NumeroKu {
 			ori = Orientacion.down;
 			break;
 		}
-	
+
 	}
 
 	@Override
@@ -124,7 +124,12 @@ public class NumeroKu {
 	public String toString() {
 		String retVal = num + "" + ori;
 		return retVal;
-	};
+	}
+
+	@Override
+	public int hashCode() {
+		return Orientacion.getInt(ori) + num;
+	}
 
 	/**
 	 * Metodo de acceso para la propiedad num

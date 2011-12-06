@@ -96,11 +96,14 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 	/**
 	 * Inicializa los componentes para salida por pantalla
 	 */
-	void inicializaOuts() {
+	void inicializaOuts(boolean h) {
 		out = AimaUtil.printActions(agent.getActions(), new Cuboku(cuboku));
 		props = AimaUtil.printInstrumentation(agent.getInstrumentation());
 		jTAout.setText("Estado Inicial" + AimaUtil.newLine + cuboku);
-		jLheuristica.setText("Heuristica: " + h);
+		if (h)
+			jLheuristica.setText("Heuristica: " + h);
+		else
+			jLheuristica.setText("Heuristica: no usada");
 		jLbusqueda.setText("Algoritmo: " + alg);
 	}
 
@@ -115,6 +118,15 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 		jBlog.setEnabled(enabled);
 		jBresults.setEnabled(enabled);
 		jBterminar.setEnabled(enabled);
+	}
+
+	/**
+	 * Resetea textos
+	 */
+	public void reseteaOuts() {
+		jLheuristica.setText("Heuristica: ");
+		jLbusqueda.setText("Algoritmo: ");
+		jTAout.setText("PROCESANDO ALGORITMO, ESPERE...");
 	}
 
 	@Override
@@ -139,9 +151,10 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 			PrintWriter pw;
 			try {
 				// le kitamos la extension
-				pw = new PrintWriter(new FileWriter(cuboku.getNombre()
-						.substring(0, cuboku.getNombre().indexOf("."))
-						+ ".log"));
+				pw = new PrintWriter(
+						new FileWriter(cuboku.getNombre().substring(0,
+								cuboku.getNombre().indexOf("."))
+								+ ".log"));
 				pw.print(out);
 				pw.print(agent.getActions());
 				pw.close();

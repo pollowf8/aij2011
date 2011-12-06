@@ -25,6 +25,10 @@ public class H1HeuristicFunction implements HeuristicFunction {
 		int retVal = 0;
 		
 		return retVal;
-
+	}
+	
+	@Override
+	public String toString() {
+		return "h1";
 	}
 }

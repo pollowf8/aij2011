@@ -325,4 +325,13 @@ public class Sudoku {
 		sb.setLength(sb.length());
 		return sb.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		int suma = 0;
+		for (int i = 0; i < dimension; i++)
+			for (int j = 0; j < dimension; j++)
+				suma += s[i][j].hashCode();
+		return suma;
+	}
 }

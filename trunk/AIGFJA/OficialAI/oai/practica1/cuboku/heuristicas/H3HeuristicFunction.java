@@ -25,4 +25,9 @@ public class H3HeuristicFunction implements HeuristicFunction {
 		return retVal;
 
 	}
+
+	@Override
+	public String toString() {
+		return "h3";
+	}
 }

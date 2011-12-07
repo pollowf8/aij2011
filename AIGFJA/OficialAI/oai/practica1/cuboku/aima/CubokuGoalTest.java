@@ -14,7 +14,7 @@ import aima.core.search.framework.GoalTest;
  * Clase que comprueba si es un estado final o no
  * 
  * @author José Ángel García Fernández
- * @date 1.0 04/12/2011
+ * @version 1.0 04/12/2011
  * 
  */
 public class CubokuGoalTest implements GoalTest {

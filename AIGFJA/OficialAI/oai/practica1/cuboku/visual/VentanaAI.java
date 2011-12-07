@@ -25,7 +25,7 @@ import aima.core.search.framework.SearchAgent;
  * JFrame de la aplicacion
  * 
  * @author Jose Angel Garcia Fernandez
- * @date 1.2 06/12/2011
+ * @version 1.2 06/12/2011
  */
 public class VentanaAI extends JFrame {
 

@@ -391,9 +391,9 @@ public class Cuboku implements Movable {
 
 	@Override
 	public int hashCode() {
-		int suma=0;
+		int suma = 0;
 		for (int i = 0; i < cube.length; i++) {
-			suma=cube[i].hashCode();
+			suma = cube[i].hashCode();
 		}
 		return suma;
 	}
@@ -410,12 +410,18 @@ public class Cuboku implements Movable {
 	/**
 	 * Metodo modificador para la propiedad <code>cube</code>
 	 * 
-	 * @param <code>cube</code> el <code>cube</code> a poner
+	 * @param cube
+	 *            el <code>cube</code> a poner
 	 */
 	public void setCube(Sudoku[] cube) {
 		this.cube = cube;
 	}
 
+	/**
+	 * Metodo de acceso para la propiedad <code>nombre</code>
+	 * 
+	 * @return el nombre del cuboku
+	 */
 	public String getNombre() {
 		return nombre;
 	}

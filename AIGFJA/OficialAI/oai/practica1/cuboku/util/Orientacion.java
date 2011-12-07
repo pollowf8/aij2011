@@ -13,7 +13,7 @@ import java.util.Random;
  * Enumeracion que representa la orientacion del numero en su cara
  * 
  * @author José Ángel García Fernández
- * @date 04/12/2011 1.0
+ * @version 04/12/2011 1.0
  * 
  */
 public enum Orientacion {

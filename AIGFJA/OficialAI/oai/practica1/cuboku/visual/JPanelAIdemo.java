@@ -32,7 +32,7 @@ import aima.core.search.framework.SearchAgent;
  * Panel para la vision de ejecucion
  * 
  * @author Jose Angel Garcia Fernandez
- * @date 1.1 06/12/2011
+ * @version 1.1 06/12/2011
  */
 public class JPanelAIdemo extends JPanel implements ActionListener {
 
@@ -61,10 +61,6 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 	/**
 	 * This is the default constructor
 	 * 
-	 * @param searchAgent
-	 *            el agente con la info de la busqueda
-	 * @param h
-	 * @param alg
 	 */
 	public JPanelAIdemo() {
 		super();

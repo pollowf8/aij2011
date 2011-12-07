@@ -11,7 +11,7 @@ package oai.practica1.cuboku.util;
  * Enumeracion que representa las distintas busquedas
  * 
  * @author José Ángel García Fernández
- * @date 05/12/2011 1.0
+ * @version 05/12/2011 1.0
  * 
  */
 public enum Algoritmo {

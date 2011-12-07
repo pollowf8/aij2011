@@ -19,7 +19,7 @@ import aima.core.search.framework.ResultFunction;
  * FunctionFactory del cuboku
  * 
  * @author José Ángel García Fernández
- * @date 1.0 04/12/2011
+ * @version 1.0 04/12/2011
  * 
  */
 public class CubokuFunctionFactory {

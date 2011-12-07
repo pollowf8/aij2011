@@ -24,7 +24,7 @@ import aima.core.search.framework.SearchAgent;
  * Panel para la eleccion de parametros para la ejecucion
  * 
  * @author Jose Angel Garcia Fernandez
- * @date 1.1 06/12/2011
+ * @version 1.1 06/12/2011
  */
 public class JPanelAIconfig extends JPanel implements ActionListener {
 

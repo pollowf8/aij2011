@@ -20,7 +20,7 @@ import javax.swing.KeyStroke;
  * MenuBar para las cambiar entre los distintos paneles
  * 
  * @author Jose Angel Garcia Fernandez
- * @date 1.2 06/12/2011
+ * @version 1.2 06/12/2011
  */
 public class JMenuBarJ extends JMenuBar {
 
@@ -34,7 +34,6 @@ public class JMenuBarJ extends JMenuBar {
 	/**
 	 * This method initializes jJMB
 	 * 
-	 * @return javax.swing.JMenuBar
 	 */
 	public JMenuBarJ(JFrame frame) {
 		jOwner = frame;

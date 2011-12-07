@@ -14,7 +14,7 @@ import oai.practica1.cuboku.util.Orientacion;
  * Clase que representa un numero de una de las caras
  * 
  * @author José Ángel García Fernández
- * @date 1.0 04/12/2011
+ * @version 1.0 04/12/2011
  * 
  */
 public class NumeroKu {

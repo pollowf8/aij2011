@@ -17,7 +17,7 @@ import oai.practica1.cuboku.util.Orientacion;
  * Clase que representa una de las caras del Cuboku
  * 
  * @author José Ángel García Fernández
- * @date 04/12/2011 1.0
+ * @version 04/12/2011 1.0
  * 
  */
 public class Sudoku {
@@ -267,7 +267,8 @@ public class Sudoku {
 	/**
 	 * Metodo modificador para la propiedad <code>nombre</code>
 	 * 
-	 * @param <code>nombre</code> el <code>nombre</code> a poner
+	 * @param nombre
+	 *            el <code>nombre</code> a poner
 	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;

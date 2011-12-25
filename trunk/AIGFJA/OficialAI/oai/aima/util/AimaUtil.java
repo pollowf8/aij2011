@@ -7,10 +7,14 @@
 //
 package oai.aima.util;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import oai.practica1.cuboku.Cuboku;
 import oai.practica1.cuboku.aima.CubokuFunctionFactory;
 import oai.practica1.cuboku.aima.CubokuGoalTest;
 import oai.practica1.cuboku.util.Movable;
@@ -22,6 +26,7 @@ import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
+import aima.core.search.local.HillClimbingSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
 import aima.core.search.uninformed.DepthFirstSearch;
 import aima.core.search.uninformed.DepthLimitedSearch;
@@ -32,9 +37,19 @@ import aima.core.search.uninformed.UniformCostSearch;
  * libreria AIMA
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.1 05/12/2011
+ * @version 1.2 25/12/2011
  */
 public class AimaUtil {
+
+	/**
+	 * indica en AIMA que no se han realizado operaciones (ya es solucion)
+	 */
+	public static final String NO_OP = "NoOp";
+
+	/**
+	 * Indica en AIMA cuando no se ha alcanzado solucion <code>(P > L)</code>
+	 */
+	public static final String CUT_OFF = "CutOff";
 
 	// Nueva linea
 	public static final String newLine = System.getProperty("line.separator");
@@ -62,9 +77,10 @@ public class AimaUtil {
 	public static SearchAgent DFSDemo(Object initialState) {
 		// System.out.println("\nDemo recursive DFS -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
 			Search search = new DepthFirstSearch(new GraphSearch());
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
@@ -85,9 +101,10 @@ public class AimaUtil {
 	public static SearchAgent BFSDemo(Object initialState) {
 		// System.out.println("\nDemo BFS -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
 			Search search = new BreadthFirstSearch();
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
@@ -110,9 +127,10 @@ public class AimaUtil {
 	public static SearchAgent DLSDemo(Object initialState, int limit) {
 		// System.out.println("\nDemo recursive DLS -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
 			Search search = new DepthLimitedSearch(limit);
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
@@ -133,9 +151,10 @@ public class AimaUtil {
 	public static SearchAgent UCDemo(Object initialState) {
 		// System.out.println("\nDemo UCS -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
 			Search search = new UniformCostSearch();
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
@@ -158,9 +177,10 @@ public class AimaUtil {
 	public static SearchAgent GBFSDemo(Object initialState, HeuristicFunction h) {
 		// System.out.println("\nDemo GBFS con " + h + " -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
 			Search search = new GreedyBestFirstSearch(new GraphSearch(), h);
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
@@ -183,10 +203,11 @@ public class AimaUtil {
 	public static SearchAgent EMPDemo(Object initialState, HeuristicFunction h) {
 		// System.out.println("\nDemo EMP con " + h + " -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
-			Search search = new DepthLimitedSearch(1);// (new GraphSearch(), h);
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
+			Search search = new HillClimbingSearch(h);
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
 		} catch (Exception e) {
@@ -208,9 +229,10 @@ public class AimaUtil {
 	public static SearchAgent AStarDemo(Object initialState, HeuristicFunction h) {
 		// System.out.println("\nDemo A* con " + h + " -->");
 		try {
-			Problem problem = new Problem(initialState, CubokuFunctionFactory
-					.getActionsFunction(), CubokuFunctionFactory
-					.getResultFunction(), new CubokuGoalTest());
+			Problem problem = new Problem(initialState,
+					CubokuFunctionFactory.getActionsFunction(),
+					CubokuFunctionFactory.getResultFunction(),
+					new CubokuGoalTest());
 			Search search = new AStarSearch(new GraphSearch(), h);
 			SearchAgent agent = new SearchAgent(problem, search);
 			return agent;
@@ -218,6 +240,27 @@ public class AimaUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Metodo de utilidad que genera un Cuboku y lo guarda en un archivo de
+	 * texto a partir de una lista de acciones
+	 * 
+	 * @param actions
+	 *            la lista de acciones a realizar
+	 */
+	public static void generarCubo(List<Action> actions, String path) {
+		Cuboku a = new Cuboku(false);
+		for (int i = 0; i < actions.size(); i++)
+			a.move(actions.get(i));
+		try {
+			PrintWriter pw = new PrintWriter(new FileWriter(path));
+			pw.print(a.toStringSerializa());
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -237,6 +280,26 @@ public class AimaUtil {
 			sb.append(key + " : " + property + newLine);
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Metodo de utilidad que devuelve el valor de una propiedad que contega de
+	 * key k
+	 * 
+	 * @param properties
+	 *            las propiedades a procesar
+	 * @param k
+	 *            la clave a comprobar
+	 * @return el string con la propiedad buscada o null si no lo encuentra
+	 */
+	public static String getPropertie(Properties properties, String k) {
+		Iterator<Object> keys = properties.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = (String) keys.next();
+			if (key.contains(k))
+				return properties.getProperty(key);
+		}
+		return null;
 	}
 
 	/**

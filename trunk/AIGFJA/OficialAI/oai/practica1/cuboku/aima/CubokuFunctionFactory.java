@@ -19,7 +19,7 @@ import aima.core.search.framework.ResultFunction;
  * FunctionFactory del cuboku
  * 
  * @author José Ángel García Fernández
- * @version 1.0 04/12/2011
+ * @version 1.1 25/12/2011
  * 
  */
 public class CubokuFunctionFactory {
@@ -45,18 +45,19 @@ public class CubokuFunctionFactory {
 
 			Set<Action> actions = new LinkedHashSet<Action>();
 
-			actions.add(Cuboku.RIGHT_SUP);
+			actions.add(Cuboku.REL_CARA1);
+			actions.add(Cuboku.REL_CARA2);
+			actions.add(Cuboku.REL_CARA3);
+			actions.add(Cuboku.REL_CARA4);
+			actions.add(Cuboku.REL_CARA5);
+			actions.add(Cuboku.REL_CARA6);
 
-			actions.add(Cuboku.RIGHT_MEDIO);
-
-			actions.add(Cuboku.RIGHT_INF);
-
-			actions.add(Cuboku.DOWN_IZQ);
-
-			actions.add(Cuboku.DOWN_MEDIO);
-
-			actions.add(Cuboku.DOWN_DER);
-
+			// actions.add(Cuboku.INV_CARA1);
+			// actions.add(Cuboku.INV_CARA2);
+			// actions.add(Cuboku.INV_CARA3);
+			// actions.add(Cuboku.INV_CARA4);
+			// actions.add(Cuboku.INV_CARA5);
+			// actions.add(Cuboku.INV_CARA6);
 			return actions;
 		}
 	}
@@ -65,32 +66,56 @@ public class CubokuFunctionFactory {
 		public Object result(Object s, Action a) {
 			Cuboku cube = (Cuboku) s;
 
-			if (Cuboku.RIGHT_SUP.equals(a)) {
+			if (Cuboku.REL_CARA1.equals(a)) {
 				Cuboku newBoard = new Cuboku(cube);
-				newBoard.move(Cuboku.RIGHT_SUP);
+				newBoard.move(Cuboku.REL_CARA1);
 				return newBoard;
-			} else if (Cuboku.RIGHT_MEDIO.equals(a)) {
+			} else if (Cuboku.REL_CARA2.equals(a)) {
 				Cuboku newBoard = new Cuboku(cube);
-				newBoard.move(Cuboku.RIGHT_MEDIO);
+				newBoard.move(Cuboku.REL_CARA2);
 				return newBoard;
-			} else if (Cuboku.RIGHT_INF.equals(a)) {
+			} else if (Cuboku.REL_CARA3.equals(a)) {
 				Cuboku newBoard = new Cuboku(cube);
-				newBoard.move(Cuboku.RIGHT_INF);
+				newBoard.move(Cuboku.REL_CARA3);
 				return newBoard;
-			} else if (Cuboku.DOWN_IZQ.equals(a)) {
+			} else if (Cuboku.REL_CARA4.equals(a)) {
 				Cuboku newBoard = new Cuboku(cube);
-				newBoard.move(Cuboku.DOWN_IZQ);
+				newBoard.move(Cuboku.REL_CARA4);
 				return newBoard;
-			} else if (Cuboku.DOWN_MEDIO.equals(a)) {
+			} else if (Cuboku.REL_CARA5.equals(a)) {
 				Cuboku newBoard = new Cuboku(cube);
-				newBoard.move(Cuboku.DOWN_MEDIO);
+				newBoard.move(Cuboku.REL_CARA5);
 				return newBoard;
-			} else if (Cuboku.DOWN_DER.equals(a)) {
+			} else if (Cuboku.REL_CARA6.equals(a)) {
 				Cuboku newBoard = new Cuboku(cube);
-				newBoard.move(Cuboku.DOWN_DER);
+				newBoard.move(Cuboku.REL_CARA6);
 				return newBoard;
-			}
-
+			}// INVERSOS
+				// } else if (Cuboku.INV_CARA1.equals(a)) {
+			// Cuboku newBoard = new Cuboku(cube);
+			// newBoard.move(Cuboku.INV_CARA1);
+			// return newBoard;
+			// } else if (Cuboku.INV_CARA2.equals(a)) {
+			// Cuboku newBoard = new Cuboku(cube);
+			// newBoard.move(Cuboku.INV_CARA2);
+			// return newBoard;
+			// } else if (Cuboku.INV_CARA3.equals(a)) {
+			// Cuboku newBoard = new Cuboku(cube);
+			// newBoard.move(Cuboku.INV_CARA3);
+			// return newBoard;
+			// } else if (Cuboku.INV_CARA4.equals(a)) {
+			// Cuboku newBoard = new Cuboku(cube);
+			// newBoard.move(Cuboku.INV_CARA4);
+			// return newBoard;
+			// } else if (Cuboku.INV_CARA5.equals(a)) {
+			// Cuboku newBoard = new Cuboku(cube);
+			// newBoard.move(Cuboku.INV_CARA5);
+			// return newBoard;
+			// } else if (Cuboku.INV_CARA6.equals(a)) {
+			// Cuboku newBoard = new Cuboku(cube);
+			// newBoard.move(Cuboku.INV_CARA6);
+			// return newBoard;
+			// }
 			// The Action is not understood or is a NoOp
 			// the result will be the current state.
 			return s;

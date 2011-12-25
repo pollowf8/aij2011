@@ -33,7 +33,8 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 	private String[] algoritmos = { "1º en Profundidad", "1º en Anchura",
 			"Profundidad limitada", "Coste Uniforme", "Voraz", "A*",
 			"Escalada MaxPendiente" };
-	private String[] files = { "cuboIsi.txt", "hola.txt" };
+	private String[] files = { "cuboHecho.txt", "cuboFacil.txt",
+			"cuboDificil.txt", "test.txt" };
 	private String[] heuristicas = { "h1", "h2", "h3" };
 	private String[] profs = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
 			"10" };

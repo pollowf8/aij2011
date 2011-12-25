@@ -27,9 +27,11 @@ import aima.core.agent.impl.DynamicAction;
  * "posicion" con respecto al resto, torcido izquierda, torcido derecha, al
  * reves, correcto
  * Mi cubo sera numerdado, dviendolo de frente, cara 1, giras a derecha cara 2,3,4 hastal legar a 1, y lego 5 la de arriba y 6 abajo
- * 
- /** MOVIMIENTOS tengo k poder girar a la izquierda y derecha x 3 horizontal, y
- arriba y abajo 3 vertical , kizas se puede arreglar para k no haga falta izq o der ni up o down, ya que girando a la izquierda llego a donde llega la derecha pero con 3movs mas
+ * Hacer array de 6 matrices, cada matriz tiene 9 numCuboku, que tienen valor y Orientacion
+ /** MOVIMIENTOS
+ *	
+ *  tengo k poder girar a la izquierda y derecha x 3 horizontal, y
+ * arriba y abajo 3 vertical , kizas se puede arreglar para k no haga falta izq o der ni up o down, ya que girando a la izquierda llego a donde llega la derecha pero con 3movs mas
  */
 /** Es decir tengo k intercambiar valores de las caras,
  * k esten contiguas, distinguiendo si muevo del centro, es decir de las aristas
@@ -41,41 +43,93 @@ import aima.core.agent.impl.DynamicAction;
  * Esto es, si muevo horizontal inferior izquierda, la cara 1, se modifica, las caras 2,3,4, y la 6 por ser inferior, como?,
  *  pues los datos de la fila inferior de 1 seran los de 2, los de 2 los de 3, los de 3 los de 4, y, 
  *  en la cara 6, hay una rotacion, k es pasar las filas a columnas , la priemra fila la columna 3, la fila 2 la col 2 y la fila 3 la col 1
- *
- *
- */
-/**
- * o en plan feo,
- * 
- * Hacer array de 6 matrices, cada matriz tiene 9 numCuboku, que tienen valor y Orientacion
- * 
- * Operadores
- * Gi
- * 
- * 
  */
 
 /**
  * Clase que representa el cubo del Cuboku
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.0 04/12/2011
+ * @version 1.2 25/12/2011
  */
 public class Cuboku implements Movable {
 
-	// Movimientos horizontales
-	public static Action RIGHT_SUP = new DynamicAction("RightSuperior");
+	private static String[] acciones = { "RelojCara1", "RelojCara2",
+			"RelojCara3", "RelojCara4", "RelojCara5", "RelojCara6", };
+	// Movimientos CARA1 y CARA3
+	/**
+	 * Gira cara 1 sentido agujas reloj
+	 */
+	public static Action REL_CARA1 = new DynamicAction("RelojCara1");
 
-	public static Action RIGHT_INF = new DynamicAction("RightInferior");
+	/**
+	 * Gira cara 2 sentido agujas reloj o girar hacia arriba la pieza 3 de la
+	 * cara 1
+	 */
+	// UpDerecha
+	public static Action REL_CARA2 = new DynamicAction("RelojCara2");
+	/**
+	 * Gira cara 3 sentido agujas reloj
+	 */
+	public static Action REL_CARA3 = new DynamicAction("RelojCara3");
 
-	public static Action RIGHT_MEDIO = new DynamicAction("RightMedio");
+	/**
+	 * Gira cara 4 sentido agujas reloj o girar hacia abajo la pieza 1 de la
+	 * cara 1
+	 */
+	// DownIzquierda
+	public static Action REL_CARA4 = new DynamicAction("RelojCara4");
 
-	// Movimientos Verticales
-	public static Action DOWN_IZQ = new DynamicAction("DownIzquierda");
+	/**
+	 * Gira cara 5 sentido agujas reloj o girar a la izquierda la pieza 1 de la
+	 * cara1
+	 */
+	// LeftSup
+	public static Action REL_CARA5 = new DynamicAction("RelojCara5");
 
-	public static Action DOWN_MEDIO = new DynamicAction("DownMedio");
+	/**
+	 * Gira cara 6 sentido agujas reloj o girar a la derecha la pieza 3 de la
+	 * cara1
+	 */
+	// RightInf
+	public static Action REL_CARA6 = new DynamicAction("RelojCara6");
 
-	public static Action DOWN_DER = new DynamicAction("DownDerecha");
+	/**
+	 * Gira cara 1 sentido contrario agujas reloj
+	 */
+	public static Action INV_CARA1 = new DynamicAction("InvCara1");
+
+	/**
+	 * Gira cara 2 sentido contrario agujas reloj o girar hacia abajo la pieza 3
+	 * de la cara 1
+	 */
+	// DownDerecha
+	public static Action INV_CARA2 = new DynamicAction("InvCara2");
+
+	/**
+	 * Gira cara 3 sentido contrario agujas reloj
+	 */
+	public static Action INV_CARA3 = new DynamicAction("InvCara3");
+
+	/**
+	 * Gira cara 4 sentido contrario agujas reloj o girar hacia arriba la pieza
+	 * 1 de la cara 1
+	 */
+	// UpIzquierda
+	public static Action INV_CARA4 = new DynamicAction("InvCara4");
+
+	/**
+	 * Gira cara 5 sentido contrario agujas reloj o girar a la derecha la pieza
+	 * 1 de la cara1
+	 */
+	// RightSup
+	public static Action INV_CARA5 = new DynamicAction("InvCara5");
+
+	/**
+	 * Gira cara 6 sentido contrario agujas reloj o girar a la derecha la pieza
+	 * 3 de la cara1
+	 */
+	// LeftInf
+	public static Action INV_CARA6 = new DynamicAction("InvCara6");
 
 	/**
 	 * Representa el cubo con las 6 caras, visto desde alzado, las caras estan
@@ -116,13 +170,13 @@ public class Cuboku implements Movable {
 	 *            el nombre del archivo
 	 */
 	public Cuboku(String path) {
-		nombre = path;
+		nombre = path.substring(0, path.indexOf("."));
 		fromString(path);
 	}
 
 	/**
 	 * Genera un objeto de tipo <code>Cuboku</code> a partir de un
-	 * <code>Sudoku[]</code>
+	 * <code>Sudoku[]</code> (hace copia de los elementos)
 	 * 
 	 * @param oCube
 	 *            el array que representa al <code>Cuboku</code>
@@ -136,7 +190,7 @@ public class Cuboku implements Movable {
 	}
 
 	/**
-	 * Constructor copia
+	 * Constructor copia (hace copia de los elementos)
 	 * 
 	 * @param copyCube
 	 *            el otro Cuboku
@@ -158,34 +212,231 @@ public class Cuboku implements Movable {
 		return false;
 	}
 
+	/**
+	 * Devuelve el numero de NumeroKu descolocados
+	 * 
+	 * @return el numero de NumeroKu descolocados
+	 */
+	public int numDescolocados() {
+		int numDesc = 0;
+		for (int i = 0; i < nCaras; i++)
+			numDesc += cube[i].numDescolocados();
+		return numDesc;
+	}
+
+	/**
+	 * Devuelve el numero de NumeroKu repetidos
+	 * 
+	 * @return el numero de NumeroKu repetidos
+	 */
+	public int numRepetidos() {
+		int numDesc = 0;
+		for (int i = 0; i < nCaras; i++)
+			numDesc += cube[i].numRepetidos();
+		return numDesc;
+	}
+
+	/**
+	 * Devuelve el numero de NumeroKu mal orientados
+	 * 
+	 * @return el numero de NumeroKu mal orientados
+	 */
+	public int numMalOrientados() {
+		int numDesc = 0;
+		for (int i = 0; i < nCaras; i++)
+			numDesc += cube[i].numMalOrientados();
+		return numDesc;
+	}
+
 	@Override
 	public void move(Action where) {
 
-		if (where.equals(RIGHT_SUP)) {
-			moveRS();
+		if (where.equals(REL_CARA1)) {
+			moveR1();
 		}
-		if (where.equals(RIGHT_MEDIO)) {
-			moveRM();
+		if (where.equals(REL_CARA2)) {
+			moveR2();
 		}
-		if (where.equals(RIGHT_INF)) {
-			moveRI();
+		if (where.equals(REL_CARA3)) {
+			moveR3();
 		}
-		if (where.equals(DOWN_IZQ)) {
-			moveDI();
+		if (where.equals(REL_CARA4)) {
+			moveR4();
 		}
-		if (where.equals(DOWN_MEDIO)) {
-			moveDM();
+		if (where.equals(REL_CARA5)) {
+			moveR5();
 		}
-		if (where.equals(DOWN_DER)) {
-			moveDD();
+		if (where.equals(REL_CARA6)) {
+			moveR6();
 		}
+		// if (where.equals(INV_CARA1)) {
+		// moveI1();
+		// }
+		// if (where.equals(INV_CARA2)) {
+		// moveI2();
+		// }
+		// if (where.equals(INV_CARA3)) {
+		// moveI3();
+		// }
+		// if (where.equals(INV_CARA4)) {
+		// moveI4();
+		// }
+		// if (where.equals(INV_CARA5)) {
+		// moveI5();
+		// }
+		// if (where.equals(INV_CARA6)) {
+		// moveI6();
+		// }
 
 	}
 
 	/**
-	 * Metodo que hace el movimiento de girar a la derecha la fila superior
+	 * Metodo que hace el movimiento de girar en el sentido del reloj la cara 1
 	 */
-	private void moveRS() {
+	private void moveR1() {
+		// implicadas
+		// giraRight(1);// cara 1,2,3,4
+
+		// implicadas 1-2,4,5,6
+		// cara5 f3<-cara4 col3<-cara6 f1<-cara2 col1<-cara5 f3
+		NumeroKu[] cara5save = cube[4].getFila(2);
+
+		cube[4].setFila(2, cube[3].getColumna(2));// cara5 fila 3 <-cara4 col 3
+		cube[3].setColumna(2, cube[5].getFila(0));// cara4 col 3 <- cara6 fila 1
+		cube[5].setFila(0, cube[1].getColumna(0));// cara6 fila 1 <- cara2 col 1
+		cube[1].setColumna(0, cara5save);// cara2 col 1 <- cara5 fila 3
+
+		rotaCaraSentReloj(0);// cara 1 gira sentReloj
+
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar hacia ARRIBA la columna derecha o
+	 * girar en el sentido del reloj la cara 2
+	 */
+	private void moveR2() {
+		// implicadas
+		giraUp(2);// cara 1,5,3,6,
+		rotaCaraSentReloj(1);// cara 2 der
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar en el sentido del reloj la cara 3
+	 */
+	private void moveR3() {
+		// implicadas
+		// giraDown(1);// cara 1,5,3,6
+
+		// implicadas 3-2,4,5,6
+		// cara5 f1->cara4 col1->cara6 f3->cara3 col3->cara5 f1
+		NumeroKu[] cara5save = cube[4].getFila(0);
+
+		cube[4].setFila(0, cube[2].getColumna(2));// cara5 fila 1 <-cara3 col 3
+		cube[2].setColumna(2, cube[5].getFila(2));// cara3 col 3 <- cara6 fila 3
+		cube[5].setFila(2, cube[3].getColumna(0));// cara6 fila 3 <- cara4 col 1
+		cube[3].setColumna(0, cara5save);// cara4 col 1 <- cara5 fila 1
+
+		rotaCaraSentReloj(2);// cara 3 gira sentReloj
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar hacia abajo la columna izquierda o
+	 * girar en el sentido del reloj la cara 4
+	 */
+	private void moveR4() {
+		// implicadas
+		giraDown(0); // cara 1,5,3,6,
+		rotaCaraSentReloj(3);// cara 4 izq
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar a la izquierda la fila superior o
+	 * girar en el sentido del reloj la cara 5
+	 */
+	private void moveR5() {
+		// implicadas,  
+		giraLeft(0);//cara 1,2,3,4,
+		rotaCaraSentReloj(4);//cara 5 superior
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar a la derecha la fila inferior o
+	 * girar en el sentido del reloj la cara 6
+	 */
+	private void moveR6() {
+		// implicadas,
+		giraRight(2);// cara 1,2,3,4,
+		rotaCaraSentReloj(5);// cara 6 inferior
+
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar en el sentido contrario del reloj
+	 * la cara 1
+	 */
+	private void moveI1() {
+		// implicadas
+		// giraRight(1);// cara 1,2,3,4
+
+		// implicadas 1-2,4,5,6
+		// cara5 f3->cara4 col3->cara6 f1->cara2 col1->cara5 f3
+		NumeroKu[] cara5save = cube[4].getFila(2);
+
+		cube[4].setFila(2, cube[1].getColumna(0));// cara5 fila 3 <-cara2 col 1
+		cube[1].setColumna(0, cube[5].getFila(0));// cara2 col 1 <- cara6 fila 1
+		cube[5].setFila(0, cube[3].getColumna(2));// cara6 fila 1 <- cara4 col 3
+		cube[3].setColumna(2, cara5save);// cara4 col 3 <- cara5 fila 3
+
+		rotaCaraSentInvReloj(0);// cara 1 gira sentInvReloj
+
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar hacia abajo la columna derecha o
+	 * girar en el sentido inverso del reloj la cara 2
+	 */
+	private void moveI2() {
+		// implicadas
+		giraDown(2);// cara 1,5,3,6,
+		rotaCaraSentInvReloj(1);// cara 2 der
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar en el sentido contrario del reloj
+	 * la cara 3
+	 */
+	private void moveI3() {
+		// implicadas
+		// giraDown(1);// cara 1,5,3,6
+
+		// implicadas 3-2,4,5,6
+		// cara5 f1<-cara4 col1<-cara6 f3<-cara3 col3<-cara5 f1
+		NumeroKu[] cara5save = cube[4].getFila(0);
+
+		cube[4].setFila(0, cube[3].getColumna(0));// cara5 fila 1 <-cara4 col 1
+		cube[3].setColumna(0, cube[5].getFila(2));// cara4 col 1 <- cara6 fila 3
+		cube[5].setFila(2, cube[2].getColumna(2));// cara6 fila 3 <- cara3 col 3
+		cube[3].setColumna(2, cara5save);// cara3 col 3 <- cara5 fila 1
+
+		rotaCaraSentInvReloj(2);// cara 3 gira sentInvReloj
+
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar hacia arriba la columna izquierda
+	 * o girar en el sentido contrario del reloj la cara 4
+	 */
+	private void moveI4() {
+		// implicadas
+		giraUp(0); // cara 1,5,3,6,
+		rotaCaraSentInvReloj(3);// cara 4 izq
+	}
+
+	/**
+	 * Metodo que hace el movimiento de girar a la derecha la fila superior o
+	 * girar en el sentido inverso del reloj la cara 5
+	 */
+	private void moveI5() {
 		// implicadas, cara 1,2,3,4, y superior la 5
 		// proceso de cambio
 		// girarDerecha ->fila 1 de cara 1, pasa a ser la de 2, la de 2 la de 3,
@@ -199,48 +450,14 @@ public class Cuboku implements Movable {
 	}
 
 	/**
-	 * Metodo que hace el movimiento de girar a la derecha la fila central
+	 * Metodo que hace el movimiento de girar a la izquierda la fila inferior o
+	 * girar en el sentido contrario del reloj la cara 6
 	 */
-	private void moveRM() {
-		// implicadas
-		giraRight(1);// cara 1,2,3,4
-	}
-
-	/**
-	 * Metodo que hace el movimiento de girar a la derecha la fila inferior
-	 */
-	private void moveRI() {
+	private void moveI6() {
 		// implicadas,
-		giraRight(2);// cara 1,2,3,4,
-		rotaCaraSentReloj(5);// cara 6 inferior
+		giraLeft(2);// cara 1,2,3,4,
+		rotaCaraSentInvReloj(5);// cara 6 inferior
 
-	}
-
-	/**
-	 * Metodo que hace el movimiento de girar hacia abajo la columna izquierda
-	 */
-	private void moveDI() {
-		// implicadas
-		giraDown(0); // cara 1,5,3,6,
-		rotaCaraSentReloj(3);// cara 4 izq
-	}
-
-	/**
-	 * Metodo que hace el movimiento de girar hacia abajo la columna central
-	 */
-	private void moveDM() {
-		// implicadas
-		giraDown(1);// cara 1,5,3,6
-
-	}
-
-	/**
-	 * Metodo que hace el movimiento de girar hacia abajo la columna derecha
-	 */
-	private void moveDD() {
-		// implicadas
-		giraDown(2);// cara 1,5,3,6,
-		rotaCaraSentInvReloj(1);// cara 2 der
 	}
 
 	/**
@@ -269,20 +486,37 @@ public class Cuboku implements Movable {
 	}
 
 	/**
-	 * Metodo que gira el cubo a la derecha en base a la fila f
+	 * Metodo que gira cubo a la derecha en base a la fila f, viendo el cubo
+	 * desde la cara 1
 	 */
 	private void giraRight(int f) {
 		NumeroKu[] cara4save = cube[3].getFila(f);
 
-		// cara 3 le pongo la 2, cara 2 le pongo la 1...
+		// cara 1 -> 2, cara 2 -> 3, cara 3 -> 4,
 		for (int i = 3; i > 0; i--) {
 			cube[i].setFila(f, cube[i - 1].getFila(f));
 		}
-		cube[0].setFila(f, cara4save);// cara 1 le pongo la 4
+		cube[0].setFila(f, cara4save);// (cara 4 -> 1)
 	}
 
 	/**
-	 * Metodo que gira el cubo hacia abajo en base a la columna j
+	 * Metodo que gira cubo a la izquierda en base a la fila f, viendo el cubo
+	 * desde la cara 1
+	 */
+	private void giraLeft(int f) {
+		NumeroKu[] cara1save = cube[0].getFila(f);
+
+		// cara 1 <- 2, cara 2 <- 3, cara 3 <- 4,
+		for (int i = 0; i < 3; i++) {
+			cube[i].setFila(f, cube[i + 1].getFila(f));
+		}
+
+		cube[3].setFila(f, cara1save);// (cara 4 <- 1)
+	}
+
+	/**
+	 * Metodo que gira el una pieza del cubo hacia abajo en base a la columna j,
+	 * viendo el cubo desde la cara 1
 	 */
 	private void giraDown(int c) {
 		NumeroKu[] cara5save = cube[4].getColumna(c);
@@ -291,6 +525,20 @@ public class Cuboku implements Movable {
 		cube[2].setColumna(c, cube[5].getColumna(c));// cara 3 le pongo la 6
 		cube[5].setColumna(c, cube[0].getColumna(c));// cara 6 le pongo la 1
 		cube[0].setColumna(c, cara5save);// cara 1 le pongo la 5
+
+	}
+
+	/**
+	 * Metodo que gira el una pieza del cubo hacia arriba en base a la columna
+	 * j, viendo el cubo desde la cara 1
+	 */
+	private void giraUp(int c) {
+		NumeroKu[] cara5save = cube[4].getColumna(c);
+
+		cube[4].setColumna(c, cube[0].getColumna(c));// cara 5 le pongo la 1
+		cube[0].setColumna(c, cube[5].getColumna(c));// cara 1 le pongo la 6
+		cube[5].setColumna(c, cube[2].getColumna(c));// cara 6 le pongo la 3
+		cube[2].setColumna(c, cara5save);// cara 3 le pongo la 5
 
 	}
 
@@ -338,6 +586,20 @@ public class Cuboku implements Movable {
 		} catch (NumeroKuOutOfRangeException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Comprueba si existe la accion en la lista de acciones
+	 * 
+	 * @param accionStr
+	 *            la accion a comprobar
+	 * @return devuelve true si existe false en caso contrario
+	 */
+	public static boolean existeAccion(String accionStr) {
+		for (int i = 0; i < acciones.length; i++)
+			if (acciones[i].equals(accionStr))
+				return true;
+		return false;
 	}
 
 	@Override
@@ -425,5 +687,4 @@ public class Cuboku implements Movable {
 	public String getNombre() {
 		return nombre;
 	}
-
 }

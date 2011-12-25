@@ -48,13 +48,13 @@ public enum Algoritmo {
 	A {
 		@Override
 		public String toString() {
-			return "A Estrella";
+			return "A*";
 		}
 	},
 	ESCALADAMAXPEND {
 		@Override
 		public String toString() {
-			return "Escalada Maxima Pendiente";
+			return "Escalada Max Pendiente";
 		}
 	},
 	;

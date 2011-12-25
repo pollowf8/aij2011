@@ -14,13 +14,16 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import oai.excepciones.NoExisteAccionException;
+
 /**
- * MenuBar para las cambiar entre los distintos paneles
+ * MenuBar para las cambiar entre los distintos paneles y opciones
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.2 06/12/2011
+ * @version 1.3 25/12/2011
  */
 public class JMenuBarJ extends JMenuBar {
 
@@ -30,6 +33,7 @@ public class JMenuBarJ extends JMenuBar {
 	private JMenuItem jMICambiarAlgoritmo = null;
 	private JMenuItem jMIProbar = null;
 	private JMenuItem jMISalir = null;
+	private JMenuItem jMIGenerarCubo = null;
 
 	/**
 	 * This method initializes jJMB
@@ -52,6 +56,7 @@ public class JMenuBarJ extends JMenuBar {
 			jMenu.setText("Opciones");
 			jMenu.add(getJMCambiarOpciones());
 			jMenu.add(getJMProbar());
+			jMenu.add(getJMGenerarCubo());
 			jMenu.add(getJMISalir());
 		}
 		return jMenu;
@@ -100,6 +105,36 @@ public class JMenuBarJ extends JMenuBar {
 			});
 		}
 		return jMIProbar;
+	}
+
+	/**
+	 * This method initializes jMIGenerarCubo
+	 * 
+	 * @return javax.swing.JMenuItem
+	 */
+	private JMenuItem getJMGenerarCubo() {
+		if (jMIGenerarCubo == null) {
+			jMIGenerarCubo = new JMenuItem();
+			jMIGenerarCubo.setText("Generar Cubo");
+			jMIGenerarCubo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G,
+					ActionEvent.ALT_MASK));
+			jMIGenerarCubo
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							VentanaAI v = (VentanaAI) jOwner;
+							try {
+								v.leeMovs();
+							} catch (NoExisteAccionException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+								JOptionPane.showMessageDialog(null,
+										"Cubo no generado\nAccion incorrecta: "
+												+ e1.getMessage());
+							}
+						}
+					});
+		}
+		return jMIGenerarCubo;
 	}
 
 	/**

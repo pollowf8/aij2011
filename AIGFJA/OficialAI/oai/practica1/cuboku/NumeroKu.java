@@ -14,7 +14,7 @@ import oai.practica1.cuboku.util.Orientacion;
  * Clase que representa un numero de una de las caras
  * 
  * @author José Ángel García Fernández
- * @version 1.0 04/12/2011
+ * @version 1.1 25/12/2011
  * 
  */
 public class NumeroKu {
@@ -61,6 +61,18 @@ public class NumeroKu {
 	 */
 	public NumeroKu(int num) throws NumeroKuOutOfRangeException {
 		this(num, Orientacion.up);
+	}
+
+	/**
+	 * Constructor copia de <code>NumeroKu</code>
+	 * 
+	 * @param numeroKu
+	 *            otro numeroku
+	 * @throws NumeroKuOutOfRangeException
+	 *             si el numero no es correcto
+	 */
+	public NumeroKu(NumeroKu otro) throws NumeroKuOutOfRangeException {
+		this(otro.num, otro.ori);
 	}
 
 	/**

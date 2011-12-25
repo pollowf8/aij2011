@@ -7,6 +7,7 @@
 //
 package oai.practica1.cuboku;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import oai.aima.util.AimaUtil;
@@ -17,7 +18,7 @@ import oai.practica1.cuboku.util.Orientacion;
  * Clase que representa una de las caras del Cuboku
  * 
  * @author José Ángel García Fernández
- * @version 04/12/2011 1.0
+ * @version 1.2 25/12/2011
  * 
  */
 public class Sudoku {
@@ -78,17 +79,21 @@ public class Sudoku {
 	}
 
 	/**
-	 * Genera un objeto de tipo Sudoku
+	 * Genera un objeto de tipo Sudoku (hace copia de los elementos)
 	 * 
 	 * @param s
-	 *            la matriz a establecer (hace copia de los elementos)
+	 *            la matriz a establecer
 	 */
 	public Sudoku(NumeroKu[][] s, String nombre) {
 		this.nombre = nombre;
 		this.s = new NumeroKu[dimension][dimension];
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
-				this.s[i][j] = s[i][j];
+				try {
+					this.s[i][j] = new NumeroKu(s[i][j]);
+				} catch (NumeroKuOutOfRangeException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -97,7 +102,7 @@ public class Sudoku {
 	 * Constructor copia
 	 * 
 	 * @param copy
-	 *            el array que representa al <code>Cuboku</code>
+	 *            el otro <code>Suboku</code>
 	 */
 	public Sudoku(Sudoku copy) {
 		this(copy.s, copy.nombre);
@@ -173,29 +178,6 @@ public class Sudoku {
 	}
 
 	/**
-	 * Devuelve true si existe algun NumeroKu repetido en la cara o mal
-	 * orientado
-	 * 
-	 * @return true si hay algun numero repetido en la cara o mal orientado,
-	 *         false en caso contrario
-	 */
-	public boolean noFinal() {
-		for (int m = 0; m < dimension; m++) {
-			for (int n = 0; n < dimension; n++) {
-				NumeroKu a = s[m][n];// obtengo el numeroKu
-				for (int i = 0; i < dimension; i++) {
-					for (int j = 0; j < dimension; j++) {
-						if (((a.getNum() == s[i][j].getNum()) || (a.getOri() != s[i][j]
-								.getOri())) && (a != s[i][j]))
-							return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Rota la cara hacia la izquierda
 	 */
 	public void rotaCaraSentInvReloj() {
@@ -234,6 +216,107 @@ public class Sudoku {
 				s[i][j].gira90der();
 			}
 		}
+	}
+
+	/**
+	 * Devuelve true si existe algun NumeroKu repetido en la cara o mal
+	 * orientado
+	 * 
+	 * @return true si hay algun numero repetido en la cara o mal orientado,
+	 *         false en caso contrario
+	 */
+	public boolean noFinal() {
+		// return numDescolocados()!=0? true:false;
+		for (int m = 0; m < dimension; m++) {
+			for (int n = 0; n < dimension; n++) {
+				NumeroKu a = s[m][n];// obtengo el numeroKu
+				for (int i = 0; i < dimension; i++) {
+					for (int j = 0; j < dimension; j++) {
+						if (((a.getNum() == s[i][j].getNum()) || (a.getOri() != s[i][j]
+								.getOri())) && (a != s[i][j]))
+							return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Devuelve el numero de numeroKu descolocados en la cara
+	 * 
+	 * @return el numero de NumeroKu descolocados
+	 */
+	public int numDescolocados() {
+		int numDesc = 0;
+		ArrayList<NumeroKu> usados = new ArrayList<NumeroKu>();
+		for (int m = 0; m < dimension; m++) {
+			for (int n = 0; n < dimension; n++) {
+				NumeroKu a = s[m][n];// obtengo el numeroKu
+				for (int i = 0; i < dimension; i++) {
+					for (int j = 0; j < dimension; j++) {
+						if (((a.getNum() == s[i][j].getNum()) || (a.getOri() != s[i][j]
+								.getOri()))
+								&& (a != s[i][j])
+								&& !usados.contains(a)) {
+							usados.add(a);
+							numDesc++;
+						}
+					}
+				}
+			}
+		}
+		return numDesc;
+	}
+
+	/**
+	 * Devuelve el numero de numeroKu repetidos en la cara
+	 * 
+	 * @return el numero de NumeroKu repetidos
+	 */
+	public int numRepetidos() {
+		int numDesc = 0;
+		ArrayList<NumeroKu> usados = new ArrayList<NumeroKu>();
+		for (int m = 0; m < dimension; m++) {
+			for (int n = 0; n < dimension; n++) {
+				NumeroKu a = s[m][n];// obtengo el numeroKu
+				for (int i = 0; i < dimension; i++) {
+					for (int j = 0; j < dimension; j++) {
+						if ((a.getNum() == s[i][j].getNum()) && (a != s[i][j])
+								&& (!usados.contains(a))) {
+							usados.add(a);
+							numDesc++;
+						}
+					}
+				}
+			}
+		}
+		return numDesc;
+	}
+
+	/**
+	 * Devuelve el numero de numeroKu mal orientados en la cara
+	 * 
+	 * @return el numero de NumeroKu mal orientados
+	 */
+	public int numMalOrientados() {
+		int numDesc = 0;
+		ArrayList<NumeroKu> usados = new ArrayList<NumeroKu>();
+		for (int m = 0; m < dimension; m++) {
+			for (int n = 0; n < dimension; n++) {
+				NumeroKu a = s[m][n];// obtengo el numeroKu
+				for (int i = 0; i < dimension; i++) {
+					for (int j = 0; j < dimension; j++) {
+						if ((a.getOri() != s[i][j].getOri()) && (a != s[i][j])
+								&& (!usados.contains(a))) {
+							usados.add(a);
+							numDesc++;
+						}
+					}
+				}
+			}
+		}
+		return numDesc;
 	}
 
 	/**

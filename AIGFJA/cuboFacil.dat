@@ -1,0 +1,2 @@
+Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Completo    Optimo      Tiempo(r=6) Espacio(r=6)
+Voraz                    3.0         15          3           16          N           N           r^m         r^m         

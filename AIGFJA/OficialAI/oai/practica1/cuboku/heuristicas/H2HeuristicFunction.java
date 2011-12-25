@@ -7,24 +7,22 @@
 //
 package oai.practica1.cuboku.heuristicas;
 
-
 import oai.practica1.cuboku.Cuboku;
 import aima.core.search.framework.HeuristicFunction;
 
-
 /**
- * Heuristica
+ * Da los elementos mal colocados (tiene en cuenta solo repetidos)
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.0 04/12/2011
+ * @version 1.1 25/12/2011
  */
 public class H2HeuristicFunction implements HeuristicFunction {
 
 	public double h(Object state) {
-		Cuboku board = (Cuboku) state;
-		return 0;
+		// me da solo los repetidos
+		Cuboku cuboku = (Cuboku) state;
+		return cuboku.numRepetidos();
 	}
-	
 
 	@Override
 	public String toString() {

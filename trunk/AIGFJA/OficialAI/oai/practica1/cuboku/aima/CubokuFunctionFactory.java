@@ -19,7 +19,7 @@ import aima.core.search.framework.ResultFunction;
  * FunctionFactory del cuboku
  * 
  * @author José Ángel García Fernández
- * @version 1.1 25/12/2011
+ * @version 1.2 13/01/2012
  * 
  */
 public class CubokuFunctionFactory {
@@ -44,20 +44,27 @@ public class CubokuFunctionFactory {
 		public Set<Action> actions(Object state) {
 
 			Set<Action> actions = new LinkedHashSet<Action>();
-
+			// Sentido Reloj
 			actions.add(Cuboku.REL_CARA1);
 			actions.add(Cuboku.REL_CARA2);
 			actions.add(Cuboku.REL_CARA3);
 			actions.add(Cuboku.REL_CARA4);
 			actions.add(Cuboku.REL_CARA5);
 			actions.add(Cuboku.REL_CARA6);
-
-			// actions.add(Cuboku.INV_CARA1);
-			// actions.add(Cuboku.INV_CARA2);
-			// actions.add(Cuboku.INV_CARA3);
-			// actions.add(Cuboku.INV_CARA4);
-			// actions.add(Cuboku.INV_CARA5);
-			// actions.add(Cuboku.INV_CARA6);
+			// Sentido Inverso Reloj
+			actions.add(Cuboku.INV_CARA1);
+			actions.add(Cuboku.INV_CARA2);
+			actions.add(Cuboku.INV_CARA3);
+			actions.add(Cuboku.INV_CARA4);
+			actions.add(Cuboku.INV_CARA5);
+			actions.add(Cuboku.INV_CARA6);
+			// Gira 180 grados
+			actions.add(Cuboku._180_CARA1);
+			actions.add(Cuboku._180_CARA2);
+			actions.add(Cuboku._180_CARA3);
+			actions.add(Cuboku._180_CARA4);
+			actions.add(Cuboku._180_CARA5);
+			actions.add(Cuboku._180_CARA6);
 			return actions;
 		}
 	}
@@ -91,31 +98,56 @@ public class CubokuFunctionFactory {
 				newBoard.move(Cuboku.REL_CARA6);
 				return newBoard;
 			}// INVERSOS
-				// } else if (Cuboku.INV_CARA1.equals(a)) {
-			// Cuboku newBoard = new Cuboku(cube);
-			// newBoard.move(Cuboku.INV_CARA1);
-			// return newBoard;
-			// } else if (Cuboku.INV_CARA2.equals(a)) {
-			// Cuboku newBoard = new Cuboku(cube);
-			// newBoard.move(Cuboku.INV_CARA2);
-			// return newBoard;
-			// } else if (Cuboku.INV_CARA3.equals(a)) {
-			// Cuboku newBoard = new Cuboku(cube);
-			// newBoard.move(Cuboku.INV_CARA3);
-			// return newBoard;
-			// } else if (Cuboku.INV_CARA4.equals(a)) {
-			// Cuboku newBoard = new Cuboku(cube);
-			// newBoard.move(Cuboku.INV_CARA4);
-			// return newBoard;
-			// } else if (Cuboku.INV_CARA5.equals(a)) {
-			// Cuboku newBoard = new Cuboku(cube);
-			// newBoard.move(Cuboku.INV_CARA5);
-			// return newBoard;
-			// } else if (Cuboku.INV_CARA6.equals(a)) {
-			// Cuboku newBoard = new Cuboku(cube);
-			// newBoard.move(Cuboku.INV_CARA6);
-			// return newBoard;
-			// }
+			else if (Cuboku.INV_CARA1.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku.INV_CARA1);
+				return newBoard;
+			} else if (Cuboku.INV_CARA2.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku.INV_CARA2);
+				return newBoard;
+			} else if (Cuboku.INV_CARA3.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku.INV_CARA3);
+				return newBoard;
+			} else if (Cuboku.INV_CARA4.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku.INV_CARA4);
+				return newBoard;
+			} else if (Cuboku.INV_CARA5.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku.INV_CARA5);
+				return newBoard;
+			} else if (Cuboku.INV_CARA6.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku.INV_CARA6);
+				return newBoard;
+				//180º
+			} else if (Cuboku._180_CARA1.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku._180_CARA1);
+				return newBoard;
+			} else if (Cuboku._180_CARA2.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku._180_CARA2);
+				return newBoard;
+			} else if (Cuboku._180_CARA3.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku._180_CARA3);
+				return newBoard;
+			} else if (Cuboku._180_CARA4.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku._180_CARA4);
+				return newBoard;
+			} else if (Cuboku._180_CARA5.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku._180_CARA5);
+				return newBoard;
+			} else if (Cuboku._180_CARA6.equals(a)) {
+				Cuboku newBoard = new Cuboku(cube);
+				newBoard.move(Cuboku._180_CARA6);
+				return newBoard;
+			}
 			// The Action is not understood or is a NoOp
 			// the result will be the current state.
 			return s;

@@ -9,6 +9,7 @@ package oai.practica1.cuboku.visual;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -23,7 +24,7 @@ import oai.excepciones.NoExisteAccionException;
  * MenuBar para las cambiar entre los distintos paneles y opciones
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.3 25/12/2011
+ * @version 1.4 13/01/2012
  */
 public class JMenuBarJ extends JMenuBar {
 
@@ -99,8 +100,23 @@ public class JMenuBarJ extends JMenuBar {
 			jMIProbar.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					VentanaAI v = (VentanaAI) jOwner;
-					v.estableceLayout(VentanaAI.AIDEMO);
-					v.preparaProbar();
+					try {
+						v.preparaProbar();
+						v.estableceLayout(VentanaAI.AIDEMO);
+					} catch (IOException e1) {
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"El archivo: "
+												+ e1.getMessage().substring(
+														0,
+														e1.getMessage()
+																.indexOf(".")+4)
+												+ " no se ha encontrado en el directorio actual y no se ha podido cargar.\nCopie el archivo al directorio actual para poder cargarlo",
+										"¡Archivo no encontrado!",
+										JOptionPane.ERROR_MESSAGE);
+					}
+
 				}
 			});
 		}
@@ -125,8 +141,6 @@ public class JMenuBarJ extends JMenuBar {
 							try {
 								v.leeMovs();
 							} catch (NoExisteAccionException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
 								JOptionPane.showMessageDialog(null,
 										"Cubo no generado\nAccion incorrecta: "
 												+ e1.getMessage());

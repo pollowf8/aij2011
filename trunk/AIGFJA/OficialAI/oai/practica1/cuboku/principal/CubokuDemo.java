@@ -26,8 +26,8 @@ public class CubokuDemo {
 	private static String path = "./cuboHecho";
 	private static String ext = ".txt";
 	private static Cuboku cubokuBase = new Cuboku(false);
-	private static Cuboku cubokuFile = new Cuboku(path + ext);
-	private static Cuboku cubokuFile2 = new Cuboku(path + ext);
+	// private static Cuboku cubokuFile = new Cuboku(path + ext);
+	// private static Cuboku cubokuFile2 = new Cuboku(path + ext);
 	private static PrintWriter pw;
 
 	public static void main(String[] args) {
@@ -37,20 +37,21 @@ public class CubokuDemo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 cubokuBase.move(Cuboku.REL_CARA1);
-		 //cubokuBase.move(Cuboku.DOWN_IZQ);
-		 pw.print(cubokuBase.toStringSerializa());
+		cubokuBase.move(Cuboku.REL_CARA1);
+		// cubokuBase.move(Cuboku.DOWN_IZQ);
+		pw.print(cubokuBase.toStringSerializa());
 		// no informadas
 		// cubokuDFSDemo();
 		// cubokuBFSDemo();
-//		SearchAgent agent = AimaUtil.DLSDemo(cubokuFile,6);
-//		String camino = AimaUtil.printActions(agent.getActions(), new Cuboku(
-//				cubokuFile));
-//		String proper=AimaUtil.printInstrumentation(agent.getInstrumentation());
-//		System.out.print(camino);
-//		System.out.print(proper);
-//		pw.print(camino);
-//		pw.print(proper);
+		// SearchAgent agent = AimaUtil.DLSDemo(cubokuFile,6);
+		// String camino = AimaUtil.printActions(agent.getActions(), new Cuboku(
+		// cubokuFile));
+		// String
+		// proper=AimaUtil.printInstrumentation(agent.getInstrumentation());
+		// System.out.print(camino);
+		// System.out.print(proper);
+		// pw.print(camino);
+		// pw.print(proper);
 		// cubokuUCDemo();
 
 		// Informadas

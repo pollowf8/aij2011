@@ -13,12 +13,14 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 import oai.practica1.cuboku.Cuboku;
 import oai.practica1.cuboku.aima.CubokuFunctionFactory;
 import oai.practica1.cuboku.aima.CubokuGoalTest;
 import oai.practica1.cuboku.util.Movable;
 import aima.core.agent.Action;
+import aima.core.agent.impl.DynamicAction;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.HeuristicFunction;
 import aima.core.search.framework.Problem;
@@ -37,12 +39,12 @@ import aima.core.search.uninformed.UniformCostSearch;
  * libreria AIMA
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.2 25/12/2011
+ * @version 1.3 13/01/2012
  */
 public class AimaUtil {
 
 	/**
-	 * indica en AIMA que no se han realizado operaciones (ya es solucion)
+	 * Indica en AIMA que no se han realizado operaciones (ya es solucion)
 	 */
 	public static final String NO_OP = "NoOp";
 
@@ -249,18 +251,27 @@ public class AimaUtil {
 	 * @param actions
 	 *            la lista de acciones a realizar
 	 */
-	public static void generarCubo(List<Action> actions, String path) {
+	public static int generarCubo(List<Action> actions, String path) {
 		Cuboku a = new Cuboku(false);
-		for (int i = 0; i < actions.size(); i++)
-			a.move(actions.get(i));
+		int nMovs = actions.size();
+		if (actions.size() != 0)
+			for (int i = 0; i < actions.size(); i++)
+				a.move(actions.get(i));
+		else {
+			Random r = new Random();
+			nMovs = (r.nextInt() % 5)+5;
+			for (int i = 0; i < nMovs; i++)
+				a.move(new DynamicAction(Cuboku.acciones[r.nextInt(18)]));
+		}
 		try {
 			PrintWriter pw = new PrintWriter(new FileWriter(path));
 			pw.print(a.toStringSerializa());
 			pw.close();
+			return nMovs;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return 0;
 	}
 
 	/**

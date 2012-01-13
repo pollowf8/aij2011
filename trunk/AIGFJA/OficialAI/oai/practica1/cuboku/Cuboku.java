@@ -8,7 +8,6 @@
 package oai.practica1.cuboku;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,40 +20,21 @@ import oai.practica1.cuboku.util.Orientacion;
 import aima.core.agent.Action;
 import aima.core.agent.impl.DynamicAction;
 
-/**POSIBLES IMPLEMENTACIONES
- * como cojones implementamos esto, Un array de 6 elementos, donde cada uno es
- * una cara, del 1 al 6, y cada cara tiene 9 elementos, k tienen su valor y la
- * "posicion" con respecto al resto, torcido izquierda, torcido derecha, al
- * reves, correcto
- * Mi cubo sera numerdado, dviendolo de frente, cara 1, giras a derecha cara 2,3,4 hastal legar a 1, y lego 5 la de arriba y 6 abajo
- * Hacer array de 6 matrices, cada matriz tiene 9 numCuboku, que tienen valor y Orientacion
- /** MOVIMIENTOS
- *	
- *  tengo k poder girar a la izquierda y derecha x 3 horizontal, y
- * arriba y abajo 3 vertical , kizas se puede arreglar para k no haga falta izq o der ni up o down, ya que girando a la izquierda llego a donde llega la derecha pero con 3movs mas
- */
-/** Es decir tengo k intercambiar valores de las caras,
- * k esten contiguas, distinguiendo si muevo del centro, es decir de las aristas
- * y central,*/
-/** O de los extremos, ya que entonces tambien se ve afecta la
- *  de ese lado
- */
-/**
- * Esto es, si muevo horizontal inferior izquierda, la cara 1, se modifica, las caras 2,3,4, y la 6 por ser inferior, como?,
- *  pues los datos de la fila inferior de 1 seran los de 2, los de 2 los de 3, los de 3 los de 4, y, 
- *  en la cara 6, hay una rotacion, k es pasar las filas a columnas , la priemra fila la columna 3, la fila 2 la col 2 y la fila 3 la col 1
- */
-
 /**
  * Clase que representa el cubo del Cuboku
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.2 25/12/2011
+ * @version 1.3 13/01/2012
  */
 public class Cuboku implements Movable {
 
-	private static String[] acciones = { "RelojCara1", "RelojCara2",
-			"RelojCara3", "RelojCara4", "RelojCara5", "RelojCara6", };
+	public final static String[] acciones = { "RelojCara1", "RelojCara2",
+			"RelojCara3", "RelojCara4", "RelojCara5", "RelojCara6", "InvCara1",
+			"InvCara2", "InvCara3", "InvCara4", "InvCara5", "InvCara6",
+			"180Cara1", "180Cara2", "180Cara3", "180Cara4", "180Cara5",
+			"180Cara6" };
+	// private static String[] acciones = { "RelojCara1", "RelojCara2",
+	// "RelojCara3", "RelojCara4", "RelojCara5", "RelojCara6", };
 	// Movimientos CARA1 y CARA3
 	/**
 	 * Gira cara 1 sentido agujas reloj
@@ -132,6 +112,33 @@ public class Cuboku implements Movable {
 	public static Action INV_CARA6 = new DynamicAction("InvCara6");
 
 	/**
+	 * Gira cara 1 sentido 180º
+	 */
+	public static Action _180_CARA1 = new DynamicAction("180Cara1");
+
+	/**
+	 * Gira cara 2 sentido 180º
+	 */
+	public static Action _180_CARA2 = new DynamicAction("180Cara2");
+
+	/**
+	 * Gira cara 3 sentido 180º
+	 */
+	public static Action _180_CARA3 = new DynamicAction("180Cara3");
+	/**
+	 * Gira cara 4 sentido 180º
+	 */
+	public static Action _180_CARA4 = new DynamicAction("180Cara4");
+	/**
+	 * Gira cara 5 sentido 180º
+	 */
+	public static Action _180_CARA5 = new DynamicAction("180Cara5");
+	/**
+	 * Gira cara 6 sentido 180º
+	 */
+	public static Action _180_CARA6 = new DynamicAction("180Cara6");
+
+	/**
 	 * Representa el cubo con las 6 caras, visto desde alzado, las caras estan
 	 * numeradas hacia la derecha y luego arriba y abajo, es decir
 	 * <code>1->2->3->4, arriba 5, abajo 6</code
@@ -168,8 +175,10 @@ public class Cuboku implements Movable {
 	 * 
 	 * @param path
 	 *            el nombre del archivo
+	 * @throws IOException
+	 *             si se ha producido algun error de IO
 	 */
-	public Cuboku(String path) {
+	public Cuboku(String path) throws IOException {
 		nombre = path.substring(0, path.indexOf("."));
 		fromString(path);
 	}
@@ -269,25 +278,77 @@ public class Cuboku implements Movable {
 		if (where.equals(REL_CARA6)) {
 			moveR6();
 		}
-		// if (where.equals(INV_CARA1)) {
-		// moveI1();
-		// }
-		// if (where.equals(INV_CARA2)) {
-		// moveI2();
-		// }
-		// if (where.equals(INV_CARA3)) {
-		// moveI3();
-		// }
-		// if (where.equals(INV_CARA4)) {
-		// moveI4();
-		// }
-		// if (where.equals(INV_CARA5)) {
-		// moveI5();
-		// }
-		// if (where.equals(INV_CARA6)) {
-		// moveI6();
-		// }
+		if (where.equals(INV_CARA1)) {
+			moveI1();
+		}
+		if (where.equals(INV_CARA2)) {
+			moveI2();
+		}
+		if (where.equals(INV_CARA3)) {
+			moveI3();
+		}
+		if (where.equals(INV_CARA4)) {
+			moveI4();
+		}
+		if (where.equals(INV_CARA5)) {
+			moveI5();
+		}
+		if (where.equals(INV_CARA6)) {
+			moveI6();
+		}
+		if (where.equals(_180_CARA1)) {
+			move180(1);
+		}
+		if (where.equals(_180_CARA2)) {
+			move180(2);
+		}
+		if (where.equals(_180_CARA3)) {
+			move180(3);
+		}
+		if (where.equals(_180_CARA4)) {
+			move180(4);
+		}
+		if (where.equals(_180_CARA5)) {
+			move180(5);
+		}
+		if (where.equals(_180_CARA6)) {
+			move180(6);
+		}
+	}
 
+	/**
+	 * Gira 180 grados la cara i
+	 * 
+	 * @param i
+	 *            la cara a mover
+	 */
+	private void move180(int i) {
+		switch (i) {
+		case 1:
+			moveR1();
+			moveR1();
+			break;
+		case 2:
+			moveR2();
+			moveR2();
+			break;
+		case 3:
+			moveR3();
+			moveR3();
+			break;
+		case 4:
+			moveR4();
+			moveR4();
+			break;
+		case 5:
+			moveR5();
+			moveR5();
+			break;
+		case 6:
+			moveR6();
+			moveR6();
+			break;
+		}
 	}
 
 	/**
@@ -328,11 +389,11 @@ public class Cuboku implements Movable {
 		// giraDown(1);// cara 1,5,3,6
 
 		// implicadas 3-2,4,5,6
-		// cara5 f1->cara4 col1->cara6 f3->cara3 col3->cara5 f1
+		// cara5 f1->cara4 col1->cara6 f3->cara2 col3->cara5 f1
 		NumeroKu[] cara5save = cube[4].getFila(0);
 
-		cube[4].setFila(0, cube[2].getColumna(2));// cara5 fila 1 <-cara3 col 3
-		cube[2].setColumna(2, cube[5].getFila(2));// cara3 col 3 <- cara6 fila 3
+		cube[4].setFila(0, cube[1].getColumna(2));// cara5 fila 1 <-cara2 col 3
+		cube[1].setColumna(2, cube[5].getFila(2));// cara2 col 3 <- cara6 fila 3
 		cube[5].setFila(2, cube[3].getColumna(0));// cara6 fila 3 <- cara4 col 1
 		cube[3].setColumna(0, cara5save);// cara4 col 1 <- cara5 fila 1
 
@@ -354,9 +415,9 @@ public class Cuboku implements Movable {
 	 * girar en el sentido del reloj la cara 5
 	 */
 	private void moveR5() {
-		// implicadas,  
-		giraLeft(0);//cara 1,2,3,4,
-		rotaCaraSentReloj(4);//cara 5 superior
+		// implicadas,
+		giraLeft(0);// cara 1,2,3,4,
+		rotaCaraSentReloj(4);// cara 5 superior
 	}
 
 	/**
@@ -410,13 +471,13 @@ public class Cuboku implements Movable {
 		// giraDown(1);// cara 1,5,3,6
 
 		// implicadas 3-2,4,5,6
-		// cara5 f1<-cara4 col1<-cara6 f3<-cara3 col3<-cara5 f1
+		// cara5 f1<-cara4 col1<-cara6 f3<-cara2 col3<-cara5 f1
 		NumeroKu[] cara5save = cube[4].getFila(0);
 
 		cube[4].setFila(0, cube[3].getColumna(0));// cara5 fila 1 <-cara4 col 1
 		cube[3].setColumna(0, cube[5].getFila(2));// cara4 col 1 <- cara6 fila 3
-		cube[5].setFila(2, cube[2].getColumna(2));// cara6 fila 3 <- cara3 col 3
-		cube[3].setColumna(2, cara5save);// cara3 col 3 <- cara5 fila 1
+		cube[5].setFila(2, cube[1].getColumna(2));// cara6 fila 3 <- cara2 col 3
+		cube[1].setColumna(2, cara5save);// cara2 col 3 <- cara5 fila 1
 
 		rotaCaraSentInvReloj(2);// cara 3 gira sentInvReloj
 
@@ -515,7 +576,7 @@ public class Cuboku implements Movable {
 	}
 
 	/**
-	 * Metodo que gira el una pieza del cubo hacia abajo en base a la columna j,
+	 * Metodo que gira una pieza del cubo hacia abajo en base a la columna j,
 	 * viendo el cubo desde la cara 1
 	 */
 	private void giraDown(int c) {
@@ -547,8 +608,10 @@ public class Cuboku implements Movable {
 	 * 
 	 * @param path
 	 *            la ruta del fichero
+	 * @throws IOException
+	 *             si se ha producido algun error de IO
 	 */
-	private void fromString(String path) {
+	private void fromString(String path) throws IOException {
 		BufferedReader bf = null;
 		ArrayList<NumeroKu> nums = null;
 		String str = null;
@@ -577,11 +640,7 @@ public class Cuboku implements Movable {
 					}
 				}
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NumeroKuOutOfRangeException e) {
 			e.printStackTrace();

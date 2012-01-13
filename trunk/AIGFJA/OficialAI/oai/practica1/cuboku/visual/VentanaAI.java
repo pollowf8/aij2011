@@ -8,6 +8,7 @@
 package oai.practica1.cuboku.visual;
 
 import java.awt.CardLayout;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -31,7 +32,7 @@ import aima.core.search.framework.SearchAgent;
  * JFrame de la aplicacion
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.3 25/12/2011
+ * @version 1.4 13/01/2012
  */
 public class VentanaAI extends JFrame {
 
@@ -82,7 +83,10 @@ public class VentanaAI extends JFrame {
 		String movs = JOptionPane
 				.showInputDialog(
 						null,
-						"Escriba la lista de movimientos separados por comas\nNotacion: RelojCara[1-6]\nEj: RelojCara1,RelojCara4");
+						"Escriba la lista de movimientos separados por comas (En blanco para aleatorio)\nNotacion: (Inv|Reloj|180)Cara[1-6]\nEj: RelojCara1,InvCara4,180Cara1");
+		// RelojCara[1-6]\nEj: RelojCara1,RelojCara4"
+		if (movs == null)
+			return;
 		StringTokenizer tok = new StringTokenizer(movs, ",");
 		while (tok.hasMoreElements()) {
 			String nT = tok.nextToken();
@@ -92,8 +96,10 @@ public class VentanaAI extends JFrame {
 				throw new NoExisteAccionException(nT);
 			}
 		}
-		AimaUtil.generarCubo(movsArray, "test.txt");
-		JOptionPane.showMessageDialog(null, "Cubo generado");
+		int nMovs = AimaUtil.generarCubo(movsArray, "test.txt");
+		JOptionPane.showMessageDialog(null, "Cubo generado con: " + nMovs
+				+ " movimientos", "¡Operacion Realizada!",
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**
@@ -111,8 +117,11 @@ public class VentanaAI extends JFrame {
 
 	/**
 	 * Metodo que prepara el panel de demo usando el de configuracion
+	 * 
+	 * @throws IOException
+	 *             si se ha producido algun error de IO
 	 */
-	void preparaProbar() {
+	void preparaProbar() throws IOException {
 
 		// obtengo propiedades
 		String pathString = jPAIconfig.propiedades
@@ -147,6 +156,7 @@ public class VentanaAI extends JFrame {
 		// Cargao ejecucion de algoritmo en un thread aparte
 		a = new Thread(ejecucionAlgoritmo, "ejecucionAlgoritmo");
 		a.start();
+
 	}
 
 	private Runnable ejecucionAlgoritmo = new Runnable() {
@@ -154,35 +164,45 @@ public class VentanaAI extends JFrame {
 		public void run() {
 			Cuboku save = new Cuboku(cuboku);
 			boolean heuristica = false;
-			switch (alg = (Algoritmo.getEnum(algoritmo))) {
-			case PROFUNDIDAD:
-				searchAgent = AimaUtil.DFSDemo(cuboku);
-				break;
-			case ANCHURA:
-				searchAgent = AimaUtil.BFSDemo(cuboku);
-				break;
-			case PROFUNDIDADLIM:
-				searchAgent = AimaUtil.DLSDemo(cuboku, prof);
-				break;
-			case UNIFORME:
-				searchAgent = AimaUtil.UCDemo(cuboku);
-				break;
-			case VORAZ:
-				heuristica = true;
-				searchAgent = AimaUtil.GBFSDemo(cuboku, h);
-				break;
-			case A:
-				heuristica = true;
-				searchAgent = AimaUtil.AStarDemo(cuboku, h);
-				break;
-			case ESCALADAMAXPEND:
-				heuristica = true;
-				searchAgent = AimaUtil.EMPDemo(cuboku, h);
-				break;
+			try {
+				switch (alg = (Algoritmo.getEnum(algoritmo))) {
+				case PROFUNDIDAD:
+					searchAgent = AimaUtil.DFSDemo(cuboku);
+					break;
+				case ANCHURA:
+					searchAgent = AimaUtil.BFSDemo(cuboku);
+					break;
+				case PROFUNDIDADLIM:
+					searchAgent = AimaUtil.DLSDemo(cuboku, prof);
+					break;
+				case UNIFORME:
+					searchAgent = AimaUtil.UCDemo(cuboku);
+					break;
+				case VORAZ:
+					heuristica = true;
+					searchAgent = AimaUtil.GBFSDemo(cuboku, h);
+					break;
+				case A:
+					heuristica = true;
+					searchAgent = AimaUtil.AStarDemo(cuboku, h);
+					break;
+				case ESCALADAMAXPEND:
+					heuristica = true;
+					searchAgent = AimaUtil.EMPDemo(cuboku, h);
+					break;
+				}
+				jPAIdemo.setPropiedades(searchAgent, alg, h, save, sesion);
+				jPAIdemo.inicializaOuts(heuristica);
+				jPAIdemo.setEnabledBotones(true);
+			} catch (OutOfMemoryError e) {
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"¡La maquina virtual de java se ha quedado sin memoria!\nPrueba otro cubo o cambia el algoritmo",
+								"¡Java Heap Space!", JOptionPane.ERROR_MESSAGE);
+				estableceLayout(VentanaAI.AICONFIG);
+				limpiaProbar();
 			}
-			jPAIdemo.setPropiedades(searchAgent, alg, h, save, sesion);
-			jPAIdemo.inicializaOuts(heuristica);
-			jPAIdemo.setEnabledBotones(true);
 		}
 	};
 
@@ -233,7 +253,7 @@ public class VentanaAI extends JFrame {
 	 */
 	private JPanelAIdemo getJPAIdemo() {
 		if (jPAIdemo == null) {
-			jPAIdemo = new JPanelAIdemo();
+			jPAIdemo = new JPanelAIdemo(this);
 		}
 		return jPAIdemo;
 	}

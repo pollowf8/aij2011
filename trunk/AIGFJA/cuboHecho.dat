@@ -1,3 +1,0 @@
-Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Completo    Optimo      Tiempo      Espacio     
-Profundidad Limitada     0.0         -           0           -           S(L>=P)     N           r^L         r*L         
-Primero en profundidad   0.0         0           0           1           N           N           r^m         r*m         

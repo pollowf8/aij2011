@@ -1,2 +1,4 @@
-Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Completo    Optimo      Tiempo(r=6) Espacio(r=6)
-Voraz                    3.0         15          3           16          N           N           r^m         r^m         
+Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Completo    Optimo      Tiempo(r=18) Espacio(r=18)
+Primero en anchura       1.0         0           1           1           S           S           r^P         r^P         
+Profundidad Limitada     3.0         -           3           -           S(L>=P)     N           r^L         r*L         
+Coste Uniforme           1.0         208         16          209         S           S           r^P         r^P         

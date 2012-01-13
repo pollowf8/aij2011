@@ -378,6 +378,16 @@ public class Sudoku {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer(nombre + AimaUtil.newLine);
+		return sb+toStringSimple();
+	}
+	
+	/**
+	 * Devuelve el cubo en un string
+	 * 
+	 * @return el objeto como un string
+	 */
+	public String toStringSimple() {
+		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++)
 				if (j == 2)

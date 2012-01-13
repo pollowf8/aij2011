@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.Properties;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,12 +36,12 @@ import aima.core.search.framework.SearchAgent;
  * Panel para la vision de ejecucion
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.2 25/12/2011
+ * @version 1.3 13/91/2012
  */
 public class JPanelAIdemo extends JPanel implements ActionListener {
 
 	/**
-	 * 
+	 * Formato de fichero de fichero de estadisticas
 	 */
 	private static final String formatEstadisticas = "%-25s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s";
 
@@ -60,47 +61,32 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 	private HeuristicFunction heuristica;
 	private SearchAgent agent;
 	private PrintWriter pwEstadisticas;
+	private String sesion;
 	// Componentes
+	private JFrame owner = null;
+	private JDialogCubo jdialogCubo = null;
 	private JLabel jLbusqueda = null;
 	private JLabel jLheuristica = null;
 	private JLabel jLcontroles = null;
 	private JLabel jLlogs = null;
+	private JLabel jLcubo = null;
 	private JButton jBlog = null;
 	private JButton jBresults = null;
 	private JButton jBnext = null;
 	private JButton jBterminar = null;
+	private JButton jBcubo = null;
 	private JTextArea jTAout = null;
 	private JScrollPane jSPout = null;
-
-	private String sesion;
 
 	/**
 	 * This is the default constructor
 	 * 
 	 */
-	public JPanelAIdemo() {
+	public JPanelAIdemo(JFrame owner) {
 		super();
+		this.owner = owner;
 		i = 0;
 		initialize();
-	}
-
-	/**
-	 * Escribe la cabecera del archivo de estadisticas si no se ha escrito ya
-	 */
-	private void cabecera() {
-		try {
-			File a = new File(sesion + ".dat");
-			if (!a.exists()) {
-				pwEstadisticas = new PrintWriter(a);
-				pwEstadisticas.format(formatEstadisticas, "Algoritmo", "Coste",
-						"Abiertos", "Expandidos", "MaxNodos", "Completo",
-						"Optimo", "Tiempo(r=6)", "Espacio(r=6)");
-				pwEstadisticas.println();
-				pwEstadisticas.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -124,6 +110,7 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 		this.agent = searchAgent;
 		this.cuboku = cuboku;
 		this.sesion = sesion;
+		this.jdialogCubo = new JDialogCubo(owner, cuboku);
 		i = 0;
 	}
 
@@ -158,6 +145,7 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 		jBlog.setEnabled(enabled);
 		jBresults.setEnabled(enabled);
 		jBterminar.setEnabled(enabled);
+		jBcubo.setEnabled(enabled);
 	}
 
 	/**
@@ -187,6 +175,12 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 			}
 		} else if (source == jBterminar) {
 			jTAout.setText(out + AimaUtil.newLine + props);
+			jBnext.setEnabled(false);
+			jBcubo.setEnabled(false);
+		} else if (source == jBcubo) {
+			jdialogCubo.setCuboku(cuboku);
+			jdialogCubo.setLocationRelativeTo(owner);
+			jdialogCubo.setVisible(true);
 		} else if (source == jBlog) {
 			PrintWriter pw;
 			try {
@@ -201,7 +195,6 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 				e1.printStackTrace();
 			}
 		} else if (source == jBresults) {
-			// TODO los resultados y tal
 			try {
 				cabecera();
 				pwEstadisticas = new PrintWriter(new FileWriter(
@@ -275,6 +268,25 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 	}
 
 	/**
+	 * Escribe la cabecera del archivo de estadisticas si no se ha escrito ya
+	 */
+	private void cabecera() {
+		try {
+			File a = new File(sesion + ".dat");
+			if (!a.exists()) {
+				pwEstadisticas = new PrintWriter(a);
+				pwEstadisticas.format(formatEstadisticas, "Algoritmo", "Coste",
+						"Abiertos", "Expandidos", "MaxNodos", "Completo",
+						"Optimo", "Tiempo(r=18)", "Espacio(r=18)");
+				pwEstadisticas.println();
+				pwEstadisticas.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * This method initializes this
 	 * 
 	 * @return void
@@ -297,16 +309,21 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 		jLbusqueda = new JLabel();
 		jLbusqueda.setBounds(new Rectangle(225, 10, 225, 20));
 		jLbusqueda.setText("Algoritmo: ");
+		jLcubo = new JLabel();
+		jLcubo.setBounds(new Rectangle(225, 250, 225, 20));
+		jLcubo.setText("Extra ");
 
 		this.add(jLbusqueda, null);
 		this.add(jLheuristica, null);
 		this.add(jLcontroles, null);
 		this.add(jLlogs, null);
+		this.add(jLcubo, null);
 		this.add(getJBnext(), null);
 		this.add(getJBterminar(), null);
 		this.add(getJBlog(), null);
 		this.add(getJBresults(), null);
 		this.add(getJSPout(), null);
+		this.add(getJBcubo(), null);
 
 		setEnabledBotones(false);
 	}
@@ -396,5 +413,20 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 			jBresults.addActionListener(this);
 		}
 		return jBresults;
+	}
+
+	/**
+	 * This method initializes jBcubo
+	 * 
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJBcubo() {
+		if (jBcubo == null) {
+			jBcubo = new JButton();
+			jBcubo.setBounds(new Rectangle(225, 280, 170, 20));
+			jBcubo.setText("Ver aplanado");
+			jBcubo.addActionListener(this);
+		}
+		return jBcubo;
 	}
 }

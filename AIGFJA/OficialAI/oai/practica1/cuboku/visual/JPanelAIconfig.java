@@ -37,7 +37,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 			"cuboDificil.txt", "test.txt" };
 	private String[] heuristicas = { "h1", "h2", "h3" };
 	private String[] profs = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
-			"10" };
+			"10", "11", "12", "13", "14", "15" };
 	SearchAgent agent;
 	Properties propiedades;
 	// Componentes
@@ -57,7 +57,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 		propiedades = new Properties();
 		// rellena propiedades con valores por defecto para evitar vacios
 		propiedades.put(AimaUtil.keyFile, files[0]);
-		propiedades.put(AimaUtil.keyAlgoritmo, "1");
+		propiedades.put(AimaUtil.keyAlgoritmo, "0");
 		propiedades.put(AimaUtil.keyH, "0");
 		propiedades.put(AimaUtil.keyProf, "6");
 		initialize();

@@ -66,7 +66,7 @@ public class NumeroKu {
 	/**
 	 * Constructor copia de <code>NumeroKu</code>
 	 * 
-	 * @param numeroKu
+	 * @param otro
 	 *            otro numeroku
 	 * @throws NumeroKuOutOfRangeException
 	 *             si el numero no es correcto

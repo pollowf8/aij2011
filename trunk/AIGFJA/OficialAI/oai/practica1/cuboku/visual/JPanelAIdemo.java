@@ -36,7 +36,7 @@ import aima.core.search.framework.SearchAgent;
  * Panel para la vision de ejecucion
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.3 13/91/2012
+ * @version 1.4 16/01/2012
  */
 public class JPanelAIdemo extends JPanel implements ActionListener {
 
@@ -48,7 +48,7 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 	/**
 	 * Para mostrar mientras se calcula el algoritmo
 	 */
-	private static final String PROCESANDO = "PROCESANDO ALGORITMO\nESPERE...\nSi tarda mucho tiempo:\n-Ejecute otro algoritmo\n-Cambie el cubo";
+	private static final String PROCESANDO = "PROCESANDO ALGORITMO\nESPERE...\nSi tarda mucho tiempo:\n-Ejecute otro algoritmo\n-Cambie el cubo\n-Espere hasta de memoria llena";
 
 	private static final long serialVersionUID = 1L;
 
@@ -125,7 +125,10 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 		if (a.getName() == AimaUtil.CUT_OFF)
 			infoExtra = "SOLUCION NO ENCONTRADA";
 		else if (a.getName() == AimaUtil.NO_OP)
-			infoExtra = "YA ES SOLUCION";
+			if (alg.equals("Escalada Max Pendiente"))
+				infoExtra = "ES SOLUCION O SE BLOQUEO LA ESCALADA";
+			else
+				infoExtra = "YA ES SOLUCION";
 		jTAout.setText("Estado Inicial" + AimaUtil.newLine + cuboku + infoExtra);
 		if (h)
 			jLheuristica.setText("Heuristica: " + heuristica);
@@ -256,9 +259,9 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 					espacio = "1";
 					break;
 				}
-				pwEstadisticas.format(formatEstadisticas, alg.toString(),
-						coste, abiertos, expandidos, maxNodos, completo,
-						optimo, tiempo, espacio);
+				pwEstadisticas.format(formatEstadisticas, alg.toString()
+						+ "-"+heuristica, coste, abiertos, expandidos, maxNodos,
+						completo, optimo, tiempo, espacio);
 				pwEstadisticas.println();
 				pwEstadisticas.close();
 			} catch (IOException e1) {

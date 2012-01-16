@@ -13,7 +13,7 @@
 	</path>
 
 	<target name="ai-p1.clean">
-		<delete dir="${p1.dir.build}" />
+		<delete dir="${ai-p1.dir.build}" />
 	</target>
 
 	<target name="ai-p1.makedirs" depends="ai-p1.clean">

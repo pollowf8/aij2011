@@ -62,6 +62,7 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 	private SearchAgent agent;
 	private PrintWriter pwEstadisticas;
 	private String sesion;
+	private boolean usaH = false;
 	// Componentes
 	private JFrame owner = null;
 	private JDialogCubo jdialogCubo = null;
@@ -130,6 +131,7 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 			else
 				infoExtra = "YA ES SOLUCION";
 		jTAout.setText("Estado Inicial" + AimaUtil.newLine + cuboku + infoExtra);
+		usaH = h;
 		if (h)
 			jLheuristica.setText("Heuristica: " + heuristica);
 		else
@@ -259,9 +261,11 @@ public class JPanelAIdemo extends JPanel implements ActionListener {
 					espacio = "1";
 					break;
 				}
-				pwEstadisticas.format(formatEstadisticas, alg.toString()
-						+ "-"+heuristica, coste, abiertos, expandidos, maxNodos,
-						completo, optimo, tiempo, espacio);
+				String algoritmo = usaH ? alg.toString() + "-" + heuristica
+						: alg.toString();
+				pwEstadisticas.format(formatEstadisticas, algoritmo, coste,
+						abiertos, expandidos, maxNodos, completo, optimo,
+						tiempo, espacio);
 				pwEstadisticas.println();
 				pwEstadisticas.close();
 			} catch (IOException e1) {

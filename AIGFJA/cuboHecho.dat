@@ -1,0 +1,5 @@
+Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Completo    Optimo      Tiempo(r=18)Espacio(r=18)
+A*h1                     0.0         0           0           1           S           S           r^P         r^P         
+Voraz-h1                 0.0         0           0           1           N           N           r^m         r^m         
+Escalada Max Pendiente-h1null        -           1           -           N           N           r^m         1           
+A*-h3                    0.0         0           0           1           S           S           r^P         r^P         

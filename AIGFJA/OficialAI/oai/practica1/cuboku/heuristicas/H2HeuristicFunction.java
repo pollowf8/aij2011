@@ -14,14 +14,14 @@ import aima.core.search.framework.HeuristicFunction;
  * Da los elementos mal colocados (tiene en cuenta solo repetidos)
  * 
  * @author Jose Angel Garcia Fernandez
- * @version 1.1 25/12/2011
+ * @version 1.2 16/01/2012
  */
 public class H2HeuristicFunction implements HeuristicFunction {
 
 	public double h(Object state) {
 		// me da solo los repetidos
 		Cuboku cuboku = (Cuboku) state;
-		return cuboku.numRepetidos();
+		return cuboku.numRepetidos()/12;
 	}
 
 	@Override

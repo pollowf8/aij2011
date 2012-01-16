@@ -2,3 +2,8 @@ Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Complet
 Primero en anchura       1.0         0           1           1           S           S           r^P         r^P         
 Profundidad Limitada     3.0         -           3           -           S(L>=P)     N           r^L         r*L         
 Coste Uniforme           1.0         208         16          209         S           S           r^P         r^P         
+Voraz-h1                 1.0         17          1           18          N           N           r^m         r^m         
+A*-h1                    1.0         17          1           18          S           S           r^P         r^P         
+A*-h2                    1.0         17          1           18          S           S           r^P         r^P         
+A*-h3                    1.0         69          5           70          S           S           r^P         r^P         
+Voraz-h3                 8.0         412         32          413         N           N           r^m         r^m         

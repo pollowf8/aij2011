@@ -26,6 +26,8 @@ import oai.practica1.cuboku.Cuboku;
  */
 public class JDialogCubo extends JDialog {
 
+	private static final int _SPACE = 10;
+	private static final int _SIZE = 65;
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JButton jBclose = null;
@@ -49,12 +51,12 @@ public class JDialogCubo extends JDialog {
 
 	public void setCuboku(Cuboku c) {
 		this.cuboku = c;
-		jTAcara1.setText(cuboku.getCube()[0].toStringSimple());
-		jTAcara2.setText(cuboku.getCube()[1].toStringSimple());
-		jTAcara3.setText(cuboku.getCube()[2].toStringSimple());
-		jTAcara4.setText(cuboku.getCube()[3].toStringSimple());
-		jTAcara5.setText(cuboku.getCube()[4].toStringSimple());
-		jTAcara6.setText(cuboku.getCube()[5].toStringSimple());
+		jTAcara1.setText("Cara 1\n"+cuboku.getCube()[0].toStringSimple());
+		jTAcara2.setText("Cara 2\n"+cuboku.getCube()[1].toStringSimple());
+		jTAcara3.setText("Cara 3\n"+cuboku.getCube()[2].toStringSimple());
+		jTAcara4.setText("Cara 4\n"+cuboku.getCube()[3].toStringSimple());
+		jTAcara5.setText("Cara 5\n"+cuboku.getCube()[4].toStringSimple());
+		jTAcara6.setText("Cara 6\n"+cuboku.getCube()[5].toStringSimple());
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class JDialogCubo extends JDialog {
 		if (jTAcara1 == null) {
 			jTAcara1 = new JTextArea(cuboku.getCube()[0].toString());
 			jTAcara1.setEditable(false);
-			jTAcara1.setBounds(new Rectangle(10 + 60, 10 + 60, 60, 60));
+			jTAcara1.setBounds(new Rectangle(_SPACE + _SIZE, _SPACE + _SIZE, _SIZE, _SIZE));
 		}
 		return jTAcara1;
 	}
@@ -111,7 +113,7 @@ public class JDialogCubo extends JDialog {
 		if (jTAcara2 == null) {
 			jTAcara2 = new JTextArea(cuboku.getCube()[1].toString());
 			jTAcara2.setEditable(false);
-			jTAcara2.setBounds(new Rectangle(10 + 60 + 60, 10 + 60, 60, 60));
+			jTAcara2.setBounds(new Rectangle(_SPACE + _SIZE + _SIZE, _SPACE + _SIZE, _SIZE, _SIZE));
 		}
 		return jTAcara2;
 	}
@@ -125,7 +127,7 @@ public class JDialogCubo extends JDialog {
 		if (jTAcara3 == null) {
 			jTAcara3 = new JTextArea(cuboku.getCube()[2].toString());
 			jTAcara3.setEditable(false);
-			jTAcara3.setBounds(new Rectangle(10 + 60 + 60 + 60, 10 + 60, 60, 60));
+			jTAcara3.setBounds(new Rectangle(_SPACE + _SIZE + _SIZE + _SIZE, _SPACE + _SIZE, _SIZE, _SIZE));
 		}
 		return jTAcara3;
 	}
@@ -139,7 +141,7 @@ public class JDialogCubo extends JDialog {
 		if (jTAcara4 == null) {
 			jTAcara4 = new JTextArea(cuboku.getCube()[3].toString());
 			jTAcara4.setEditable(false);
-			jTAcara4.setBounds(new Rectangle(10, 10 + 60, 60, 60));
+			jTAcara4.setBounds(new Rectangle(_SPACE, _SPACE + _SIZE, _SIZE, _SIZE));
 		}
 		return jTAcara4;
 	}
@@ -153,7 +155,7 @@ public class JDialogCubo extends JDialog {
 		if (jTAcara5 == null) {
 			jTAcara5 = new JTextArea(cuboku.getCube()[4].toString());
 			jTAcara5.setEditable(false);
-			jTAcara5.setBounds(new Rectangle(10 + 60, 10, 60, 60));
+			jTAcara5.setBounds(new Rectangle(_SPACE + _SIZE, _SPACE, _SIZE, _SIZE));
 		}
 		return jTAcara5;
 	}
@@ -167,7 +169,7 @@ public class JDialogCubo extends JDialog {
 		if (jTAcara6 == null) {
 			jTAcara6 = new JTextArea(cuboku.getCube()[5].toString());
 			jTAcara6.setEditable(false);
-			jTAcara6.setBounds(new Rectangle(10 + 60, 10 + 60 + 60, 60, 60));
+			jTAcara6.setBounds(new Rectangle(_SPACE + _SIZE, _SPACE + _SIZE + _SIZE, _SIZE, _SIZE));
 		}
 		return jTAcara6;
 	}

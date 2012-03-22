@@ -8,5 +8,7 @@
 			<attribute name="javadoc_location" value="file:/D:/PROGRAMACION/JAVA/JDKS/aima-java-1.5.3-Chp17n21-Rewrite-DF1/aima-core/src/main/javadoc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/PROGRAMACION/General/Jess71p2/lib/jess.jar"/>
+	<classpathentry kind="lib" path="D:/PROGRAMACION/General/Jess71p2/lib/jsr94.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

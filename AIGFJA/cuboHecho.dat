@@ -3,3 +3,7 @@ A*h1                     0.0         0           0           1           S      
 Voraz-h1                 0.0         0           0           1           N           N           r^m         r^m         
 Escalada Max Pendiente-h1null        -           1           -           N           N           r^m         1           
 A*-h3                    0.0         0           0           1           S           S           r^P         r^P         
+Primero en anchura       0           0           0           0           S           S           r^P         r^P         
+Profundidad Limitada     0.0         -           0           -           S(L>=P)     N           r^L         r*L         
+Voraz-h1                 0.0         0           0           1           N           N           r^m         r^m         
+A*-h3                    0.0         0           0           1           S           S           r^P         r^P         

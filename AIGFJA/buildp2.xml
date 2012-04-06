@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="ai-p2" basedir="." default="ai-p2.all">
+
+	<dirname property="ai-p2.basedir" file="${ant.file.ai-p2}" />
+	<property file="${ai-p2.basedir}/build.properties.local" />
+	<property file="${ai-p2.basedir}/build.properties" />
+
+	<path id="path.libs">
+		<pathelement location="." />
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="ai-p2.clean">
+		<delete dir="${ai-p2.dir.build}" />
+	</target>
+
+	<target name="ai-p2.makedirs" depends="ai-p2.clean">
+		<mkdir dir="${ai-p2.dir.build}" />
+		<mkdir dir="${ai-p2.dir.build.bin}" />
+		<mkdir dir="${ai-p2.dir.build.doc}" />
+		<mkdir dir="${ai-p2.dir.build.release}" />
+	</target>
+
+	<target name="ai-p2.compila" depends="ai-p2.makedirs">
+		<javac classpathref="path.libs" srcdir="${ai-p2.dir.src}" destdir="${ai-p2.dir.build.bin}" debug="${ai-p2.compiler.debug}" debuglevel="${ai-p2.compiler.debuglevel}" source="${ai-p2.compiler.source}" target="${ai-p2.compiler.target}" />
+	</target>
+
+	<target name="ai-p2.jar" depends="ai-p2.makedirs,ai-p2.compila">
+		<jar destfile="${ai-p2.dir.build.release}/ai-p2.jar">
+			<manifest>
+				<attribute name="Implementation-Title" value="Practica 2 AI" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="ai-p2-version" value="${ai-p2.version}" />
+				<attribute name="Main-Class" value="${ai-p2.main-class}" />
+			</manifest>
+			<fileset dir="${ai-p2.dir.build.bin}" />
+			<zipfileset src="lib/aima/aima-core.jar" excludes="META-INF/*" />
+		</jar>
+	</target>
+
+	<target name="ai-p2.docs" depends="ai-p2.compila">
+		<javadoc sourcepath="${ai-p2.dir.src}" destdir="${ai-p2.dir.build.doc}" packagenames="*" />
+	</target>
+
+	<target name="ai-p2.all" depends="ai-p2.jar, ai-p2.docs">
+	</target>
+</project>

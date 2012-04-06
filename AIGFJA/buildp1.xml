@@ -2,8 +2,8 @@
 <project name="ai-p1" basedir="." default="ai-p1.all">
 
 	<dirname property="ai-p1.basedir" file="${ant.file.ai-p1}" />
-	<property file="${ai-p1.basedir}/build.properties.local" />
-	<property file="${ai-p1.basedir}/build.properties" />
+	<property file="${ai-p1.basedir}/buildp1.properties.local" />
+	<property file="${ai-p1.basedir}/buildp1.properties" />
 
 	<path id="path.libs">
 		<pathelement location="." />

@@ -214,14 +214,13 @@
     (retract ?h)
     (store "resultado" "Ofertas de docencia e investigacion para titulados"))
 
-
 ; RULE pr_tit_peq
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
 ;	Ademas ha estado trabajando en una empresa pequeña durante bastante tiempo
 ; THEN
 ;   elimina fase
-;	muestra opciones de titulado con experiencia baja
+;	muestra opciones de titulado con experiencia baja y empresa pequeña
 
 (defrule pr_tit_peq
    ?h <-(phase WORK)
@@ -231,6 +230,13 @@
     (retract ?h)
     (store "resultado" "Ofertas para titulados con experiencia que han trabajado en empresas pequeñas"))
 
+; RULE pr_tit_expMedia
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas ha estado trabajando ya en una empresa media de becario pero con poca experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado con experiencia baja
 
 (defrule pr_tit_expBaja
    ?h <-(phase WORK)
@@ -287,6 +293,3 @@
     =>
     (retract ?h)
     (store "resultado" "Ofertas para titulados con experiencia en grandes empresas"))
-
-(reset)
-(run)

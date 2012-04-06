@@ -48,7 +48,7 @@ public class JPanelAIdemo extends JPanel {
 	 */
 	void inicializaOuts() {
 		String result = owner.r.getResult();
-		if (result == "")
+		if (result == "" || result == null)
 			jTAout.setText("No se obtuvieron recomendaciones");
 		else
 			jTAout.setText(result);

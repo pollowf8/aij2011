@@ -62,6 +62,7 @@ public class VentanaAI extends JFrame {
 	 */
 	void limpiaProbar() {
 		jPAIdemo.reseteaOuts();
+		r.clear();
 	}
 
 	/**

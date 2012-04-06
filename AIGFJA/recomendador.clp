@@ -48,8 +48,8 @@
     (phase CURRI))
 
 ;(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 15)(estudios bachCiencias)))
-(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 30)
-        (estudios UNI)(acabada SI)(puesto miembro)(duracion 8)(empresa media)))
+(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 22)
+        (estudios UNI)(acabada SI)(docente NO)(investigador NO)(puesto miembro)(duracion 6)(empresa media)))
 ; *****
 ; RULES
 ; *****
@@ -214,7 +214,6 @@
     (retract ?h)
     (printout t "Ofertas de docencia e investigacion para titulados" crlf))
 
-
 ; RULE pr_tit_peq
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
@@ -231,6 +230,13 @@
     (retract ?h)
     (printout t "Ofertas para titulados con experiencia que han trabajado en empresas pequeñas" crlf))
 
+; RULE pr_tit_expMedia
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas ha estado trabajando ya en una empresa media de becario pero con poca experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado con experiencia baja
 
 (defrule pr_tit_expBaja
    ?h <-(phase WORK)

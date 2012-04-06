@@ -20,6 +20,13 @@ import jess.Value;
  */
 public class Recomendador {
 
+	/**
+	 * Genera un objeto de tipo <code>Recomendador</code>
+	 * 
+	 * @param file
+	 *            el nombre del archivo
+	 * @throws JessException
+	 */
 	public Recomendador(String file) throws JessException {
 		m_rete = new Rete();
 		this.file = file;
@@ -61,25 +68,6 @@ public class Recomendador {
 	public static final String Kvuelta = "resultado";
 
 	/**
-	 * Método que obtiene el resultado en un string
-	 * 
-	 * @return la recomendacion
-	 */
-	public String getResult() {
-		return result;
-	}
-
-	/**
-	 * Metodo que realizar la ejecucion
-	 */
-	public void ejecucion() {
-		storeCurriculum();
-		run();
-		halt();
-		result = m_rete.fetch(Kvuelta).toString();
-	}
-
-	/**
 	 * Guarda la informacion del curriculum en el MR
 	 */
 	private void storeCurriculum() {
@@ -96,14 +84,38 @@ public class Recomendador {
 	}
 
 	/**
+	 * Método que obtiene el resultado en un string
+	 * 
+	 * @return la recomendacion
+	 */
+	public String getResult() {
+		return result;
+	}
+
+	/**
+	 * Metodo que realiza la ejecucion
+	 */
+	public void ejecucion() {
+		cargaPrograma();
+		storeCurriculum();
+		reset();
+		run();
+		// listaHechos();
+		Value v = m_rete.fetch(Kvuelta);
+		if (v != null)
+			result = v.toString();
+		halt();
+	}
+
+	/**
 	 * Establece por defecto valores del curriculum
 	 * 
 	 * @throws JessException
 	 */
 	public void setDefecto() throws JessException {
-		setNombre("Default");
-		setApellidos("Default Ape");
-		setEdad(21);
+		setNombre("default");
+		setApellidos("default");
+		setEdad(22);
 		setEstudios("UNI");
 		setAcabada("SI");
 		setDocente("NO");
@@ -125,17 +137,6 @@ public class Recomendador {
 	}
 
 	/**
-	 * Detiene el motor de reglas
-	 */
-	public void halt() {
-		try {
-			m_rete.halt();
-		} catch (JessException je3) {
-			System.out.println("Error: no puedo detener programa ");
-		}
-	}
-
-	/**
 	 * Carga el programa en el motor de reglas
 	 * 
 	 * @param nombre
@@ -145,10 +146,22 @@ public class Recomendador {
 		try {
 			// m_rete.eval("(batch \"" + nombre + "\")");
 			Value v = m_rete.batch(file);
-			System.out.println("Value " + v);
+			// System.out.println("Value " + v);
 		} catch (JessException je0) {
 			System.out.println("Error: no puedo leer programa " + nombre);
 			je0.printStackTrace();
+		}
+	}
+
+	/**
+	 * Ejecuta el motor de reglas
+	 */
+	public void run() {
+		try {
+			m_rete.run();
+		} catch (JessException je4) {
+			System.out.println("Error: no puedo ejecutar ");
+			je4.printStackTrace();
 		}
 	}
 
@@ -165,14 +178,24 @@ public class Recomendador {
 	}
 
 	/**
-	 * Ejecuta el motor de reglas
+	 * Detiene el motor de reglas
 	 */
-	public void run() {
+	public void halt() {
 		try {
-			m_rete.run();
-		} catch (JessException je4) {
-			System.out.println("Error: no puedo ejecutar ");
-			je4.printStackTrace();
+			m_rete.halt();
+		} catch (JessException je3) {
+			System.out.println("Error: no puedo detener programa ");
+		}
+	}
+
+	/**
+	 * Detiene el motor de reglas
+	 */
+	public void clear() {
+		try {
+			m_rete.clear();
+		} catch (JessException je3) {
+			System.out.println("Error: no puedo clear programa ");
 		}
 	}
 

@@ -115,6 +115,7 @@ public class JPanelAIconfig extends JPanel implements ActionListener {
 				owner.r.setPuesto(puesto[selec]);
 			}
 		} catch (JessException j) {
+			j.printStackTrace();
 		}
 	}
 

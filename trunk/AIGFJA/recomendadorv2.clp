@@ -2,7 +2,7 @@
 ;;;======================================================
 ;;;   Recomendador de puestos de trabajo
 ;;;
-;;;     Practica 2
+;;;     Practica 2 V2
 ;;;
 ;;;     Inteligencia Artificial e Ingeniería del Conocimiento
 ;;;
@@ -31,7 +31,6 @@
     (slot apellidos (type SYMBOL))
     (slot edad (type INTEGER))
     (slot estudios (type SYMBOL) (allowed-values bachCiencias bachLetras ESO UNI))
-    (slot carrera (type SYMBOL))
     (slot acabada (type SYMBOL) (allowed-values SI NO))
     ;para elegir trabajo
     (slot docente (type SYMBOL) (allowed-values SI NO))
@@ -48,8 +47,9 @@
     (phase CURRI))
 
 ;(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 15)(estudios bachCiencias)))
-(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 30)
-        (estudios UNI)(acabada SI)(puesto miembro)(duracion 8)(empresa media)))
+(deffacts info (curriculum (nombre (fetch "nombre"))(apellidos (fetch "apellidos"))(edad (fetch "edad"))
+        (estudios (fetch "estudios"))(acabada (fetch "acabada"))(docente (fetch "docente"))
+        (investigador (fetch "investigador"))(puesto (fetch "puesto"))(duracion (fetch "duracion"))(empresa (fetch "empresa"))))
 ; *****
 ; RULES
 ; *****
@@ -149,7 +149,7 @@
     (lv UNI-FPS-ciencias)
     =>
     (retract ?h)
-    (printout t "Ofertas relacionadas con enseñanzas tecnicas de estudios universitarios y formacion profesional de grado superior" crlf))
+    (store "resultado" "Ofertas relacionadas con enseñanzas tecnicas de estudios universitarios y formacion profesional de grado superior"))
 
 
 ; RULE pr_uni-fps_letras
@@ -164,7 +164,7 @@
     (lv UNI-FPS-letras)
     =>
     (retract ?h)
-    (printout t "Ofertas relacionadas con enseñanzas letras de estudios universitarios y formacion profesional de grado superior" crlf))
+    (store "resultado" "Ofertas relacionadas con enseñanzas letras de estudios universitarios y formacion profesional de grado superior"))
 
 ; RULE pr_bach_fpm
 ; IF
@@ -178,7 +178,7 @@
     (lv BACH-FPM)
     =>
     (retract ?h)
-    (printout t "Ofertas relacionadas con enseñanzas de bachillerato y formacion profesional de grado medio" crlf))
+    (store "resultado" "Ofertas relacionadas con enseñanzas de bachillerato y formacion profesional de grado medio"))
 
 
 ; *************
@@ -197,7 +197,7 @@
     (lv BECARIO)
     =>
     (retract ?h)
-    (printout t "Ofertas de becario para estudiantes universitarios" crlf))
+    (store "resultado" "Ofertas de becario para estudiantes universitarios" crlf))
 
 ; RULE pr_tit-prof
 ; IF
@@ -212,7 +212,7 @@
     (curriculum {docente == SI || investigador == SI})
     =>
     (retract ?h)
-    (printout t "Ofertas de docencia e investigacion para titulados" crlf))
+    (store "resultado" "Ofertas de docencia e investigacion para titulados"))
 
 
 ; RULE pr_tit_peq
@@ -229,7 +229,7 @@
     (curriculum {puesto == miembro && duracion > 5 && empresa == peque})
     =>
     (retract ?h)
-    (printout t "Ofertas para titulados con experiencia que han trabajado en empresas pequeñas" crlf))
+    (store "resultado" "Ofertas para titulados con experiencia que han trabajado en empresas pequeñas"))
 
 
 (defrule pr_tit_expBaja
@@ -238,7 +238,7 @@
     (curriculum {puesto == becario && duracion < 2 && empresa == media})
     =>
     (retract ?h)
-    (printout t "Ofertas para titulados con poca experiencia que han trabajado de becario" crlf))
+    (store "resultado" "Ofertas para titulados con poca experiencia que han trabajado de becario"))
 
 ; RULE pr_tit_expMedia
 ; IF
@@ -254,7 +254,7 @@
     (curriculum {puesto == miembro && duracion > 5 && empresa == media})
     =>
     (retract ?h)
-    (printout t "Ofertas para titulados con experiencia media" crlf))
+    (store "resultado" "Ofertas para titulados con experiencia media"))
 
 ; RULE pr_tit_expAlta
 ; IF
@@ -270,7 +270,7 @@
     (curriculum {(puesto == miembro || puesto == directivo) && duracion > 10 && empresa == media})
     =>
     (retract ?h)
-    (printout t "Ofertas para titulados con experiencia alta" crlf))
+    (store "resultado" "Ofertas para titulados con experiencia alta"))
 
 ; RULE pr_tit_gran
 ; IF
@@ -286,7 +286,7 @@
     (curriculum {(puesto == miembro || puesto == directivo) && duracion > 15 && empresa == grande})
     =>
     (retract ?h)
-    (printout t "Ofertas para titulados con experiencia en grandes empresas" crlf))
+    (store "resultado" "Ofertas para titulados con experiencia en grandes empresas"))
 
 (reset)
 (run)

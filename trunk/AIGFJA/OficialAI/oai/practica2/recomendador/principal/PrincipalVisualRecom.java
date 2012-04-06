@@ -7,7 +7,8 @@
 //
 package oai.practica2.recomendador.principal;
 
-import oai.practica1.cuboku.visual.VentanaAI;
+import jess.JessException;
+import oai.practica2.recomendador.visual.VentanaAI;
 
 /**
  * Clase de ejecucion para VentanaAI
@@ -17,14 +18,17 @@ import oai.practica1.cuboku.visual.VentanaAI;
  */
 public class PrincipalVisualRecom {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
-		VentanaAI ventana = new VentanaAI();
-		ventana.setLocationRelativeTo(null);
-		ventana.setVisible(true);
+		VentanaAI ventana;
+		try {
+			ventana = new VentanaAI();
+			ventana.setLocationRelativeTo(null);
+			ventana.setVisible(true);
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
-
 }

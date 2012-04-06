@@ -14,292 +14,279 @@
 ; FACT TEMPLATES
 ; **************
 
-; The phase fact indicates the current action to be
-; undertaken before the game can begin
+; El estado en el que se encuentra el recomendador
 
-; (phase 
-;    <action>)      ; Either choose-player or 
-                    ; select-pile-size
+; (phase
+;    <state>)      ;CURRI,ESTU,WORK
 
-; The player-select fact contains the human's response to 
-; the "Who moves first?" question.
+; El nivel de estudios a mostrar
 
-; (player-select
-;    <choice>)      ; Valid responses are c (for computer)
-                    ; and h (for human).
+; (lv
+;    <nivel>)      ;UNI-FPS-ciencias, UNI-FPS-letras, BACH-FPM, BECARIO, TITULADO
 
-; The take-sticks facts indicate how many sticks the 
-; computer should take based on the remainder when the 
-; stack size is divided by 4.
+; El template para el curriculum
 
-(deftemplate take-sticks
-   (slot how-many)         ; Number of sticks to take.
-   (slot for-remainder))   ; Remainder when stack is
-                           ; divided by 4.
+(deftemplate curriculum "Representa la informacion del curriculum"
+    (slot nombre (type SYMBOL) )
+    (slot apellidos (type SYMBOL))
+    (slot edad (type NUMBER))
+    (slot estudios (type SYMBOL) (allowed-values bachCiencias bachLetras ESO UNI))
+    (slot carrera (type SYMBOL))
+    (slot acabada (type SYMBOL) (allowed-values SI NO))
+    ;para elegir trabajo
+    (slot docente (type SYMBOL) (allowed-values SI NO))
+    (slot investigador (type SYMBOL) (allowed-values SI NO))
+    (slot puesto (type SYMBOL) (allowed-values miembro directivo becario))
+    (slot duracion (type NUMBER))
+    (slot empresa (type SYMBOL) (allowed-values peque media grande)))
 
 ; ********
-; DEFFACTS 
+; DEFFACTS
 ; ********
 
 (deffacts initial-phase
-   (phase choose-player))
+    (phase CURRI))
 
-(deffacts take-sticks-information
-   (take-sticks (how-many 1) (for-remainder 1))
-   (take-sticks (how-many 1) (for-remainder 2))
-   (take-sticks (how-many 2) (for-remainder 3))
-   (take-sticks (how-many 3) (for-remainder 0)))
-
-; ********
-; DEFFUNCTIONS
-; ********
-
-(deffunction ask-start-again ()
-  (printout t "Play again? (y/n) ")
-  (if (eq (read) y) then
-    (assert (phase choose-player))))
-   
+;(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 15)(estudios bachCiencias)))
+(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 30)
+        (estudios UNI)(acabada SI)(puesto miembro)(duracion 8)(empresa media)))
 ; *****
-; RULES 
+; RULES
 ; *****
 
-; RULE player-select
+; *************
+; FASE Curriculum
+; *************
+
+; RULE bachCiencias-uni-fps
 ; IF
-;   The phase is to choose the first player
+;   La fase es curriculum, tiene menos de 18 años y un bachillerato de ciencias
 ; THEN
-;   Ask who should move first, and
-;   Get the human's response
+;   pasa a fase estudios
+;   con el nivel de universitario-FP superior en ciencias
 
-(defrule player-select
-   (phase choose-player)
-   =>
-   (printout t "Who moves first (Computer: c "
-               "Human: h)? ")
-   (assert (player-select (read))))
+(defrule bachCiencias_uni-fps
+    ?h <-(phase CURRI)
+    (curriculum {edad < 18 && estudios == bachCiencias})
+    =>
+    (retract ?h)
+    (assert (phase ESTU))
+    (assert (lv UNI-FPS-ciencias)))
 
-; RULE good-player-choice
+; RULE bachLetras-uni-fps
 ; IF
-;   The phase is to choose the first player, and
-;   The human has given a valid response
+;   La fase es curriculum, tiene menos de 18 años y un bachillerato de letras
 ; THEN
-;   Remove unneeded information, and 
-;   Indicate whose turn it is, and
-;   Indicate that the pile size should be chosen
+;   pasa a fase estudios
+;   con el nivel de universitario-FP superior en letras
 
-(defrule good-player-choice
-   ?phase <- (phase choose-player)
-   ?choice <- (player-select ?player&:(or (eq ?player c) (eq ?player h)))
-   =>
-   (retract ?phase ?choice)
-   (assert (player-move ?player))
-   (assert (phase select-pile-size)))
+(defrule bachLetras_uni-fps
+    ?h <-(phase CURRI)
+    (curriculum {edad < 18 && estudios == bachLetras})
+    =>
+    (retract ?h)
+    (assert (phase  ESTU))
+    (assert (lv UNI-FPS-letras)))
 
-; RULE bad-player-choice
+; RULE ESO-bach-fpm
 ; IF
-;   The phase is to choose the first player, and
-;   The human has given a invalid response
+;   La fase es curriculum, tiene menos de 18 años y la ESO
 ; THEN
-;   Remove unneeded information, and 
-;   Indicate that the first player should be chosen again, 
-;   and Print the valid choices
+;   pasa a fase estudios
+;   con el nivel de universitario-FPM
 
-(defrule bad-player-choice 
-   ?phase <- (phase choose-player)
-   ?choice <- (player-select ?player&~c&~h)
-   =>
-   (retract ?phase ?choice)
-   (assert (phase choose-player))
-   (printout t "Choose c or h." crlf))
+(defrule ESO_bach-fpm
+    ?h <-(phase CURRI)
+    (curriculum {edad < 18 && estudios == ESO})
+    =>
+    (retract ?h)
+    (assert (phase  ESTU))
+    (assert (lv BACH-FPM)))
 
-; RULE pile-select
+; RULE UNI-becario
 ; IF
-;   The phase is to choose the pile size
+;   La fase es curriculum, tiene entre 18 y 23 años y esta estudiando una carrera
 ; THEN
-;   Ask what the pile size should be, and
-;   Get the human's response
+;   pasa a fase de trabajo
+;   con el nivel de becario
 
+(defrule UNI_becario
+    ?h <-(phase CURRI)
+    (curriculum {edad > 18 && edad < 23 && estudios == UNI && acabada == NO})
+    =>
+    (retract ?h)
+    (assert (phase  WORK))
+    (assert (lv BECARIO)))
 
-(defrule pile-select 
-   (phase select-pile-size)
-   =>
-   (printout t "How many sticks in the pile? ")
-   (assert (pile-select (read))))
-
-; RULE good-pile-choice
+; RULE UNI-titulado
 ; IF
-;   The phase is to choose the pile size, and
-;   The human has given a valid response
+;   La fase es curriculum, tiene mas de 21 años y ya ha terminado una carrera
 ; THEN
-;   Remove unneeded information, and 
-;   Store the pile size
+;   pasa a fase de trabajo
+;   con el nivel de titulado
 
-(defrule good-pile-choice
-   ?phase <- (phase select-pile-size)
-   ?choice <- (pile-select ?size&:(integerp ?size)
-                                &:(> ?size 0))
-   =>
-   (retract ?phase ?choice)
-   (assert (pile-size ?size)))
+(defrule UNI_titulado
+    ?h <-(phase CURRI)
+    (curriculum {edad > 21 && estudios == UNI && acabada == SI})
+    =>
+    (retract ?h)
+    (assert (phase  WORK))
+    (assert (lv TITULADO)))
 
-; RULE bad-pile-choice
+; *************
+; FASE Estudios
+; *************
+
+; RULE pr_tit-fps_ciencias
 ; IF
-;   The phase is to choose the pile size, and
-;   The human has given a invalid response
+;   La fase es ESTU y el nivel se ha obtenido de un bachillerato de ciencias
 ; THEN
-;   Remove unneeded information, and 
-;   Indicate that the pile size should be chosen again, 
-;   and Print the valid choices
+;   elimina fase
+;	muestra opciones de estudios universitarios y de FPS tecnicos 
 
-(defrule bad-pile-choice
-   ?phase <- (phase select-pile-size)
-   ?choice <- (pile-select ?size&:(or (not (integerp ?size))
-                                      (<= ?size 0)))
-   =>
-   (retract ?phase ?choice)
-   (assert (phase select-pile-size))
-   (printout t "Choose an integer greater than zero."
-               crlf))
+(defrule pr_uni-fps_ciencias
+    ?h <-(phase ESTU)
+    (lv UNI-FPS-ciencias)
+    =>
+    (retract ?h)
+    (printout t "Ofertas relacionadas con enseñanzas tecnicas de estudios universitarios y formacion profesional de grado superior" crlf))
 
 
-
-
-; RULE computer-loses
+; RULE pr_uni-fps_letras
 ; IF
-;   The pile size is 1, and
-;   It is the computer's move
+;   La fase es ESTU y el nivel se ha obtenido de un bachillerato de letras
 ; THEN
-;   Print that the computer has lost the game
+;   elimina fase
+;	muestra opciones de estudios universitarios y de FPS de letras 
 
-(defrule computer-loses
-  ?pile <- (pile-size 1)
-  ?move <- (player-move c)
-   =>
-   (printout t "Computer must take the last stick!" crlf)
-   (printout t "I lose!" crlf)
-   (retract ?pile)
-   (retract ?move)
-   (ask-start-again))
+(defrule pr_uni-fps_letras
+    ?h <-(phase WORK)
+    (lv UNI-FPS-letras)
+    =>
+    (retract ?h)
+    (printout t "Ofertas relacionadas con enseñanzas letras de estudios universitarios y formacion profesional de grado superior" crlf))
 
-; RULE human-loses
+; RULE pr_bach_fpm
 ; IF
-;   The pile size is 1, and
-;   It is the human's move
+;   La fase es ESTU y el nivel se ha obtenido de la ESO
 ; THEN
-;   Print that the human has lost the game
+;   elimina fase
+;	muestra opciones de bachillerato y de FPM 
 
-(defrule human-loses
-  ?pile <- (pile-size 1)
-  ?move <- (player-move h)
-   =>
-   (printout t "You must take the last stick!" crlf)
-   (printout t "You lose!" crlf)
-   (retract ?pile)
-   (retract ?move)
-   (ask-start-again))
+(defrule pr_bach-fpm
+    ?h <-(phase ESTU)
+    (lv BACH-FPM)
+    =>
+    (retract ?h)
+    (printout t "Ofertas relacionadas con enseñanzas de bachillerato y formacion profesional de grado medio" crlf))
 
-; RULE get-human-move
+
+; *************
+; FASE Work
+; *************
+
+; RULE pr_becario
 ; IF
-;   The pile size is greater than 1, and
-;   It is the human's move
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria sin acabar
 ; THEN
-;   Ask how many sticks to take, and
-;   Get the human's response
+;   elimina fase
+;	muestra opciones de becario
 
-(defrule get-human-move
-   (pile-size ?size&:(> ?size 1))
-   (player-move h)
-   =>
-   (printout t "How many sticks do you wish to take? ")
-   (assert (human-takes (read))))
+(defrule pr_becario
+    ?h <-(phase WORK)
+    (lv BECARIO)
+    =>
+    (retract ?h)
+    (printout t "Ofertas de becario para estudiantes universitarios" crlf))
 
-
-; RULE good-human-move
+; RULE pr_tit-prof
 ; IF
-;   There is a pile of sticks, and
-;   The human has chosen how many sticks to take, and
-;   It is the human's move, and
-;   The human's choice is valid
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria sin acabar
 ; THEN
-;   Remove unneeded information, and 
-;   Compute the new pile size, and
-;   Update the pile size, and
-;   Print the number of sticks left in the stack, and
-;   Trigger the computer player's turn
+;   elimina fase
+;	muestra opciones de docencia e investigacion
 
-(defrule good-human-move
-   ?pile <- (pile-size ?size)
-   ?move <- (human-takes ?choice)
-   ?whose-turn <- (player-move h)
-   (test (and (integerp ?choice)
-              (>= ?choice 1) 
-              (<= ?choice 3)
-              (< ?choice ?size)))
-   =>
-   (retract ?pile ?move ?whose-turn)
-   (bind ?new-size (- ?size ?choice))
-   (assert (pile-size ?new-size))
-   (printout t ?new-size " stick(s) left in the pile."
-               crlf)
-   (assert (player-move c)))
+(defrule pr_tit-prof
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {docente == SI || investigador == SI})
+    =>
+    (retract ?h)
+    (printout t "Ofertas de docencia e investigacion para titulados" crlf))
 
-; RULE bad-human-move
+
+; RULE pr_tit_peq
 ; IF
-;   There is a pile of sticks, and
-;   The human has chosen how many sticks to take, and
-;   It is the human's move, and
-;   The human's choice is invalid
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas ha estado trabajando en una empresa pequeña durante bastante tiempo
 ; THEN
-;   Print the valid choices, and
-;   Remove unneeded information, and
-;   Retrigger the human player's move
+;   elimina fase
+;	muestra opciones de titulado con experiencia baja
+
+(defrule pr_tit_peq
+   ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {puesto == miembro && duracion > 5 && empresa == peque})
+    =>
+    (retract ?h)
+    (printout t "Ofertas para titulados con experiencia que han trabajado en empresas pequeñas" crlf))
 
 
+(defrule pr_tit_expBaja
+   ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {puesto == becario && duracion < 2 && empresa == media})
+    =>
+    (retract ?h)
+    (printout t "Ofertas para titulados con poca experiencia que han trabajado de becario" crlf))
 
-
-
-(defrule bad-human-move
-   (pile-size ?size)
-   ?move <- (human-takes ?choice)
-   ?whose-turn <- (player-move h)
-   (test (or (not (integerp ?choice)) 
-             (< ?choice 1) 
-             (> ?choice 3)
-             (>= ?choice ?size)))
-   =>
-   (printout t "Number of sticks must be between 1 and 3,"
-               crlf
-               "and you must be forced to take the last "
-               "stick." crlf)
-   (retract ?move ?whose-turn)
-   (assert (player-move h)))
-
-; RULE computer-move
+; RULE pr_tit_expMedia
 ; IF
-;   It is the computers's move, and
-;   The pile size is greater than 1, and
-;   The computer's response is available
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas ha estado trabajando ya en una empresa media y tiene cierta experiencia
 ; THEN
-;   Remove unneeded information, and
-;   Compute the new pile size, and
-;   Print the number of sticks left in the stack, and
-;   Update the pile size, and
-;   Trigger the human players move
+;   elimina fase
+;	muestra opciones de titulado con experiencia media
 
-(defrule computer-move
-   ?whose-turn <- (player-move c)
-   ?pile <- (pile-size ?size&:(> ?size 1))
-   (take-sticks (how-many ?number)
-                (for-remainder ?X&:(= ?X (mod ?size 4))))
-   =>
-   (retract ?whose-turn ?pile)
-   (bind ?new-size (- ?size ?number))
-   (printout t "Computer takes " ?number " stick(s)."
-               crlf)
-   (printout t ?new-size " stick(s) left in the pile."
-               crlf)
-   (assert (pile-size ?new-size))
-   (assert (player-move h)))
+(defrule pr_tit_expMedia
+   ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {puesto == miembro && duracion > 5 && empresa == media})
+    =>
+    (retract ?h)
+    (printout t "Ofertas para titulados con experiencia media" crlf))
 
+; RULE pr_tit_expAlta
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas ha estado trabajando ya en una empresa media incluso como directivo y tiene mucha experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado con experiencia alta
+
+(defrule pr_tit_expAlta
+   ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {(puesto == miembro || puesto == directivo) && duracion > 10 && empresa == media})
+    =>
+    (retract ?h)
+    (printout t "Ofertas para titulados con experiencia alta" crlf))
+
+; RULE pr_tit_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas ha estado trabajando ya en una empresa grande incluso como directivo y tiene mucha experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado con experiencia alta
+
+(defrule pr_tit_gran
+   ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {(puesto == miembro || puesto == directivo) && duracion > 15 && empresa == grande})
+    =>
+    (retract ?h)
+    (printout t "Ofertas para titulados con experiencia en grandes empresas" crlf))
 
 (reset)
 (run)

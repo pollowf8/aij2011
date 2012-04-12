@@ -1,8 +1,8 @@
 package oai.jess.ejemplo;
 
 
-import jess.*;
-import java.io.*;
+import jess.JessException;
+import jess.Rete;
 
 
 public class Jesster

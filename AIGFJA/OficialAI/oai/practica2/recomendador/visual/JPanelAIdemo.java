@@ -52,6 +52,8 @@ public class JPanelAIdemo extends JPanel {
 			jTAout.setText("No se obtuvieron recomendaciones");
 		else
 			jTAout.setText(result);
+		jLinfo.setText("Resultados para " + owner.r.getNombre().toString()
+				+ " " + owner.r.getApellidos().toString());
 	}
 
 	/**
@@ -59,6 +61,7 @@ public class JPanelAIdemo extends JPanel {
 	 */
 	public void reseteaOuts() {
 		jTAout.setText("PROCESANDO...");
+		jLinfo.setText("Resultados para :");
 	}
 
 	/**
@@ -67,13 +70,13 @@ public class JPanelAIdemo extends JPanel {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(450, 350);
-		this.setPreferredSize(new Dimension(450, 350));
+		this.setSize(250, 300);
+		this.setPreferredSize(new Dimension(250, 300));
 		this.setLayout(null);
 
 		jLinfo = new JLabel();
-		jLinfo.setBounds(new Rectangle(10, 10, 70, 20));
-		jLinfo.setText("Resultados:");
+		jLinfo.setBounds(new Rectangle(10, 10, 230, 20));
+		jLinfo.setText("Resultados para :");
 		this.add(jLinfo, null);
 		this.add(getJSPout(), null);
 	}
@@ -87,6 +90,7 @@ public class JPanelAIdemo extends JPanel {
 		if (jTAout == null) {
 			jTAout = new JTextArea("PROCESANDO...");
 			jTAout.setEditable(false);
+			jTAout.setLineWrap(true);
 		}
 		return jTAout;
 	}
@@ -99,7 +103,7 @@ public class JPanelAIdemo extends JPanel {
 	private JScrollPane getJSPout() {
 		if (jSPout == null) {
 			jSPout = new JScrollPane();
-			jSPout.setBounds(new Rectangle(10, 40, 430, 300));
+			jSPout.setBounds(new Rectangle(10, 40, 230, 250));
 			jSPout.setViewportView(getJTAout());
 		}
 		return jSPout;

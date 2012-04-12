@@ -16,7 +16,7 @@ import oai.practica2.recomendador.visual.VentanaAI;
  * @author José Ángel García Fernández
  * @version 1.0 06/04/2012
  */
-public class PrincipalVisualRecom {
+public class PrincipalVisualRecomendador {
 
 	public static void main(String[] args) {
 

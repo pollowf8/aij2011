@@ -7,6 +7,8 @@
 //
 package oai.practica2.recomendador;
 
+import java.util.Iterator;
+
 import jess.JessException;
 import jess.RU;
 import jess.Rete;
@@ -19,20 +21,6 @@ import jess.Value;
  * @version 1.0 06/04/2012
  */
 public class Recomendador {
-
-	/**
-	 * Genera un objeto de tipo <code>Recomendador</code>
-	 * 
-	 * @param file
-	 *            el nombre del archivo
-	 * @throws JessException
-	 */
-	public Recomendador(String file) throws JessException {
-		m_rete = new Rete();
-		this.file = file;
-		// valores por defecto
-		setDefecto();
-	}
 
 	/**
 	 * Motor de reglas
@@ -52,35 +40,71 @@ public class Recomendador {
 	/**
 	 * Values para jess
 	 */
-	private Value nombre, apellidos, edad, estudios, acabada, docente,
-			investigador, puesto, duracion, empresa;
+	private Value nombre = null, apellidos = null, edad = null,
+			estudios = null, acabada = null, tipo = null, docente = null,
+			investigador = null, puesto = null, duracion = null,
+			empresa = null;
 
 	/**
 	 * Claves para usar en store-fetch
 	 */
 	public static final String Knombre = "nombre", Kapellidos = "apellidos",
 			Kedad = "edad", Kestudios = "estudios", Kacabada = "acabada",
-			Kdocente = "docente", Kinvestigador = "investigador",
-			Kpuesto = "puesto", Kduracion = "duracion", Kempresa = "empresa";
+			Ktipo = "tipo", Kdocente = "docente",
+			Kinvestigador = "investigador", Kpuesto = "puesto",
+			Kduracion = "duracion", Kempresa = "empresa";
 	/**
 	 * Clave de vuelta
 	 */
 	public static final String Kvuelta = "resultado";
 
 	/**
+	 * Genera un objeto de tipo <code>Recomendador</code>
+	 * 
+	 * @param file
+	 *            el nombre del archivo
+	 * @throws JessException
+	 */
+	public Recomendador(String file) throws JessException {
+		m_rete = new Rete();
+		this.file = file;
+		// valores por defecto basicos
+		setBasico();
+	}
+
+	/**
+	 * Resetea values del Recomendador
+	 */
+	public void clearValues() {
+		nombre = apellidos = edad = estudios = acabada = tipo = docente = investigador = puesto = duracion = empresa = null;
+	}
+
+	/**
 	 * Guarda la informacion del curriculum en el MR
 	 */
 	private void storeCurriculum() {
-		m_rete.store(Knombre, nombre);
-		m_rete.store(Kapellidos, apellidos);
-		m_rete.store(Kedad, edad);
-		m_rete.store(Kestudios, estudios);
-		m_rete.store(Kacabada, acabada);
-		m_rete.store(Kdocente, docente);
-		m_rete.store(Kinvestigador, investigador);
-		m_rete.store(Kpuesto, puesto);
-		m_rete.store(Kduracion, duracion);
-		m_rete.store(Kempresa, empresa);
+		if (nombre != null)
+			m_rete.store(Knombre, nombre);
+		if (apellidos != null)
+			m_rete.store(Kapellidos, apellidos);
+		if (edad != null)
+			m_rete.store(Kedad, edad);
+		if (estudios != null)
+			m_rete.store(Kestudios, estudios);
+		if (acabada != null)
+			m_rete.store(Kacabada, acabada);
+		if (tipo != null)
+			m_rete.store(Ktipo, tipo);
+		if (docente != null)
+			m_rete.store(Kdocente, docente);
+		if (investigador != null)
+			m_rete.store(Kinvestigador, investigador);
+		if (puesto != null)
+			m_rete.store(Kpuesto, puesto);
+		if (duracion != null)
+			m_rete.store(Kduracion, duracion);
+		if (empresa != null)
+			m_rete.store(Kempresa, empresa);
 	}
 
 	/**
@@ -108,28 +132,23 @@ public class Recomendador {
 	}
 
 	/**
-	 * Establece por defecto valores del curriculum
+	 * Establece por defecto valores del curriculum basicos
 	 * 
 	 * @throws JessException
 	 */
-	public void setDefecto() throws JessException {
-		setNombre("default");
-		setApellidos("default");
-		setEdad(22);
-		setEstudios("UNI");
-		setAcabada("SI");
-		setDocente("NO");
-		setInvestigador("NO");
-		setPuesto("miembro");
-		setDuracion(6);
-		setEmpresa("media");
+	private void setBasico() throws JessException {
+		setNombre("defaultNom");
+		setApellidos("defaultApe");
+		setEstudios("bachCiencias");
+		setEdad(17);
+		setDuracion(0);
 	}
 
 	/**
 	 * Obtiene e imprime la lista de hechos
 	 */
 	public void listaHechos() {
-		java.util.Iterator iterador; // java.util.Iterator
+		Iterator iterador; // java.util.Iterator
 		iterador = m_rete.listFacts();
 		while (iterador.hasNext()) {
 			System.out.println(iterador.next());
@@ -139,8 +158,6 @@ public class Recomendador {
 	/**
 	 * Carga el programa en el motor de reglas
 	 * 
-	 * @param nombre
-	 *            del programa
 	 */
 	public void cargaPrograma() {
 		try {
@@ -189,16 +206,18 @@ public class Recomendador {
 	}
 
 	/**
-	 * Detiene el motor de reglas
+	 * Limpia el motor de reglas
 	 */
 	public void clear() {
 		try {
 			m_rete.clear();
+			clearValues();
 		} catch (JessException je3) {
 			System.out.println("Error: no puedo clear programa ");
 		}
 	}
 
+	// getter and setter
 	public Value getNombre() {
 		return nombre;
 	}
@@ -237,6 +256,14 @@ public class Recomendador {
 
 	public void setAcabada(String acabada) throws JessException {
 		this.acabada = new Value(acabada, RU.SYMBOL);
+	}
+
+	public Value getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) throws JessException {
+		this.tipo = new Value(tipo, RU.SYMBOL);
 	}
 
 	public Value getDocente() {

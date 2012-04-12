@@ -6,7 +6,7 @@
 ;;;
 ;;;     Inteligencia Artificial e Ingeniería del Conocimiento
 ;;;
-;;;     To execute, merely load, reset and run.
+;;;     Para uso con JAVA
 ;;;======================================================
 
 
@@ -33,6 +33,7 @@
     (slot estudios (type SYMBOL) (allowed-values bachCiencias bachLetras ESO UNI))
     (slot acabada (type SYMBOL) (allowed-values SI NO))
     ;para elegir trabajo
+	(slot tipo (type SYMBOL) (allowed-values tecnico letras))
     (slot docente (type SYMBOL) (allowed-values SI NO))
     (slot investigador (type SYMBOL) (allowed-values SI NO))
     (slot puesto (type SYMBOL) (allowed-values miembro directivo becario))
@@ -46,9 +47,8 @@
 (deffacts initial-phase
     (phase CURRI))
 
-;(deffacts info (curriculum (nombre Pepe)(apellidos Gomez)(edad 15)(estudios bachCiencias)))
 (deffacts info (curriculum (nombre (fetch "nombre"))(apellidos (fetch "apellidos"))(edad (fetch "edad"))
-        (estudios (fetch "estudios"))(acabada (fetch "acabada"))(docente (fetch "docente"))
+        (estudios (fetch "estudios"))(acabada (fetch "acabada"))(tipo (fetch "tipo"))(docente (fetch "docente"))
         (investigador (fetch "investigador"))(puesto (fetch "puesto"))(duracion (fetch "duracion"))(empresa (fetch "empresa"))))
 ; *****
 ; RULES
@@ -58,7 +58,7 @@
 ; FASE Curriculum
 ; *************
 
-; RULE bachCiencias-uni-fps
+; RULE bachCiencias_uni-fps
 ; IF
 ;   La fase es curriculum, tiene menos de 18 años y un bachillerato de ciencias
 ; THEN
@@ -73,7 +73,7 @@
     (assert (phase ESTU))
     (assert (lv UNI-FPS-ciencias)))
 
-; RULE bachLetras-uni-fps
+; RULE bachLetras_uni-fps
 ; IF
 ;   La fase es curriculum, tiene menos de 18 años y un bachillerato de letras
 ; THEN
@@ -88,7 +88,7 @@
     (assert (phase  ESTU))
     (assert (lv UNI-FPS-letras)))
 
-; RULE ESO-bach-fpm
+; RULE ESO_bach-fpm
 ; IF
 ;   La fase es curriculum, tiene menos de 18 años y la ESO
 ; THEN
@@ -103,7 +103,7 @@
     (assert (phase  ESTU))
     (assert (lv BACH-FPM)))
 
-; RULE UNI-becario
+; RULE UNI_becario
 ; IF
 ;   La fase es curriculum, tiene entre 18 y 23 años y esta estudiando una carrera
 ; THEN
@@ -118,7 +118,7 @@
     (assert (phase  WORK))
     (assert (lv BECARIO)))
 
-; RULE UNI-titulado
+; RULE UNI_titulado
 ; IF
 ;   La fase es curriculum, tiene mas de 21 años y ya ha terminado una carrera
 ; THEN
@@ -137,7 +137,7 @@
 ; FASE Estudios
 ; *************
 
-; RULE pr_tit-fps_ciencias
+; RULE pr_uni-fps_ciencias
 ; IF
 ;   La fase es ESTU y el nivel se ha obtenido de un bachillerato de ciencias
 ; THEN
@@ -160,13 +160,13 @@
 ;	muestra opciones de estudios universitarios y de FPS de letras 
 
 (defrule pr_uni-fps_letras
-    ?h <-(phase WORK)
+    ?h <-(phase ESTU)
     (lv UNI-FPS-letras)
     =>
     (retract ?h)
-    (store "resultado" "Ofertas relacionadas con enseñanzas letras de estudios universitarios y formacion profesional de grado superior"))
+    (store "resultado" "Ofertas relacionadas con enseñanzas de letras de estudios universitarios y formacion profesional de grado superior"))
 
-; RULE pr_bach_fpm
+; RULE pr_bach-fpm
 ; IF
 ;   La fase es ESTU y el nivel se ha obtenido de la ESO
 ; THEN
@@ -197,16 +197,17 @@
     (lv BECARIO)
     =>
     (retract ?h)
-    (store "resultado" "Ofertas de becario para estudiantes universitarios" crlf))
+    (store "resultado" "Ofertas de becario para estudiantes universitarios"))
 
-; RULE pr_tit-prof
+; RULE pr_tit_prof
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria sin acabar
+;   ademas ejerce algun tipo de docencia y como investigador
 ; THEN
 ;   elimina fase
 ;	muestra opciones de docencia e investigacion
 
-(defrule pr_tit-prof
+(defrule pr_tit_prof
     ?h <-(phase WORK)
     (lv TITULADO)
     (curriculum {docente == SI || investigador == SI})
@@ -214,82 +215,292 @@
     (retract ?h)
     (store "resultado" "Ofertas de docencia e investigacion para titulados"))
 
-; RULE pr_tit_peq
+; RULE pr_tit_tec_expBaja_peq
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
-;	Ademas ha estado trabajando en una empresa pequeña durante bastante tiempo
+;	Ademas es tipo tecnico, ha estado trabajando en una empresa pequeña con poca experiencia
 ; THEN
 ;   elimina fase
-;	muestra opciones de titulado con experiencia baja y empresa pequeña
+;	muestra opciones de titulado tecnico con experiencia baja y empresa pequeña
 
-(defrule pr_tit_peq
-   ?h <-(phase WORK)
+(defrule pr_tit_tec_expBaja_peq
+    ?h <-(phase WORK)
     (lv TITULADO)
-    (curriculum {puesto == miembro && duracion > 5 && empresa == peque})
+    (curriculum {tipo == tecnico && (puesto == becario || puesto == miembro) && duracion < 5 && empresa == peque})
     =>
     (retract ?h)
-    (store "resultado" "Ofertas para titulados con experiencia que han trabajado en empresas pequeñas"))
+    (store "resultado" "Ofertas para titulados tecnicos con baja experiencia que han trabajado incluso de becario en empresas pequeñas"))
 
-; RULE pr_tit_expMedia
+; RULE pr_tit_tec_expMedia_peq
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
-;	Ademas ha estado trabajando ya en una empresa media de becario pero con poca experiencia
+;	Ademas es perfil tecnico y ha estado trabajando en una empresa pequeña con experiencia
 ; THEN
 ;   elimina fase
-;	muestra opciones de titulado con experiencia baja
+;	muestra opciones de titulado tecnico con experiencia  y empresa pequeña
 
-(defrule pr_tit_expBaja
-   ?h <-(phase WORK)
+(defrule pr_tit_tec_expMedia_peq
+    ?h <-(phase WORK)
     (lv TITULADO)
-    (curriculum {puesto == becario && duracion < 2 && empresa == media})
+    (curriculum {tipo == tecnico && puesto == miembro && duracion > 5 && duracion < 10 && empresa == peque})
     =>
     (retract ?h)
-    (store "resultado" "Ofertas para titulados con poca experiencia que han trabajado de becario"))
+    (store "resultado" "Ofertas para titulados tecnicos con experiencia que han trabajado en empresas pequeñas"))
 
-; RULE pr_tit_expMedia
+; RULE pr_tit_tec_expAlta_peq
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
-;	Ademas ha estado trabajando ya en una empresa media y tiene cierta experiencia
+;	Ademas es perfil tecnico y ha estado trabajando en una empresa pequeña con gran experiencia
 ; THEN
 ;   elimina fase
-;	muestra opciones de titulado con experiencia media
+;	muestra opciones de titulado tecnico con experiencia alta y empresa pequeña
 
-(defrule pr_tit_expMedia
-   ?h <-(phase WORK)
+(defrule pr_tit_tec_expAlta_peq
+    ?h <-(phase WORK)
     (lv TITULADO)
-    (curriculum {puesto == miembro && duracion > 5 && empresa == media})
+    (curriculum {tipo == tecnico && (puesto == miembro || puesto == directivo) && duracion > 10 && empresa == peque})
     =>
     (retract ?h)
-    (store "resultado" "Ofertas para titulados con experiencia media"))
+    (store "resultado" "Ofertas para titulados tecnicos con alta experiencia que han trabajado incluso como directivo en empresas pequeñas"))
 
-; RULE pr_tit_expAlta
+
+; RULE pr_tit_tec_expBaja
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
-;	Ademas ha estado trabajando ya en una empresa media incluso como directivo y tiene mucha experiencia
+;	Ademas es perfil tecnico tecnico y ha estado trabajando ya en una empresa media de becario pero con poca experiencia
 ; THEN
 ;   elimina fase
-;	muestra opciones de titulado con experiencia alta
+;	muestra opciones de titulado con experiencia baja en empresas medianas
 
-(defrule pr_tit_expAlta
-   ?h <-(phase WORK)
+(defrule pr_tit_tec_expBaja
+    ?h <-(phase WORK)
     (lv TITULADO)
-    (curriculum {(puesto == miembro || puesto == directivo) && duracion > 10 && empresa == media})
+    (curriculum {tipo == tecnico && (puesto == becario || puesto == miembro) && duracion < 5 && empresa == media})
     =>
     (retract ?h)
-    (store "resultado" "Ofertas para titulados con experiencia alta"))
+    (store "resultado" "Ofertas para titulados tecnicos con poca experiencia que han trabajado incluso de becario en empresas medias"))
 
-; RULE pr_tit_gran
+; RULE pr_tit_tec_expMedia
 ; IF
 ;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
-;	Ademas ha estado trabajando ya en una empresa grande incluso como directivo y tiene mucha experiencia
+;	Ademas es perfil tecnico y ha estado trabajando ya en una empresa media y tiene cierta experiencia
 ; THEN
 ;   elimina fase
-;	muestra opciones de titulado con experiencia alta
+;	muestra opciones de titulado tecnico con experiencia media en empresas medianas
 
-(defrule pr_tit_gran
-   ?h <-(phase WORK)
+(defrule pr_tit_tec_expMedia
+    ?h <-(phase WORK)
     (lv TITULADO)
-    (curriculum {(puesto == miembro || puesto == directivo) && duracion > 15 && empresa == grande})
+    (curriculum {tipo == tecnico && puesto == miembro && duracion > 5 && duracion < 10 && empresa == media})
     =>
     (retract ?h)
-    (store "resultado" "Ofertas para titulados con experiencia en grandes empresas"))
+    (store "resultado" "Ofertas para titulados tecnicos con experiencia media que han trabajado en empresas medianas"))
+
+; RULE pr_tit_tec_expAlta
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil tecnico y ha estado trabajando ya en una empresa media incluso como directivo y tiene mucha experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado tecnico con experiencia alta en empresas medianas
+
+(defrule pr_tit_tec_expAlta
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == tecnico && (puesto == miembro || puesto == directivo) && duracion > 10 && empresa == media})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados tecnicos con experiencia alta que han trabajado incluso como directivo en empresas medias"))
+
+; RULE pr_tit_tec_expBaja_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil tecnico y ha estado trabajando ya en una empresa grande pero con poca experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado tecnico con experiencia baja en grandes empresas
+
+(defrule pr_tit_tec_expBaja_gran
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == tecnico && (puesto == becario || puesto == miembro) && duracion < 5 && empresa == grande})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados tecnicos con poca experiencia que han trabajado incluso de becario en empresas grandes"))
+
+; RULE pr_tit_tec_expMedia_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil tecnico y ha estado trabajando ya en una empresa grande y tiene cierta experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado tecnico con experiencia media en grandes empresas
+
+(defrule pr_tit_tec_expMedia_gran
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == tecnico && puesto == miembro && duracion > 5 && duracion < 10 && empresa == grande})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados tecnicos con experiencia media que han trabajado en empresas grandes"))
+
+; RULE pr_tit_tec_expAlta_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil tecnico y ha estado trabajando ya en una empresa grande incluso como directivo y tiene mucha experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado tecnico con experiencia alta en grandes empresas
+
+(defrule pr_tit_tec_expAlta_gran
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == tecnico && (puesto == miembro || puesto == directivo) && duracion > 10 && empresa == grande})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con experiencia alta que han trabajado incluso como directivo en empresas grandes"))
+
+; RULE pr_tit_let_expBaja_peq
+; IF
+;   La fase es WORKy el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es tipo de letras y ha estado trabajando en una empresa pequeña con poca experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia baja y empresa pequeña
+
+(defrule pr_tit_let_expBaja_peq
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && (puesto == becario || puesto == miembro) && duracion < 5 && empresa == peque})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con baja experiencia que han trabajado incluso de becario en empresas pequeñas"))
+
+; RULE pr_tit_let_expMedia_peq
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando en una empresa pequeña con experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia  y empresa pequeña
+
+(defrule pr_tit_let_expMedia_peq
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && puesto == miembro && duracion > 5 && duracion < 10 && empresa == peque})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados tecnicos con experiencia que han trabajado en empresas pequeñas"))
+
+; RULE pr_tit_let_expAlta_peq
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando en una empresa pequeña con gran experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia alta y empresa pequeña
+
+(defrule pr_tit_let_expAlta_peq
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && (puesto == miembro || puesto == directivo) && duracion > 10 && empresa == peque})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con alta experiencia que han trabajado incluso como directivo en empresas pequeñas"))
+
+
+; RULE pr_tit_let_expBaja
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando ya en una empresa media de becario pero con poca experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia baja en empresas medianas
+
+(defrule pr_tit_let_expBaja
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && (puesto == becario || puesto == miembro) && duracion < 5 && empresa == media})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con poca experiencia que han trabajado incluso de becario en empresas medias"))
+
+; RULE pr_tit_tec_expMedia
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando ya en una empresa media y tiene cierta experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia media en empresas medianas
+
+(defrule pr_tit_let_expMedia
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && puesto == miembro && duracion > 5 && duracion < 10 && empresa == media})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con experiencia media que han trabajado en empresas medianas"))
+
+; RULE pr_tit_let_expAlta
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando ya en una empresa media incluso como directivo y tiene mucha experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia alta en empresas medianas
+
+(defrule pr_tit_let_expAlta
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && (puesto == miembro || puesto == directivo) && duracion > 10 && empresa == media})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con experiencia alta que han trabajado incluso como directivo en empresas medias"))
+
+; RULE pr_tit_let_expBaja_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando ya en una empresa grande pero con poca experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia baja en grandes empresas
+
+(defrule pr_tit_let_expBaja_gran
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == tecnico && (puesto == becario || puesto == miembro) && duracion < 5 && empresa == grande})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con poca experiencia que han trabajado incluso de becario en empresas grandes"))
+
+; RULE pr_tit_tec_expMedia_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando ya en una empresa grande y tiene cierta experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia media en grandes empresas
+
+(defrule pr_tit_let_expMedia_gran
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && puesto == miembro && duracion > 5 && duracion < 10 && empresa == grande})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con experiencia media que han trabajado en empresas grandes"))
+
+; RULE pr_tit_let_expAlta_gran
+; IF
+;   La fase es WORK y el nivel se ha obtenido de una carrera universitaria acabada
+;	Ademas es perfil de letras y ha estado trabajando ya en una empresa grande incluso como directivo y tiene mucha experiencia
+; THEN
+;   elimina fase
+;	muestra opciones de titulado de letras con experiencia alta en grandes empresas
+
+(defrule pr_tit_let_expAlta_gran
+    ?h <-(phase WORK)
+    (lv TITULADO)
+    (curriculum {tipo == letras && (puesto == miembro || puesto == directivo) && duracion > 10 && empresa == grande})
+    =>
+    (retract ?h)
+    (store "resultado" "Ofertas para titulados de letras con experiencia alta que han trabajado incluso como directivo en empresas grandes"))

@@ -9,8 +9,10 @@ package oai.practica2.recomendador.visual;
 
 import java.awt.CardLayout;
 import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import jess.JessException;
 import oai.practica2.recomendador.Recomendador;
 
@@ -62,6 +64,7 @@ public class VentanaAI extends JFrame {
 	 */
 	void limpiaProbar() {
 		jPAIdemo.reseteaOuts();
+		jPAIconfig.setStart();
 		r.clear();
 	}
 
@@ -72,13 +75,15 @@ public class VentanaAI extends JFrame {
 	 *             si se ha producido algun error de IO
 	 */
 	void preparaProbar() {
-		limpiaProbar();
-		// Cargao ejecucion de algoritmo en un thread aparte
-		a = new Thread(ejecucionAlgoritmo, "ejecucionAlgoritmo");
+		// Carga ejecucion de algoritmo en un thread aparte
+		a = new Thread(ejecucionJess, "ejecucionJess");
 		a.start();
 	}
 
-	private Runnable ejecucionAlgoritmo = new Runnable() {
+	/**
+	 * Para ejecucion de Jess
+	 */
+	private Runnable ejecucionJess = new Runnable() {
 		@Override
 		public void run() {
 			jPAIconfig.completaCurriculum();

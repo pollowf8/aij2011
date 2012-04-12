@@ -1,7 +1,9 @@
 package oai.jess.ejemplo;
 
-import jess.*;
-import java.io.*;
+import jess.JessException;
+import jess.RU;
+import jess.Rete;
+import jess.Value;
 
 public class Jesster2 { // The inference engine
 	private static Rete m_rete;

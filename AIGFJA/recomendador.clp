@@ -19,7 +19,7 @@
 ; (phase
 ;    <state>)      ;CURRI,ESTU,WORK
 
-; El nivel de estudios a mostrar
+; Informacion complementaria para el paso entre estados
 
 ; (lv
 ;    <nivel>)      ;UNI-FPS-ciencias, UNI-FPS-letras, BACH-FPM, BECARIO, TITULADO

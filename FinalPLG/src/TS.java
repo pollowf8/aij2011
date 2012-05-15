@@ -16,9 +16,11 @@ public class TS {
    //0 TIPO
    //1 DIR
    public TS aniade(String cte,ArrayList<Object> val) {
-       TS result = new TS(new HashMap<String,ArrayList<Object>>(tabla));
-       result.tabla.put(cte,val);
-       return result;
+//       TS result = new TS(new HashMap<String,ArrayList<Object>>(tabla));
+//       result.tabla.put(cte,val);
+//       return result;
+	   tabla.put(cte,val);
+       return this;
    }
    
    public ArrayList<Object> valDe(String cte) {

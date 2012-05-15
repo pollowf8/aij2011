@@ -1,0 +1,5 @@
+Instruccion.java
+IApilaDir: Como consigues valor de la direccion dir
+IDesApilaDir: Como consigues meter valor en la direccion dir
+IIr_a: Etiqueta actua como dir?
+IIr_f: Etiqueta actua como dir?

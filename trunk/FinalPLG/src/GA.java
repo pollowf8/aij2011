@@ -9,74 +9,241 @@ public class GA {
 		identado = -1;
 	}
 
-	public interface Programa {
-		public Error err();
+	public abstract class Programa {
 
-		public List<Instruccion> cod();
+		protected Programa() {
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+		}
 
-		public String regla();
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		private Atributo<Error> err;
+		private Atributo<List<Instruccion>> cod;
 	}
 
-	public interface Decs {
-		public Error err();
+	public abstract class Decs {
+		protected Decs() {
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			ts = new Atributo<TS>();
+			ts.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ts_exp();
+				}
+			});
+			dir = new Atributo<Integer>();
+			dir.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return dir_exp();
+				}
+			});
+		}
 
-		public int dir();
+		public Atributo<Integer> dir() {
+			return dir;
+		}
 
-		public TS ts();
+		public Atributo<Error> err() {
+			return err;
+		}
 
-		public String regla();
+		public Atributo<TS> ts() {
+			return ts;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract TS ts_exp();
+
+		protected abstract Integer dir_exp();
+
+		private Atributo<Error> err;
+		private Atributo<TS> ts;
+		private Atributo<Integer> dir;
 	}
 
-	public interface Dec {
-		public CatLexica tipo();
+	public abstract class Dec {
+		protected Dec() {
+			iden = new Atributo<String>();
+			iden.fijaExpresion(new ExpSem<String>() {
+				public String val() {
+					return iden_exp();
+				}
+			});
+			tipo = new Atributo<CatLexica>();
+			tipo.fijaExpresion(new ExpSem<CatLexica>() {
+				public CatLexica val() {
+					return tipo_exp();
+				}
+			});
+			fila = new Atributo<Integer>();
+			fila.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return fila_exp();
+				}
+			});
+			col = new Atributo<Integer>();
+			col.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return col_exp();
+				}
+			});
+		}
 
-		public String iden();
+		public Atributo<CatLexica> tipo() {
+			return tipo;
+		}
 
-		public int fila();
+		public Atributo<String> iden() {
+			return iden;
+		}
 
-		public int col();
+		public Atributo<Integer> fila() {
+			return fila;
+		}
 
-		public String regla();
+		public Atributo<Integer> col() {
+			return col;
+		}
+
+		protected abstract String iden_exp();
+
+		protected abstract Integer fila_exp();
+
+		protected abstract Integer col_exp();
+
+		protected abstract CatLexica tipo_exp();
+
+		private Atributo<String> iden;
+		private Atributo<CatLexica> tipo;
+		private Atributo<Integer> fila;
+		private Atributo<Integer> col;
 	}
 
-	public interface Tipo {
-		public CatLexica tipo();
+	public abstract class Tipo {
+		protected Tipo() {
+			tipo = new Atributo<CatLexica>();
+			tipo.fijaExpresion(new ExpSem<CatLexica>() {
+				public CatLexica val() {
+					return tipo_exp();
+				}
+			});
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+		}
 
-		public Error err();
+		protected abstract Error err_exp();
 
-		public String regla();
+		protected abstract CatLexica tipo_exp();
+
+		public Atributo<CatLexica> tipo() {
+			return tipo;
+		}
+
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		private Atributo<CatLexica> tipo;
+		private Atributo<Error> err;
 	}
 
 	// Instrucciones
 	abstract public class Insts {
 		protected Insts() {
-			hay_tsh = false;
-			hay_etqh = false;
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
+				}
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
 		}
 
-		abstract public Error err();
-
-		abstract public List<Instruccion> cod();
-
-		abstract public String regla();
-
-		abstract public int etq();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
+		public Atributo<TS> tsh() {
 			return tsh;
 		}
 
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		public Atributo<Integer> etqh() {
 			return etqh;
 		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		protected abstract Integer etq_exp();
+
+		private Atributo<Error> err;
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Integer> etqh;
+		private Atributo<Integer> etq;
+		private Atributo<TS> tsh;
+		private InstsCtx ctx;
 
 		public void registraCtx(InstsCtx ctx) {
 			this.ctx = ctx;
@@ -85,54 +252,83 @@ public class GA {
 		public InstsCtx contexto() {
 			return ctx;
 		}
-
-		private InstsCtx ctx;
-		private TS tsh;
-		private int etqh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-
 	}
 
 	public interface InstsCtx {
-		public TS tsh();
+		public TS tsh_exp();
 
-		public String regla();
-
-		public int etqh();
+		public int etqh_exp();
 	}
 
 	// Instruccion
 	abstract public class Inst {
 
 		protected Inst() {
-			hay_tsh = false;
-			hay_etqh = false;
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
+				}
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
+
 		}
 
-		abstract public int etq();
-
-		abstract public Error err();
-
-		abstract public String regla();
-
-		abstract public List<Instruccion> cod();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
+		public Atributo<TS> tsh() {
 			return tsh;
 		}
 
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		public Atributo<Integer> etqh() {
 			return etqh;
 		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		protected abstract Integer etq_exp();
+
+		private Atributo<Error> err;
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Integer> etqh;
+		private Atributo<Integer> etq;
+		private Atributo<TS> tsh;
+		private InstCtx ctx;
 
 		public void registraCtx(InstCtx ctx) {
 			this.ctx = ctx;
@@ -141,63 +337,93 @@ public class GA {
 		public InstCtx contexto() {
 			return ctx;
 		}
-
-		private InstCtx ctx;
-		private TS tsh;
-		private int etqh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-
 	}
 
 	public interface InstCtx {
-		public TS tsh();
+		public TS tsh_exp();
 
-		public int etqh();
-
-		public String regla();
+		public int etqh_exp();
 	}
 
 	// Casos
 	abstract public class Casos {
 
 		protected Casos() {
-			hay_tsh = false;
-			hay_etqh = false; 
-			hay_irh = false;
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
+				}
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
+			irh = new Atributo<Integer>();
+			irh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.irh_exp();
+				}
+			});
 		}
 
-		abstract public int etq();
-
-		abstract public Error err();
-
-		abstract public String regla();
-
-		abstract public List<Instruccion> cod();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
+		public Atributo<TS> tsh() {
 			return tsh;
 		}
 
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		public Atributo<Integer> etqh() {
 			return etqh;
 		}
 
-		public int irh() {
-			if (!hay_irh) {
-				irh = ctx.irh();
-				hay_irh = true;
-			}
+		public Atributo<Integer> irh() {
 			return irh;
 		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		protected abstract Integer etq_exp();
+
+		private Atributo<Error> err;
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Integer> etqh;
+		private Atributo<Integer> etq;
+		private Atributo<Integer> irh;
+		private Atributo<TS> tsh;
+		private CasosCtx ctx;
 
 		public void registraCtx(CasosCtx ctx) {
 			this.ctx = ctx;
@@ -207,66 +433,96 @@ public class GA {
 			return ctx;
 		}
 
-		private CasosCtx ctx;
-		private TS tsh;
-		private int etqh;
-		private int irh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-		private boolean hay_irh;
-
 	}
 
 	public interface CasosCtx {
-		public int etqh();
+		public int etqh_exp();
 
-		public TS tsh();
+		public TS tsh_exp();
 
-		public int irh();
-
-		public String regla();
+		public int irh_exp();
 	}
 
 	// Caso
 	abstract public class Caso {
 
 		protected Caso() {
-			hay_tsh = false;
-			hay_etqh = false;
-			hay_irh = false;
+
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
+				}
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
+			irh = new Atributo<Integer>();
+			irh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.irh_exp();
+				}
+			});
 		}
 
-		abstract public int etq();
-
-		abstract public Error err();
-
-		abstract public String regla();
-
-		abstract public List<Instruccion> cod();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
+		public Atributo<TS> tsh() {
 			return tsh;
 		}
 
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		public Atributo<Integer> etqh() {
 			return etqh;
 		}
 
-		public int irh() {
-			if (!hay_irh) {
-				irh = ctx.irh();
-				hay_irh = true;
-			}
+		public Atributo<Integer> irh() {
 			return irh;
 		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		protected abstract Integer etq_exp();
+
+		private Atributo<Error> err;
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Integer> etqh;
+		private Atributo<Integer> etq;
+		private Atributo<Integer> irh;
+		private Atributo<TS> tsh;
+		private CasoCtx ctx;
 
 		public void registraCtx(CasoCtx ctx) {
 			this.ctx = ctx;
@@ -275,698 +531,421 @@ public class GA {
 		public CasoCtx contexto() {
 			return ctx;
 		}
-
-		private CasoCtx ctx;
-		private TS tsh;
-		private int etqh;
-		private int irh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-		private boolean hay_irh;
 	}
 
-	/* CONTEXTO DE CASO */
 	public interface CasoCtx {
-		public int etqh();
+		public int etqh_exp();
 
-		public TS tsh();
+		public TS tsh_exp();
 
-		public int irh();
-
-		public String regla();
+		public int irh_exp();
 	}
 
-	abstract public class Exp0 {
-
-		protected Exp0() {
-			hay_tsh = false;
-			hay_etqh = false;
-		}
-
-		abstract public List<Instruccion> cod();
-
-		abstract public int etq();
-
-		abstract public String regla();
-
-		abstract public CatLexica tipo();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
-			return tsh;
-		}
-
-		public void registraCtx(Exp0Ctx ctx) {
-			this.ctx = ctx;
-		}
-
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
-			return etqh;
-		}
-
-		public Exp0Ctx contexto() {
-			return ctx;
-		}
-
-		private Exp0Ctx ctx;
-		private TS tsh;
-		private int etqh;
-		private boolean hay_etqh;
-		private boolean hay_tsh;
-	}
-
-	public interface Exp0Ctx {
-		public TS tsh();
-
-		public String regla();
-
-		public int etqh();
-	}
-
-	// EXP1
-	abstract public class Exp1 {
-		protected Exp1() {
-			hay_tsh = false;
-			hay_etqh = false;
-		}
-
-		abstract public List<Instruccion> cod();
-
-		abstract public int etq();
-
-		abstract public String regla();
-
-		abstract public CatLexica tipo();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
-			return tsh;
-		}
-
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
-			return etqh;
-		}
-
-		public void registraCtx(Exp1Ctx ctx) {
-			this.ctx = ctx;
-		}
-
-		public Exp1Ctx contexto() {
-			return ctx;
-		}
-
-		private Exp1Ctx ctx;
-		private TS tsh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-		private int etqh;
-	}
-
-	public interface Exp1Ctx {
-		public TS tsh();
-
-		public String regla();
-
-		public int etqh();
-	}
-
-	// Exp2
-	abstract public class Exp2 {
-
-		protected Exp2() {
-			hay_tsh = false;
-			hay_etqh = false;
-		}
-
-		abstract public List<Instruccion> cod();
-
-		abstract public int etq();
-
-		abstract public String regla();
-
-		abstract public CatLexica tipo();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
-			return tsh;
-		}
-
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
-			return etqh;
-		}
-
-		public void registraCtx(Exp2Ctx ctx) {
-			this.ctx = ctx;
-		}
-
-		public Exp2Ctx contexto() {
-			return ctx;
-		}
-
-		private Exp2Ctx ctx;
-		private TS tsh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-		private int etqh;
-
-	}
-
-	public interface Exp2Ctx {
-		public TS tsh();
-
-		public String regla();
-
-		public int etqh();
-	}
-
-	// Exp3
-	abstract public class Exp3 {
-
-		protected Exp3() {
-			hay_tsh = false;
-			hay_etqh = false;
-		}
-
-		abstract public List<Instruccion> cod();
-
-		abstract public int etq();
-
-		abstract public String regla();
-
-		abstract public CatLexica tipo();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
-			return tsh;
-		}
-
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
-			return etqh;
-		}
-
-		public void registraCtx(Exp3Ctx ctx) {
-			this.ctx = ctx;
-		}
-
-		public Exp3Ctx contexto() {
-			return ctx;
-		}
-
-		private Exp3Ctx ctx;
-		private TS tsh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-		private int etqh;
-
-	}
-
-	public interface Exp3Ctx {
-		public TS tsh();
-
-		public String regla();
-
-		public int etqh();
-	}
-
-	abstract public class Exp4 {
-
-		protected Exp4() {
-			hay_tsh = false;
-			hay_etqh = false;
-		}
-
-		abstract public List<Instruccion> cod();
-
-		abstract public int etq();
-
-		abstract public String regla();
-
-		abstract public CatLexica tipo();
-
-		public TS tsh() {
-			if (!hay_tsh) {
-				tsh = ctx.tsh();
-				hay_tsh = true;
-			}
-			return tsh;
-		}
-
-		public int etqh() {
-			if (!hay_etqh) {
-				etqh = ctx.etqh();
-				hay_etqh = true;
-			}
-			return etqh;
-		}
-
-		public void registraCtx(Exp4Ctx ctx) {
-			this.ctx = ctx;
-		}
-
-		public Exp4Ctx contexto() {
-			return ctx;
-		}
-
-		private Exp4Ctx ctx;
-		private TS tsh;
-		private boolean hay_tsh;
-		private boolean hay_etqh;
-		private int etqh;
-
-	}
-
-	public interface Exp4Ctx {
-		public TS tsh();
-
-		public String regla();
-
-		public int etqh();
-	}
-
-	public interface OpComparacion {
-		public CatLexica op();
-
-		public String regla();
-
-		public List<Instruccion> cod();
-	}
-
-	public interface OpAditivo {
-		public CatLexica op();
-
-		public String regla();
-
-		public List<Instruccion> cod();
-	}
-
-	public interface OpMultiplicativo {
-		public CatLexica op();
-
-		public String regla();
-
-		public List<Instruccion> cod();
-	}
-
-	public interface OpUnario {
-		public CatLexica op();
-
-		public String regla();
-
-		public List<Instruccion> cod();
-	}
-
-	// Implementación clases
-	/*
-	 * Programa ::= Declaraciones & Instrucciones 
-	 * Instrucciones.tsh =Declaraciones.ts 
-	 * Programa.error = Declaraciones.error or Instrucciones.error 
-	 * Programa.cod = Instrucciones.cod
-	 */
-	public class ProgR1 implements Programa {
-
-		public ProgR1(Decs decs, Insts insts) {
-			this.decs = decs;
-			this.insts = insts;
-			this.hay_err = false;
-			this.hay_cod = false;
-
-			insts.registraCtx(new InstsCtx() {
-				public TS tsh() {
-					return ProgR1.this.decs.ts();
+	abstract public class Exp {
+
+		protected Exp() {
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
 				}
-
-				public String regla() {
-					return "Programa ::= Declaraciones & Instrucciones | Instrucciones";
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
 				}
-
-				public int etqh() {
-					return 0;
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
+			tipo = new Atributo<CatLexica>();
+			tipo.fijaExpresion(new ExpSem<CatLexica>() {
+				public CatLexica val() {
+					return tipo_exp();
 				}
 			});
 		}
 
-		public String regla() {
-			return "Programa ::= Declaraciones & Instrucciones | Programa";
+		public Atributo<TS> tsh() {
+			return tsh;
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = joinErrors(decs.err(), insts.err());
-				hay_err = true;
-			}
-			return err;
-		}
-
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = insts.cod();
-				hay_cod = true;
-			}
+		public Atributo<List<Instruccion>> cod() {
 			return cod;
+		}
+
+		public Atributo<Integer> etqh() {
+			return etqh;
+		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		public Atributo<CatLexica> tipo() {
+			return tipo;
+		}
+
+		protected abstract List<Instruccion> cod_exp();
+
+		protected abstract Integer etq_exp();
+
+		protected abstract CatLexica tipo_exp();
+
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Integer> etqh;
+		private Atributo<Integer> etq;
+		private Atributo<TS> tsh;
+		private Atributo<CatLexica> tipo;
+		private ExpCtx ctx;
+
+		public void registraCtx(ExpCtx ctx) {
+			this.ctx = ctx;
+		}
+
+		public ExpCtx contexto() {
+			return ctx;
+		}
+	}
+
+	public interface ExpCtx {
+		public TS tsh_exp();
+
+		public Integer etqh_exp();
+	}
+
+	abstract public class Exp0 extends Exp {
+	};
+
+	abstract public class Exp1 extends Exp {
+	};
+
+	abstract public class Exp2 extends Exp {
+	};
+
+	abstract public class Exp3 extends Exp {
+	};
+
+	abstract public class Exp4 extends Exp {
+	};
+
+	abstract public class Exp5 extends Exp {
+	};
+
+	public abstract class Op {
+		protected Op() {
+
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			op = new Atributo<CatLexica>();
+			op.fijaExpresion(new ExpSem<CatLexica>() {
+				public CatLexica val() {
+					return op_exp();
+				}
+			});
+		}
+
+		public Atributo<CatLexica> op() {
+			return op;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		protected abstract CatLexica op_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<CatLexica> op;
+	}
+
+	public abstract class OpComparacion extends Op {
+	}
+
+	public abstract class OpAditivo extends Op {
+	}
+
+	public abstract class OpMultiplicativo extends Op {
+	}
+
+	public abstract class OpUnario extends Op {
+	}
+
+	// Implementación clases
+	/**
+	 * <code>
+	 * Programa ::= Declaraciones & Instrucciones 
+	 * Instrucciones.tsh =Declaraciones.ts 
+	 * Programa.error = Declaraciones.error or Instrucciones.error 
+	 * Programa.cod = Instrucciones.cod
+	 * </code>
+	 */
+	public class ProgR1 extends Programa {
+
+		public ProgR1(Decs decs, Insts insts) {
+			super();
+			this.decs = decs;
+			this.insts = insts;
+
+			insts.registraCtx(new InstsCtx() {
+				public TS tsh_exp() {
+					return ProgR1.this.decs.ts().val();
+				}
+
+				public int etqh_exp() {
+					return 0;
+				}
+			});
+
+			err().ponDependencias(decs.err(), insts.err());
+			cod().ponDependencias(insts.cod());
+			insts.tsh().ponDependencias(decs.ts());
+		}
+
+		protected final Error err_exp() {
+			return joinErrors(decs.err().val(), insts.err().val());
+		}
+
+		protected final List<Instruccion> cod_exp() {
+			return insts.cod().val();
 		}
 
 		private Decs decs;
 		private Insts insts;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
-		private Error err;
-		private boolean hay_err;
 
 	}
 
 	public class ProgR1Debug extends ProgR1 {
+		private final static String REGLA = "Programa ::= Declaraciones & Instrucciones";
+
 		public ProgR1Debug(Decs decs, Insts insts) {
 			super(decs, insts);
+			err().fijaDescripcion(REGLA + "|Programa.err");
+			cod().fijaDescripcion(REGLA + "|Programa.cod");
+			insts.tsh().fijaDescripcion(REGLA + "|Instrucciones.tsh");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
 	/*
 	 * Programa ::= Instrucciones Instrucciones.tsh = creaTS() Programa.error =
 	 * Instrucciones.error Instrucciones.etqh=0 Programa.cod = Instrucciones.cod
 	 */
-	public class ProgR2 implements Programa {
+	public class ProgR2 extends Programa {
 
 		public ProgR2(Insts insts) {
-
+			super();
 			this.insts = insts;
-			this.hay_err = false;
-			this.hay_cod = false;
 
 			insts.registraCtx(new InstsCtx() {
-				public TS tsh() {
+				public TS tsh_exp() {
 					return creaTS();
 				}
 
-				public int etqh() {
+				public int etqh_exp() {
 					return 0;
 				}
-
-				public String regla() {
-					return "Programa ::= Instrucciones | Instrucciones";
-				}
 			});
+			err().ponDependencias(insts.err());
+			cod().ponDependencias(insts.cod());
 		}
 
-		public String regla() {
-			return "Programa ::= Instrucciones | Programa";
+		protected final Error err_exp() {
+			return insts.err().val();
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = insts.err();
-				hay_err = true;
-			}
-			return err;
-		}
-
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = insts.cod();
-				hay_cod = true;
-			}
-			return cod;
+		protected final List<Instruccion> cod_exp() {
+			return insts.cod().val();
 		}
 
 		private Insts insts;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
-		private Error err;
-		private boolean hay_err;
 
 	}
 
 	public class ProgR2Debug extends ProgR2 {
+		private final static String REGLA = "Programa ::= Instrucciones";
+
 		public ProgR2Debug(Insts insts) {
 			super(insts);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			err().fijaDescripcion(REGLA + "|Programa.err");
+			cod().fijaDescripcion(REGLA + "|Programa.cod");
+			insts.tsh().fijaDescripcion(REGLA + "|Instrucciones.tsh");
+			insts.etqh().fijaDescripcion(REGLA + "|Instrucciones.etqh");
 		}
 	}
 
-	/*
-	 * Declaraciones ::= Declaraciones ; Declaracion Declaraciones(0).ts =
-	 * aniadeSimb(Declaraciones(1).ts, Declaracion.iden, Declaracion.tipo,
-	 * Declaraciones(1).dir) Declaraciones(0).dir = Declaraciones(1).dir + 1
-	 * Declaraciones(0).error = Declaraciones(1).error or
-	 * existeSimb(Declaraciones(1).ts,Declaracion.id)
+	/**
+	 * <code>
+	 * Declaraciones ::= Declaraciones ; Declaracion 
+	 * Declaraciones(0).ts =aniadeSimb(Declaraciones(1).ts, Declaracion.iden, Declaracion.tipo,Declaraciones(1).dir) 
+	 * Declaraciones(0).dir = Declaraciones(1).dir + 1
+	 * Declaraciones(0).error = Declaraciones(1).error or existeSimb(Declaraciones(1).ts,Declaracion.id)
+	 * </code>
 	 */
-	public class DecsR1 implements Decs {
+	public class DecsR1 extends Decs {
 
 		public DecsR1(Decs decs_1, Dec dec) {
 			this.dec = dec;
 			this.decs_1 = decs_1;
-			this.hay_err = false;
-			this.hay_ts = false;
+			err().ponDependencias(decs_1.err(), decs_1.ts());
+			dir().ponDependencias(decs_1.dir());
+			ts().ponDependencias(decs_1.ts(), decs_1.dir());
 		}
 
-		public String regla() {
-			return "Declaraciones  ::= Declaraciones  ; Declaracion | Declaraciones(0)";
+		public TS ts_exp() {
+			return aniadeSimb(decs_1.ts().val(), dec.iden().val(), dec.tipo()
+					.val(), decs_1.dir().val());
 		}
 
-		public TS ts() {
-			if (!hay_ts) {
-				ts = aniadeSimb(decs_1.ts(), dec.iden(), dec.tipo(),
-						decs_1.dir());
-				hay_ts = true;
-			}
-			return ts;
+		public Error err_exp() {
+			return joinErrors(
+					decs_1.err().val(),
+					errorSi(existeSimb(decs_1.ts().val(), dec.iden().val()),
+							dec.fila().val(), dec.col().val(),
+							"Constante duplicada:" + dec.iden().val()));
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = joinErrors(
-						decs_1.err(),
-						errorSi(existeSimb(decs_1.ts(), dec.iden()),
-								dec.fila(), dec.col(), "Constante duplicada:"
-										+ dec.iden()));
-				hay_err = true;
-			}
-			return err;
-		}
-
-		public int dir() {
-			return decs_1.dir() + 1;
+		public Integer dir_exp() {
+			return decs_1.dir().val() + 1;
 		}
 
 		private Dec dec;
-		private TS ts;
 		private Decs decs_1;
-		private Error err;
-		private boolean hay_err;
-		private boolean hay_ts;
 	}
 
 	public class DecsR1Debug extends DecsR1 {
+		private final static String REGLA = "Declaraciones  ::= Declaraciones  ; Declaracion";
+
 		public DecsR1Debug(Decs decs_1, Dec dec) {
 			super(decs_1, dec);
+			err().fijaDescripcion(REGLA + "|Declaraciones(0).err");
+			dir().fijaDescripcion(REGLA + "|Declaraciones(0).dir");
+			ts().fijaDescripcion(REGLA + "|Declaraciones(0).ts");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public TS ts() {
-			requerido(regla() + ".ts");
-			return valor(regla() + ".ts", super.ts());
-		}
 	}
 
-	/*
-	 * Decs ::= Dec Declaraciones.ts = aniadeSimb(creaTS(),Declaracion.iden,
-	 * Declaracion.tipo,0) Declaraciones.dir = 1 Declaraciones.error = false
+	/**
+	 * <code>
+	 * Decs ::= Dec 
+	 * Declaraciones.ts = aniadeSimb(creaTS(),Declaracion.iden,Declaracion.tipo,0) 
+	 * Declaraciones.dir = 1 
+	 * Declaraciones.error = false
+	 * </code>
 	 */
-	public class DecsR2 implements Decs {
+	public class DecsR2 extends Decs {
 
 		public DecsR2(Dec dec) {
 			this.dec = dec;
-			this.hay_err = false; 
-			this.hay_ts = false;
 		}
 
-		public String regla() {
-			return "Declaraciones  ::= Declaracion | Declaraciones";
+		public TS ts_exp() {
+			return aniadeSimb(creaTS(), dec.iden().val(), dec.tipo().val(), 0);
 		}
 
-		public TS ts() {
-			if (!hay_ts) {
-				ts = aniadeSimb(creaTS(), dec.iden(), dec.tipo(), 0);
-				hay_ts = true;
-			}
-			return ts;
+		public Error err_exp() {
+			return noError();
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = noError();
-				hay_err = true;
-			}
-			return err;
-		}
-
-		public int dir() {
+		public Integer dir_exp() {
 			return 1;
 		}
 
 		private Dec dec;
-		private TS ts;
-
-		private Error err;
-		private boolean hay_err;
-		private boolean hay_ts;
 	}
 
 	public class DecsR2Debug extends DecsR2 {
+		private final static String REGLA = "Declaraciones  ::= Declaracion | Declaraciones";
+
 		public DecsR2Debug(Dec dec) {
 			super(dec);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public TS ts() {
-			requerido(regla() + ".ts");
-			return valor(regla() + ".ts", super.ts());
+			ts().fijaDescripcion(REGLA + "Decs.ts");
+			dir().fijaDescripcion(REGLA + "Decs.dir");
+			err().fijaDescripcion(REGLA + "Decs.error");
 		}
 	}
 
-	/*
-	 * Declaracion ::= Tipo IDEN Declaracion.tipo = Tipo.tipo Declaracion.iden
-	 * =IDEN.lex Dec.fila = id.fila Dec.col = id.col
+	/**
+	 * <code>
+	 * Declaracion ::= Tipo IDEN 
+	 * Declaracion.tipo = Tipo.tipo 
+	 * Declaracion.iden =IDEN.lex 
+	 * Declaracion.fila = id.fila 
+	 * Declaracion.col = id.col
+	 * </code>
 	 */
-	public class DecR1 implements Dec {
+	public class DecR1 extends Dec {
 
 		public DecR1(Tipo tipo, Token IDEN) {
+			super();
 			this.tipo = tipo;
 			this.iden = IDEN;
-			this.hay_fila = false;
-			this.hay_col = false;
 		}
 
-		public String regla() {
-			return "Declaracion ::= Tipo IDEN | Declaracion";
-		}
-
-		public String iden() {
+		public String iden_exp() {
 			return iden.leeLexema();
 		}
 
-		public CatLexica tipo() {
-			return tipo.tipo();
+		public CatLexica tipo_exp() {
+			return tipo.tipo().val();
 		}
 
-		public int fila() {
-			if (!hay_fila) {
-				fila = iden.leeFila();
-				hay_fila = true;
-			}
-			return fila;
-
+		protected final Integer fila_exp() {
+			return new Integer(iden.leeFila());
 		}
 
-		public int col() {
-			if (!hay_col) {
-				col = iden.leeCol();
-				hay_col = true;
-			}
-			return col;
+		protected final Integer col_exp() {
+			return new Integer(iden.leeCol());
 		}
 
 		private Token iden;
 		private Tipo tipo;
 
-		private boolean hay_fila;
-		private boolean hay_col;
-		private int fila;
-		private int col;
 	}
 
 	public class DecR1Debug extends DecR1 {
+		private final static String REGLA = "Declaracion ::= Tipo IDEN";
+
 		public DecR1Debug(Tipo tipo, Token iden) {
 			super(tipo, iden);
+			iden().fijaDescripcion(REGLA + "|iden.lex");
+			tipo().fijaDescripcion(REGLA + "|Declaracion.tipo");
+			fila().fijaDescripcion(REGLA + "|Declaracion.fila");
+			col().fijaDescripcion(REGLA + "|Declaracion.col");
 		}
 
-		public String iden() {
-			requerido(regla() + ".cte");
-			return valor(regla() + ".cte", super.iden());
-		}
-
-		public CatLexica tipo() {
-			requerido(regla() + ".tipo");
-			return valor(regla() + ".tipo", super.tipo());
-		}
-
-		public int fila() {
-			requerido(regla() + ".fila");
-			return valor(regla() + ".fila", super.fila());
-		}
-
-		public int col() {
-			requerido(regla() + ".col");
-			return valor(regla() + ".col", super.col());
-		}
 	}
 
 	/*
 	 * Tipo := INT
 	 */
-	public class TipoR1 implements Tipo {
+	public class TipoR1 extends Tipo {
 
 		public TipoR1(Token tDeInt) {
 			this.tipo = tDeInt.leeCategoria();
 		}
 
-		public CatLexica tipo() {
+		public CatLexica tipo_exp() {
 			return tipo;
 		}
 
-		public Error err() {
+		public Error err_exp() {
 			if (this.tipo != CatLexica.INT)
 				return new Error("No es un INT");
 			else
@@ -974,44 +953,35 @@ public class GA {
 		}
 
 		private CatLexica tipo;
-
-		public String regla() {
-			return "Tipo.tipo ::= int ";
-		}
 	}
 
 	public class TipoR1Debug extends TipoR1 {
+		private final static String REGLA = "Tipo.tipo ::= int";
+
 		public TipoR1Debug(Token tDeInt) {
 			super(tDeInt);
-		}
-
-		public CatLexica tipo() {
-			requerido(regla() + ".tipo");
-			return valor(regla() + ".tipo", super.tipo());
+			err().fijaDescripcion(REGLA + "|tipo.err");
+			tipo().fijaDescripcion(REGLA + "|tipo.tipo");
 		}
 	}
 
 	/*
 	 * Tipo := boolean
 	 */
-	public class TipoR2 implements Tipo {
+	public class TipoR2 extends Tipo {
 
 		public TipoR2(Token tDeBol) {
 			this.tipo = tDeBol.leeCategoria();
 		}
 
-		public Error err() {
+		public Error err_exp() {
 			if (this.tipo != CatLexica.BOOLEAN)
 				return new Error("No es un BOOLEAN");
 			else
 				return noError();
 		}
 
-		public String regla() {
-			return "Tipo.tipo ::= boolean ";
-		}
-
-		public CatLexica tipo() {
+		public CatLexica tipo_exp() {
 			return tipo;
 		}
 
@@ -1019,535 +989,407 @@ public class GA {
 	}
 
 	public class TipoR2Debug extends TipoR2 {
-		public TipoR2Debug(Token tDeBol) {
-			super(tDeBol);
-		}
+		private final static String REGLA = "Tipo.tipo ::= boolean";
 
-		public CatLexica tipo() {
-			requerido(regla() + ".tipo");
-			return valor(regla() + ".tipo", super.tipo());
+		public TipoR2Debug(Token tDeInt) {
+			super(tDeInt);
+			err().fijaDescripcion(REGLA + "|tipo.err");
+			tipo().fijaDescripcion(REGLA + "|tipo.tipo");
 		}
 	}
 
-	/*
-	 * Instrucciones ::= Instrucciones ; Instruccion Instrucciones(1).tsh =
-	 * Instrucciones(0).tsh Instruccion.tsh = Instrucciones(0).tsh
+	/**
+	 * <code>
+	 * Instrucciones ::= Instrucciones ; Instruccion
+	 * Instrucciones(1).tsh =Instrucciones(0).tsh 
+	 * Instruccion.tsh = Instrucciones(0).tsh
 	 * Instrucciones(0).error = Instrucciones(1).error || Instruccion.error
-	 * Instrucciones(1).etqh = Instrucciones(0).etqh Instruccion.etqh =
-	 * Instrucciones(1).etq Instrucciones(0).etq = Instruccion.etq
+	 * Instrucciones(1).etqh = Instrucciones(0).etqh 
+	 * Instruccion.etqh = Instrucciones(1).etq 
+	 * Instrucciones(0).etq = Instruccion.etq
 	 * Instrucciones(0).cod = Instrucciones(1).cod || Instruccion.cod
+	 * </code>
 	 */
 	public class InstsR1 extends Insts {
 
 		public InstsR1(Insts insts_1, Inst inst) {
 			this.insts_1 = insts_1;
 			this.inst = inst;
-			this.hay_err = false;
-			 
-			this.hay_cod = false;
-			this.hay_etq = false;
+			insts_1.tsh().ponDependencias(tsh());
+			insts_1.etqh().ponDependencias(etqh());
+			etq().ponDependencias(inst.etq());
+			cod().ponDependencias(insts_1.cod(), inst.cod());
+			err().ponDependencias(insts_1.err(), inst.err());
+			inst.etqh().ponDependencias(insts_1.etq());
+			inst.tsh().ponDependencias(tsh());
 
 			insts_1.registraCtx(new InstsCtx() {
-				public TS tsh() {
-					return InstsR1.this.tsh();
+				public TS tsh_exp() {
+					return InstsR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return InstsR1.this.etqh();
-				}
-
-				public String regla() {
-					return "Instrucciones(0) ::= Instrucciones(1) ; Instruccion | Instrucciones(1)";
+				public int etqh_exp() {
+					return InstsR1.this.etqh().val();
 				}
 			});
 
 			inst.registraCtx(new InstCtx() {
-				public TS tsh() {
-					return InstsR1.this.tsh();
+				public TS tsh_exp() {
+					return InstsR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return InstsR1.this.insts_1.etq();
-				}
-
-				public String regla() {
-					return "Instrucciones(0) ::= Instrucciones(1) ; Instruccion | Instruccion";
+				public int etqh_exp() {
+					return InstsR1.this.insts_1.etq().val();
 				}
 			});
 
 		}
 
-		public String regla() {
-			return "Instrucciones(0) ::= Instrucciones(1) ; Instruccion | Instrucciones(0)";
+		public Error err_exp() {
+			return joinErrors(insts_1.err().val(), inst.err().val());
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = joinErrors(insts_1.err(), inst.err());
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return concat(insts_1.cod().val(), inst.cod().val());
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = concat(insts_1.cod(), inst.cod());
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		public int etq() {
-			 if (!hay_etq) {
-			 etq = inst.etq();
-			 hay_etq = true;
-			 }
-			 return etq;
+		public Integer etq_exp() {
+			return inst.etq().val();
 
 		}
 
 		private Insts insts_1;
 		private Inst inst;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
-		private boolean hay_etq;
-		private int etq;
-		private Error err;
-		private boolean hay_err;
-
 	}
 
 	public class InstsR1Debug extends InstsR1 {
+		private final static String REGLA = "Instrucciones(0) ::= Instrucciones(1) ; Instruccion";
+
 		public InstsR1Debug(Insts insts_1, Inst inst) {
 			super(insts_1, inst);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			err().fijaDescripcion(REGLA + "|Instrucciones.err");
+			cod().fijaDescripcion(REGLA + "|Instrucciones.cod");
+			etqh().fijaDescripcion(REGLA + "|Instrucciones.etqh");
+			etq().fijaDescripcion(REGLA + "|Instrucciones.etq");
+			inst.etqh().fijaDescripcion(REGLA + "|Instruccion.etqh");
+			inst.tsh().fijaDescripcion(REGLA + "|Instruccion.tsh");
 		}
 	}
 
-	/*
-	 * Instrucciones ::= Instruccion Instruccion.tsh = Instrucciones.tsh
-	 * Instrucciones.error = Instruccion.error Instruccion.etqh =
-	 * Instrucciones.etqh Instrucciones.etq = Instruccion.etq Instrucciones.cod
-	 * = Instruccion.cod
+	/**
+	 * <code>
+	 * Instrucciones ::= Instruccion 
+	 * Instruccion.tsh = Instrucciones.tsh
+	 * Instrucciones.error = Instruccion.error 
+	 * Instruccion.etqh = Instrucciones.etqh 
+	 * Instrucciones.etq = Instruccion.etq 
+	 * Instrucciones.cod = Instruccion.cod
+	 * </code>
 	 */
 	public class InstsR2 extends Insts {
 
 		public InstsR2(Inst inst) {
 			this.inst = inst;
-			this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 			inst.registraCtx(new InstCtx() {
-				public TS tsh() {
-					return InstsR2.this.tsh();
+				public TS tsh_exp() {
+					return InstsR2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return InstsR2.this.etqh();
-				}
-
-				public String regla() {
-					return "Instrucciones ::= Instruccion | Instruccion";
+				public int etqh_exp() {
+					return InstsR2.this.etqh().val();
 				}
 			});
+			etq().ponDependencias(inst.etq());
+			cod().ponDependencias(inst.cod());
+			err().ponDependencias(inst.err());
+			inst.etqh().ponDependencias(etqh());
+			inst.tsh().ponDependencias(tsh());
 
 		}
 
-		public String regla() {
-			return "Instrucciones ::= Instruccion | Instrucciones";
+		public Error err_exp() {
+			return inst.err().val();
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = inst.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return inst.cod().val();
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = inst.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		public int etq() {
-			 if (!hay_etq){
-			 etq= inst.etq();
-			 hay_etq = true;
-			 }
-			 return etq;
+		public Integer etq_exp() {
+			return inst.etq().val();
 		}
 
 		private Inst inst;
-		private Error err;
-		private boolean hay_etq;
-		private int etq;
-		private boolean hay_err;
-		private boolean hay_cod;
-		private List<Instruccion> cod;
 	}
 
 	public class InstsR2Debug extends InstsR2 {
+		private final static String REGLA = "Instrucciones ::= Instruccion";
+
 		public InstsR2Debug(Inst inst) {
 			super(inst);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			err().fijaDescripcion(REGLA + "|Instrucciones.err");
+			cod().fijaDescripcion(REGLA + "|Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + "|Instrucciones.etq");
+			inst.etqh().fijaDescripcion(REGLA + "|Instruccion.etqh");
+			inst.tsh().fijaDescripcion(REGLA + "|Instruccion.tsh");
 		}
 	}
 
-	/*
-	 * Instruccion ::= IAsignacion IAsignacion.tsh = Instruccion.tsh
-	 * Instruccion.error = IAsignacion.error IAsignacion.etqh = Instruccion.etqh
-	 * Instruccion.etq = IAsignacion.etq Instruccion.cod = IAsignacion.cod
+	/**
+	 * <code>
+	 * Instruccion ::= IAsignacion
+	 * IAsignacion.tsh = Instruccion.tsh
+	 * Instruccion.error = IAsignacion.error
+	 * IAsignacion.etqh = Instruccion.etqh
+	 * Instruccion.etq = IAsignacion.etq
+	 * Instruccion.cod = IAsignacion.cod
+	 * </code>
 	 */
 	public class InstR1 extends Inst {
 
 		public InstR1(Inst iasig) {
 			this.iasig = iasig;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 			iasig.registraCtx(new InstCtx() {
-				public TS tsh() {
-					return InstR1.this.tsh();
+				public TS tsh_exp() {
+					return InstR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return InstR1.this.etqh();
-				}
-
-				public String regla() {
-					return "Instruccion ::= IAsignacion | IAsignacion";
+				public int etqh_exp() {
+					return InstR1.this.etqh().val();
 				}
 			});
+			etq().ponDependencias(iasig.etq());
+			cod().ponDependencias(iasig.cod());
+			err().ponDependencias(iasig.err());
+			iasig.etqh().ponDependencias(etqh());
+			iasig.tsh().ponDependencias(tsh());
 		}
 
-		public String regla() {
-			return "Instruccion ::= IAsignacion | Instruccion";
+		public Integer etq_exp() {
+			return iasig.etq().val();
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-			 etq= iasig.etq();
-			 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+			return iasig.err().val();
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = iasig.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return iasig.cod().val();
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = iasig.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private Error err;
-		private boolean hay_err;
-		private boolean hay_cod;
-		private boolean hay_etq;
-		private int etq;
-		private List<Instruccion> cod;
 		private Inst iasig;
 
 	}
 
 	public class InstR1Debug extends InstR1 {
+		private final static String REGLA = "Instruccion ::= IAsignacion";
+
 		public InstR1Debug(Inst iAsig) {
 			super(iAsig);
+			err().fijaDescripcion(REGLA + "|Instrucciones.err");
+			cod().fijaDescripcion(REGLA + "|Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + "|Instrucciones.etq");
+			iAsig.etqh().fijaDescripcion(REGLA + "|Iasignacion.etqh");
+			iAsig.tsh().fijaDescripcion(REGLA + "|Iasignacion.tsh");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
-	 * Instruccion ::= IIF IIF.tsh = Instruccion.tsh Instruccion.error =
-	 * IIF.error IIF.etqh = Instruccion.etqh Instruccion.etq = IIF.etq
+	/**
+	 * <code>
+	 * Instruccion ::= IIF 
+	 * IIF.tsh = Instruccion.tsh 
+	 * Instruccion.error = IIF.error 
+	 * IIF.etqh = Instruccion.etqh 
+	 * Instruccion.etq = IIF.etq
 	 * Instruccion.cod = IIF.cod
+	 * </code>
 	 */
 	public class InstR2 extends Inst {
 
 		public InstR2(Inst iIF) {
 			this.iIF = iIF;
-			 this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 			iIF.registraCtx(new InstCtx() {
-				public TS tsh() {
-					return InstR2.this.tsh();
+				public TS tsh_exp() {
+					return InstR2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return InstR2.this.etqh();
-				}
-
-				public String regla() {
-					return "Instruccion ::= IIF | IIF";
+				public int etqh_exp() {
+					return InstR2.this.etqh().val();
 				}
 			});
 
+			err().ponDependencias(iIF.err());
+			etq().ponDependencias(iIF.etq());
+			cod().ponDependencias(iIF.cod());
+			iIF.tsh().ponDependencias(tsh());
+			iIF.etqh().ponDependencias(etqh());
 		}
 
-		public String regla() {
-			return "Instruccion ::= IIF | Instruccion";
+		public Integer etq_exp() {
+			return iIF.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= iIF.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+
+			return iIF.err().val();
+
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = iIF.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return iIF.cod().val();
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = iIF.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private Error err;
-		private boolean hay_etq;
-		private int etq;
-		private boolean hay_err;
-		private boolean hay_cod;
-		private List<Instruccion> cod;
 		private Inst iIF;
 	}
 
 	public class InstR2Debug extends InstR2 {
+		private final static String REGLA = "Instruccion ::= IIF | IIF";
+
 		public InstR2Debug(Inst iIF) {
 			super(iIF);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			err().fijaDescripcion(REGLA + "Instruccion.err");
+			etq().fijaDescripcion(REGLA + "Instruccion.etq");
+			cod().fijaDescripcion(REGLA + "Instruccion.cod");
+			iIF.tsh().fijaDescripcion(REGLA + "IIF.tsh");
+			iIF.etqh().fijaDescripcion(REGLA + "IIF.etqh");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Instruccion ::= IDO 
 	 * IDO.tsh = Instruccion.tsh 
 	 * Instruccion.error = IDO.error 
 	 * IDO.etqh = Instruccion.etqh 
 	 * Instruccion.etq = IDO.etq
 	 * Instruccion.cod = IDO.cod
+	 * </code>
 	 */
 	public class InstR3 extends Inst {
 
 		public InstR3(Inst iDO) {
 			this.iDO = iDO;
-			 this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 			iDO.registraCtx(new InstCtx() {
-				public TS tsh() {
-					return InstR3.this.tsh();
+				public TS tsh_exp() {
+					return InstR3.this.tsh().val();
 				}
 
-				public int etqh() {
-					return InstR3.this.etqh();
+				public int etqh_exp() {
+					return InstR3.this.etqh().val();
 				}
 
-				public String regla() {
-					return "Instruccion ::= IDO | IDO";
-				}
 			});
+			err().ponDependencias(iDO.err());
+			etq().ponDependencias(iDO.etq());
+			cod().ponDependencias(iDO.cod());
+			iDO.tsh().ponDependencias(tsh());
+			iDO.etqh().ponDependencias(etqh());
 		}
 
-		public String regla() {
-			return "Instruccion ::= IDO | Instruccion";
+		public Integer etq_exp() {
+			return iDO.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-			 etq= iDO.etq();
-			 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+
+			return iDO.err().val();
+
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = iDO.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return iDO.cod().val();
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = iDO.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private Error err;
-		private List<Instruccion> cod;
-		private boolean hay_err;
-		private boolean hay_cod;
-		private int etq;
-		private boolean hay_etq;
 		private Inst iDO;
 	}
 
 	public class InstR3Debug extends InstR3 {
+		private final static String REGLA = "Instruccion ::= IDO | Instruccion";
+
 		public InstR3Debug(Inst iDO) {
 			super(iDO);
+			err().fijaDescripcion(REGLA + "Instruccion.err");
+			etq().fijaDescripcion(REGLA + "Instruccion.etq");
+			cod().fijaDescripcion(REGLA + "Instruccion.cod");
+			iDO.tsh().fijaDescripcion(REGLA + "IDO.tsh");
+			iDO.etqh().fijaDescripcion(REGLA + "IDO.etqh");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * IAsignacion ::= IDEN := Exp0 
 	 * Exp0.tsh = IAsignacion.tsh 
 	 * IAsignacion.error = not asignacionCorrecta(IDEN.lex,IAsignacion.tsh,Exp0.tipo)
 	 * Exp0.etqh = IAsignacion.etqh 
 	 * IAsignacion.etq = Exp0.etq + 1 
 	 * IAsignacion.cod = Exp0.cod || desapila_dir(dirDe(IDEN.lex,IAsignacion.tsh))
+	 * </code>
 	 */
 	public class IAsigR1 extends Inst {
 
 		public IAsigR1(Token iden, Exp0 exp0) {
 			this.iden = iden;
 			this.exp0 = exp0;
-			this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
-			exp0.registraCtx(new Exp0Ctx() {
-				public TS tsh() {
-					return IAsigR1.this.tsh();
+			exp0.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return IAsigR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return IAsigR1.this.etqh();
-				}
-
-				public String regla() {
-					return "IAsignacion ::= IDEN := Exp0 | Exp0";
+				public Integer etqh_exp() {
+					return IAsigR1.this.etqh().val();
 				}
 			});
+			err().ponDependencias(tsh());
+			etq().ponDependencias(exp0.etq());
+			cod().ponDependencias(exp0.cod(), tsh());
+			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(etqh());
+
 		}
 
-		public String regla() {
-			return "IAsignacion ::= IDEN := Exp0 | IAsignacion";
+		public Integer etq_exp() {
+			return exp0.etq().val() + 1;
 		}
 
-		public int etq() {
-			 
-			 if (!hay_etq){
-				 etq= exp0.etq()+1;
-				 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+			if (!asignacionCorrecta(iden.leeLexema(), tsh().val(), exp0.tipo()
+					.val())) {
+				return new Error("La asignación no ha sido correcta");
+			} else
+				return new Error();
 		}
 
-		public Error err() {
-			 
-			 if (!hay_err) {
-				 if (!asignacionCorrecta(iden.leeLexema(),tsh(),exp0.tipo())){
-					 err = new Error("La asignación no ha sido correcta");
-					 hay_err = true;
-				 }
-				 else 
-					 err= new Error();
-			 }
-			 return err;
-		}
+		public List<Instruccion> cod_exp() {
+			return concat(exp0.cod().val(), desapila(String.valueOf(dirDe(
+					iden.leeLexema(), tsh().val()))));
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-			 cod =
-			 concat(exp0.cod(),desapila(String.valueOf(dirDe(iden.leeLexema(),
-			 tsh()))));
-			 hay_cod = true;
-			 }
-			 return cod;
 		}
 
 		private Token iden;
 		private Exp0 exp0;
-		 private int etq;
-		 private boolean hay_etq;
-		 private List<Instruccion> cod;
-		 private boolean hay_cod;
-		 private Error err;
-		 private boolean hay_err;
 
 	}
 
 	public class IAsigR1Debug extends IAsigR1 {
+		private final static String REGLA = "IAsignacion ::= IDEN := Exp0";
+
 		public IAsigR1Debug(Token iden, Exp0 exp0) {
 			super(iden, exp0);
-		}
+			err().fijaDescripcion(REGLA + "IAsignacion.err");
+			etq().fijaDescripcion(REGLA + "Asignacion.etq");
+			cod().fijaDescripcion(REGLA + "IAsignacion.cod");
+			exp0.tsh().fijaDescripcion(REGLA + "Exp0.cod");
+			exp0.etqh().fijaDescripcion(REGLA + "Exp0.cod");
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * IIF ::= if Casos fi 
 	 * Casos.tsh = IIF.tsh 
 	 * IIF.error = Casos.error
@@ -1555,87 +1397,66 @@ public class GA {
 	 * Casos.irh = Casos.etq 
 	 * IIF.etq = Casos.etq 
 	 * IIF.cod =Casos.cod
+	 * </code>
 	 */
 	public class IIFR1 extends Inst {
 
 		public IIFR1(Casos casos) {
 			this.casos = casos;
-			 this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 			casos.registraCtx(new CasosCtx() {
-				public TS tsh() {
-					return IIFR1.this.tsh();
+				public TS tsh_exp() {
+					return IIFR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return IIFR1.this.etqh();
+				public int etqh_exp() {
+					return IIFR1.this.etqh().val();
 				}
 
-				public int irh() {
-					return IIFR1.this.casos.etq();
-				}
-
-				public String regla() {
-					return "IIF ::= if Casos fi | Casos";
+				public int irh_exp() {
+					return IIFR1.this.casos.etq().val();
 				}
 			});
+			err().ponDependencias(casos.err());
+			etq().ponDependencias(casos.etq());
+			cod().ponDependencias(casos.cod());
+			casos.tsh().ponDependencias(tsh());
+			casos.etqh().ponDependencias(etqh());
+			casos.irh().ponDependencias(casos.etq());
 		}
 
-		public String regla() {
-			return " IIF ::= if Casos fi  | IIF";
+		public Integer etq_exp() {
+			return casos.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-			 etq= casos.etq();
-			 hay_etq = true;
-			 }
-			 return etq;
-			 
+		public Error err_exp() {
+
+			return casos.err().val();
+
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = casos.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return casos.cod().val();
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = casos.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private Error err;
-		private List<Instruccion> cod;
-		private boolean hay_err;
-		private boolean hay_cod;
 		private Casos casos;
 	}
 
 	public class IIFR1Debug extends IIFR1 {
+		private final static String REGLA = "IIF ::= if Casos fi";
+
 		public IIFR1Debug(Casos casos) {
 			super(casos);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			err().fijaDescripcion(REGLA + "|IIF.err");
+			etq().fijaDescripcion(REGLA + "|IIF.etq");
+			cod().fijaDescripcion(REGLA + "|IIF.cod");
+			casos.tsh().fijaDescripcion(REGLA + "|Casos.tsh");
+			casos.etqh().fijaDescripcion(REGLA + "|Casos.etqh");
+			casos.irh().fijaDescripcion(REGLA + "|Casos.irh");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * IDO ::= do Casos od
 	 * 
 	 * Casos.tsh = IDO.tsh 
@@ -1644,86 +1465,69 @@ public class GA {
 	 * Casos.irh = IDO.etqh 
 	 * IDO.etq = Casos.etq 
 	 * IDO.cod = Casos.cod
+	 * </code>
 	 */
 	public class IDOR1 extends Inst {
 
 		public IDOR1(Casos casos) {
 			this.casos = casos;
-			this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
+
 			casos.registraCtx(new CasosCtx() {
-				public TS tsh() {
-					return IDOR1.this.tsh();
+				public TS tsh_exp() {
+					return IDOR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return IDOR1.this.etqh();
+				public int etqh_exp() {
+					return IDOR1.this.etqh().val();
 				}
 
-				public int irh() {
-					return IDOR1.this.etqh();
-				}
-
-				public String regla() {
-					return "IDO ::= do Casos od | Casos";
+				public int irh_exp() {
+					return IDOR1.this.etqh().val();
 				}
 			});
+			err().ponDependencias(casos.err());
+			etq().ponDependencias(casos.etq());
+			cod().ponDependencias(casos.cod());
+			casos.tsh().ponDependencias(tsh());
+			casos.etqh().ponDependencias(etqh());
+			casos.irh().ponDependencias(etqh());
 		}
 
-		public String regla() {
-			return " IDO ::= do Casos od  | IDO";
+		public Integer etq_exp() {
+
+			return casos.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= casos.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+			return casos.err().val();
+
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = casos.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+
+			return casos.cod().val();
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = casos.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private Error err;
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_err;
-		private boolean hay_cod;
 		private Casos casos;
 	}
 
 	public class IDOR1Debug extends IDOR1 {
+		private final static String REGLA = "IDO ::= do Casos od";
+
 		public IDOR1Debug(Casos casos) {
 			super(casos);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			err().fijaDescripcion(REGLA + "|IDO.err");
+			etq().fijaDescripcion(REGLA + "|IDO.etq");
+			cod().fijaDescripcion(REGLA + "|IDO.cod");
+			casos.tsh().fijaDescripcion(REGLA + "|Casos.tsh");
+			casos.etqh().fijaDescripcion(REGLA + "|Casos.etqh");
+			casos.irh().fijaDescripcion(REGLA + "|Casos.irh");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Casos ::= Casos [] Caso 
 	 * Casos(1).tsh = Casos(0).tsh 
 	 * Caso.tsh=Casos(0).tsh 
@@ -1734,105 +1538,89 @@ public class GA {
 	 * Casos(1).irh = Casos(0).irh 
 	 * Caso.irh = Casos(0).irh 
 	 * Casos(0).cod =Casos(1).cod || Caso.cod
+	 * </code>
 	 */
 	public class CasosR1 extends Casos {
 
 		public CasosR1(Casos casos, Caso caso) {
 			this.casos1 = casos;
 			this.caso = caso;
-			this.hay_err = false;
-			this.hay_cod = false;
-			this.hay_etq = false;
+
 			casos1.registraCtx(new CasosCtx() {
-				public TS tsh() {
-					return CasosR1.this.tsh();
+				public TS tsh_exp() {
+					return CasosR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return CasosR1.this.etqh();
+				public int etqh_exp() {
+					return CasosR1.this.etqh().val();
 				}
 
-				public int irh() {
-					return CasosR1.this.irh();
+				public int irh_exp() {
+					return CasosR1.this.irh().val();
 				}
 
-				public String regla() {
-					return "Casos(0)::= Casos(1) [] Caso | Casos(1) ";
-				}
 			});
 			caso.registraCtx(new CasoCtx() {
-				public TS tsh() {
-					return CasosR1.this.tsh();
+				public TS tsh_exp() {
+					return CasosR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return CasosR1.this.casos1.etq();
+				public int etqh_exp() {
+					return CasosR1.this.casos1.etq().val();
 				}
 
-				public int irh() {
-					return CasosR1.this.irh();
-				}
-
-				public String regla() {
-					return "Casos(0)::= Casos(1) [] Caso | Caso ";
+				public int irh_exp() {
+					return CasosR1.this.irh().val();
 				}
 			});
+			caso.tsh().ponDependencias(tsh());
+			caso.etqh().ponDependencias(casos1.etqh());
+			caso.irh().ponDependencias(irh());
+			casos1.tsh().ponDependencias(tsh());
+			casos1.etqh().ponDependencias(etqh());
+			casos1.irh().ponDependencias(irh());
+			err().ponDependencias(casos1.err(), caso.err());
+			cod().ponDependencias(casos1.cod(), caso.cod());
+			etq().ponDependencias(caso.etq());
 		}
 
-		public String regla() {
-			return "Casos(0)::= Casos(1) [] Caso | Casos(0) ";
+		public Integer etq_exp() {
+			return caso.etq().val();
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= caso.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+			return joinErrors(casos1.err().val(), caso.err().val());
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = joinErrors(casos1.err(), caso.err());
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return concat(casos1.cod().val(), caso.cod().val());
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = concat(casos1.cod(), caso.cod());
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private Error err;
-		private List<Instruccion> cod;
-		private boolean hay_err;
-		private boolean hay_cod;
 		private Casos casos1;
 		private Caso caso;
 	}
 
 	public class CasosR1Debug extends CasosR1 {
+		private final static String REGLA = "Casos(0)::= Casos(1) [] Caso";
+
 		public CasosR1Debug(Casos casos_1, Caso caso) {
 			super(casos_1, caso);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			caso.tsh().fijaDescripcion(REGLA + "|Caso.tsh");
+			caso.etqh().fijaDescripcion(REGLA + "|Caso.etqh");
+			caso.irh().fijaDescripcion(REGLA + "|Caso.irh");
+			casos_1.tsh().fijaDescripcion(REGLA + "|Casos1.tsh");
+			casos_1.etqh().fijaDescripcion(REGLA + "|Casos1.etqh");
+			casos_1.irh().fijaDescripcion(REGLA + "|Casos1.irh");
+			err().fijaDescripcion(REGLA + "|Casos0.err");
+			cod().fijaDescripcion(REGLA + "|Casos0.cod");
+			etq().fijaDescripcion(REGLA + "|Casos0.etq");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Casos ::= Caso
 	 * 
 	 * Propagaci—n de la tabla de s’mbolos 
@@ -1844,91 +1632,73 @@ public class GA {
 	 * Casos.etq = Caso.etq 
 	 * Caso.irh = Casos.irh
 	 * Casos.cod = Caso.cod
+	 * </code>
 	 */
 	public class CasosR2 extends Casos {
 
 		public CasosR2(Caso caso) {
 			this.caso = caso;
-			this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
+
 			caso.registraCtx(new CasoCtx() {
-				public TS tsh() {
-					return CasosR2.this.tsh();
+				public TS tsh_exp() {
+					return CasosR2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return CasosR2.this.etqh();
+				public int etqh_exp() {
+					return CasosR2.this.etqh().val();
 				}
 
-				public int irh() {
-					return CasosR2.this.irh();
-				}
-
-				public String regla() {
-					return "Casos ::= Caso | Caso";
+				public int irh_exp() {
+					return CasosR2.this.irh().val();
 				}
 			});
+			caso.tsh().ponDependencias(tsh());
+			caso.etqh().ponDependencias(etqh());
+			caso.irh().ponDependencias(irh());
+			err().ponDependencias(caso.err());
+			cod().ponDependencias(caso.cod());
+			etq().ponDependencias(caso.etq());
 		}
 
-		public String regla() {
-			return " Casos ::= Caso | Casos";
+		public Integer etq_exp() {
+			return caso.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= caso.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public Error err_exp() {
+
+			return caso.err().val();
+
 		}
 
-		public Error err() {
-			if (!hay_err) {
-				err = caso.err();
-				hay_err = true;
-			}
-			return err;
+		public List<Instruccion> cod_exp() {
+			return caso.cod().val();
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = caso.cod();
-				hay_cod = true;
-			}
-			return cod;
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private Error err;
-		private List<Instruccion> cod;
-		private boolean hay_err;
-		private boolean hay_cod;
 		private Caso caso;
 
 	}
 
 	public class CasosR2Debug extends CasosR2 {
+		private final static String REGLA = "Casos ::= Caso | Caso";
+
 		public CasosR2Debug(Caso caso) {
 			super(caso);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			caso.tsh().fijaDescripcion(REGLA + "|Caso.tsh");
+			caso.etqh().fijaDescripcion(REGLA + "|Caso.etqh");
+			caso.irh().fijaDescripcion(REGLA + "|Caso.irh");
+			err().fijaDescripcion(REGLA + "|Casos.err");
+			cod().fijaDescripcion(REGLA + "|Casos.cod");
+			etq().fijaDescripcion(REGLA + "|Casos.etq");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Caso ::= case Exp0 -> Instrucciones
 	 * 
 	 * Propagaci—n de la tabla de s’mbolos 
-	 * Exp0.tsh = Casos.tsh
+	 * Exp0.tsh = Caso.tsh
 	 * Instrucciones.tsh = Caso.tsh 
 	 * Comprobaci—n de las restricciones contextuales 
 	 * Caso.error = Instrucciones.error or not (Exp0.tipo = boolean)
@@ -1937,119 +1707,90 @@ public class GA {
 	 * Instrucciones.etqh =Exp0.etq + 1 
 	 * Caso.etq = Instrucciones.etq + 1 
 	 * Caso.cod = Exp0.cod || ir_f(Instrucciones.etq + 1) || Instrucciones.cod || ir_a(Caso.irh)
+	 * </code>
 	 */
 	public class CasoR1 extends Caso {
 
 		public CasoR1(Exp0 exp0, Insts insts) {
 			this.exp0 = exp0;
 			this.insts = insts;
-			 this.hay_err = false;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
-			exp0.registraCtx(new Exp0Ctx() {
-				public TS tsh() {
-					return CasoR1.this.tsh();
+
+			exp0.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return CasoR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return CasoR1.this.etqh();
-				}
-
-				public String regla() {
-					return "Caso ::= case Exp0 -> Instrucciones | Exp0";
+				public Integer etqh_exp() {
+					return CasoR1.this.etqh().val();
 				}
 			});
 			insts.registraCtx(new InstsCtx() {
-				public TS tsh() {
-					return CasoR1.this.tsh();
+				public TS tsh_exp() {
+					return CasoR1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return CasoR1.this.exp0.etq() + 1;
-				}
-
-				public String regla() {
-					return "Caso ::= case Exp0 -> Instrucciones | Instrucciones";
+				public int etqh_exp() {
+					return CasoR1.this.exp0.etq().val() + 1;
 				}
 			});
-		}
-
-		public String regla() {
-			return " Caso ::= case Exp0 -> Instrucciones | Caso";
-		}
-
-		public int etq() {
-			 if (!hay_etq){
-				 etq= insts.etq()+1;
-				hay_etq = true;
-			 }
-			 return etq;
+			exp0.tsh().ponDependencias(tsh());
+			etq().ponDependencias(insts.etq());
+			err().ponDependencias(insts.err(), exp0.tipo());
+			cod().ponDependencias(exp0.cod(), insts.etq(), insts.cod(), irh());
 
 		}
 
-		public Error err() {
-			 if (!hay_err) {
-			 if (exp0.tipo() != CatLexica.BOOLEAN) {
-				 Error errExp0 = new Error("Exp0 no es un booleano");
-				 err = joinErrors(insts.err(), errExp0);
-			 } else
-				 err = insts.err();
-			 	hay_err = true;
-			 }
-			 return err;
-
-//			boolean e = (exp0.tipo().compareTo(CatLexica.BOOLEAN) == 0);
-//			Error error;
-//			if (!e) {
-//				error = new Error("Error de tipos");
-//			} else
-//				error = noError();
-//			return joinErrors(insts.err(), error);
+		public Integer etq_exp() {
+			return insts.etq().val() + 1;
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = concat(exp0.cod(), ir_f(insts.etq() + 1));
-				cod = concat(cod, insts.cod());
-				cod = concat(cod, ir_a(irh()));
-				hay_cod = true;
+		public Error err_exp() {
+			if (exp0.tipo().val() != CatLexica.BOOLEAN) {
+				Error errExp0 = new Error("Exp0 no es un booleano");
+				return joinErrors(insts.err().val(), errExp0);
+			} else {
+				return insts.err().val();
 			}
-			return cod;
 		}
 
-		private List<Instruccion> cod;
-		private boolean hay_cod;
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> c = new LinkedList<Instruccion>();
+			c = concat(exp0.cod().val(), ir_f(insts.etq().val() + 1));
+			c = concat(c, insts.cod().val());
+			c = concat(c, ir_a(irh().val()));
+			return c;
+		}
+
 		private Exp0 exp0;
 		private Insts insts;
-		private Error err;
-		private boolean hay_err;
-		private int etq;
-		private boolean hay_etq;
 	}
 
 	public class CasoR1Debug extends CasoR1 {
+		private final static String REGLA = "Caso ::= case Exp0 -> Instrucciones";
+
 		public CasoR1Debug(Exp0 exp0, Insts insts) {
 			super(exp0, insts);
+			exp0.tsh().fijaDescripcion(REGLA + "|exp0.tsh");
+			etq().fijaDescripcion(REGLA + "|insts.etq");
+			err().fijaDescripcion(REGLA + "|insts.err");
+			cod().fijaDescripcion(REGLA + "|insts.cod");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", super.err());
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * 
 	 * Exp0 ::= Exp1 OpComparacion Exp1
 	 * 
-	 * Exp1(0).tsh = Exp0.tsh Exp1(1).tsh = Exp0.tsh Exp0.tipo =
-	 * tipoOpBin(OpComparacion.op,Exp1(0).tipo,Exp1(1).tipo) Exp1(0).etqh =
-	 * Exp0.etqh Exp1(1).etqh = Exp1(0).etq Exp0.etq = Exp1(1).etq + 1 Exp0.cod
-	 * = Exp1(0).cod || Exp1(1).cod ||OpComparacion.cod
+	 * Exp1(0).tsh = Exp0.tsh 
+	 * Exp1(1).tsh = Exp0.tsh 
+	 * Exp0.tipo =tipoOpBin(OpComparacion.op,Exp1(0).tipo,Exp1(1).tipo) 
+	 * Exp1(0).etqh =Exp0.etqh 
+	 * Exp1(1).etqh = Exp1(0).etq 
+	 * Exp0.etq = Exp1(1).etq + 1 
+	 * Exp0.cod= Exp1(0).cod || Exp1(1).cod ||OpComparacion.cod
+	 * </code>
 	 */
 	public class Exp0R1 extends Exp0 {
 
@@ -2057,65 +1798,51 @@ public class GA {
 			this.exp1_0 = exp1_0;
 			this.exp1_1 = exp1_1;
 			this.opc = opc;
-			this.hay_cod = false;
-			this.hay_etq = false;
 
-			exp1_0.registraCtx(new Exp1Ctx() {
-				public TS tsh() {
-					return Exp0R1.this.tsh();
+			exp1_0.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp0R1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp0R1.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp0 ::= Exp1(0) OpComparacion Exp1(1) | Exp1(0)";
+				public Integer etqh_exp() {
+					return Exp0R1.this.etqh().val();
 				}
 			});
-			exp1_1.registraCtx(new Exp1Ctx() {
-				public TS tsh() {
-					return Exp0R1.this.tsh();
+			exp1_1.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp0R1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp0R1.this.exp1_0.etq();
-				}
-
-				public String regla() {
-					return "Exp0 ::= Exp1(0) OpComparacion Exp1(1) | Exp1(1)";
+				public Integer etqh_exp() {
+					return Exp0R1.this.exp1_0.etq().val();
 				}
 			});
+			exp1_0.tsh().ponDependencias(tsh());
+			exp1_0.etqh().ponDependencias(etqh());
+			exp1_1.etqh().ponDependencias(exp1_0.etq());
+			exp1_1.tsh().ponDependencias(exp1_0.tsh());
+			cod().ponDependencias(exp1_0.cod(), exp1_1.cod(), opc.cod());
+			etq().ponDependencias(exp1_1.etq());
+			tipo().ponDependencias(opc.op(), exp1_0.tipo(), exp1_1.tipo());
+
 		}
 
-		public String regla() {
-			return " Exp0 ::= Exp1(0) OpComparacion Exp1(1) | Exp0";
+		public List<Instruccion> cod_exp() {
+			return concat(exp1_0.cod().val(),
+					concat(exp1_1.cod().val(), opc.cod().val()));
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = concat(exp1_0.cod(), concat(exp1_1.cod(), opc.cod()));
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp1_1.etq().val() + 1;
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= exp1_1.etq()+1;
-				 hay_etq = true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return tipoOpBin(opc.op().val(), exp1_0.tipo().val(), exp1_1.tipo()
+					.val());
 		}
 
-		public CatLexica tipo() {
-			return tipoOpBin(opc.op(), exp1_0.tipo(), exp1_1.tipo());
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp1 exp1_0;
 		private Exp1 exp1_1;
 		private OpComparacion opc;
@@ -2123,21 +1850,22 @@ public class GA {
 	}
 
 	public class Exp0R1Debug extends Exp0R1 {
+		private final static String REGLA = "Exp0 ::= Exp1(0) OpComparacion Exp1(1)";
+
 		public Exp0R1Debug(Exp1 exp1_0, Exp1 exp1_1, OpComparacion op) {
 			super(exp1_0, exp1_1, op);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			exp1_0.tsh().fijaDescripcion(REGLA + "|exp1_0.tsh");
+			exp1_0.etqh().fijaDescripcion(REGLA + "|exp1_0.etqh");
+			exp1_1.etqh().fijaDescripcion(REGLA + "|exp1_1.etqh");
+			exp1_1.tsh().fijaDescripcion(REGLA + "|exp1_1.tsh");
+			cod().fijaDescripcion(REGLA + "|exp0.cod");
+			etq().fijaDescripcion(REGLA + "|exp0.etq");
+			tipo().fijaDescripcion(REGLA + "|exp0.tipo");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp0 ::= Exp1
 	 * 
 	 * Propagaci—n de la tabla de s’mbolos 
@@ -2148,76 +1876,62 @@ public class GA {
 	 * Exp1.etqh = Exp0.etqh 
 	 * Exp0.etq = Exp1.etq 
 	 * Exp0.cod = Exp1.cod
+	 * </code>
 	 */
 	public class Exp0R2 extends Exp0 {
 
 		public Exp0R2(Exp1 exp1) {
 			this.exp1 = exp1;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
-			exp1.registraCtx(new Exp1Ctx() {
-				public TS tsh() {
-					return Exp0R2.this.tsh();
+
+			exp1.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp0R2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp0R2.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp0 ::= Exp1 | Exp1";
+				public Integer etqh_exp() {
+					return Exp0R2.this.etqh().val();
 				}
 			});
+			exp1.tsh().ponDependencias(tsh());
+			exp1.etqh().ponDependencias(etqh());
+			cod().ponDependencias(exp1.cod());
+			etq().ponDependencias(exp1.etq());
+			tipo().ponDependencias(exp1.tipo());
+
 		}
 
-		public String regla() {
-			return " Exp0 ::= Exp1 | Exp0";
+		public List<Instruccion> cod_exp() {
+			return exp1.cod().val();
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = exp1.cod();
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp1.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq = exp1.etq();
-				 hay_etq=true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return exp1.tipo().val();
 		}
 
-		public CatLexica tipo() {
-			return exp1.tipo();
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp1 exp1;
-		private boolean hay_etq;
-		private int etq;
-
 	}
 
 	public class Exp0R2Debug extends Exp0R2 {
+		private final static String REGLA = "Exp0 ::= Exp1 | Exp0";
+
 		public Exp0R2Debug(Exp1 exp1) {
 			super(exp1);
+			exp1.tsh().fijaDescripcion(REGLA + "|exp1.tsh");
+			exp1.etqh().fijaDescripcion(REGLA + "|exp1.etqh");
+			cod().fijaDescripcion(REGLA + "|exp0.cod");
+			etq().fijaDescripcion(REGLA + "|exp0.etq");
+			tipo().fijaDescripcion(REGLA + "|exp0.tipo");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp1 ::= Exp1 OpAditivo Exp2
 	 * Exp1(1).tsh = Exp1(0).tsh 
 	 * Exp2.tsh = Exp1(0).tsh 
@@ -2226,6 +1940,7 @@ public class GA {
 	 * Exp2.etqh = Exp1(1).etq 
 	 * Exp1(0).etq = Exp2.etq + 1 
 	 * Exp1(0).cod = Exp1(1).cod || Exp2.cod || OpAditivo.cod
+	 * </code>
 	 */
 	public class Exp1R1 extends Exp1 {
 
@@ -2233,87 +1948,75 @@ public class GA {
 			this.exp1 = exp1;
 			this.exp2 = exp2;
 			this.opa = opa;
-			this.hay_cod = false;
-			this.hay_etq = false;
 
-			exp1.registraCtx(new Exp1Ctx() {
-				public TS tsh() {
-					return Exp1R1.this.tsh();
+			exp1.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp1R1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp1R1.this.etqh();
+				public Integer etqh_exp() {
+					return Exp1R1.this.etqh().val();
 				}
 
-				public String regla() {
-					return " Exp1(0) ::= Exp1(1) OpAditivo Exp2 | Exp1(1)";
+			});
+			exp2.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp1R1.this.tsh().val();
+				}
+
+				public Integer etqh_exp() {
+					return Exp1R1.this.exp1.etq().val();
 				}
 			});
-			exp2.registraCtx(new Exp2Ctx() {
-				public TS tsh() {
-					return Exp1R1.this.tsh();
-				}
+			exp1.tsh().ponDependencias(tsh());
+			exp2.tsh().ponDependencias(tsh());
+			exp1.etqh().ponDependencias(etqh());
+			exp2.etqh().ponDependencias(exp1.etqh());
+			cod().ponDependencias(exp1.cod(), exp2.cod(), opa.cod());
+			etq().ponDependencias(exp2.etq());
+			tipo().ponDependencias(opa.op(), exp1.tipo(), exp2.tipo());
 
-				public int etqh() {
-					return Exp1R1.this.exp1.etq();
-				}
-
-				public String regla() {
-					return "Exp1(0) ::= Exp1(1) OpAditivo Exp2 | Exp2";
-				}
-			});
 		}
 
-		public String regla() {
-			return "Exp1(0) ::= Exp1(1) OpAditivo Exp2 | Exp1(0)";
+		public List<Instruccion> cod_exp() {
+			return concat(exp1.cod().val(),
+					concat(exp2.cod().val(), opa.cod().val()));
+
 		}
 
-		public List<Instruccion> cod() {
-
-			if (!hay_cod) {
-				cod = concat(exp1.cod(), concat(exp2.cod(), opa.cod()));
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp2.etq().val() + 1;
 		}
 
-		public int etq() {
-			if (!hay_etq){
-				etq= exp2.etq()+1;
-				hay_etq = true;
-			}
-			return etq;
+		public CatLexica tipo_exp() {
+			return tipoOpBin(opa.op().val(), exp1.tipo().val(), exp2.tipo()
+					.val());
 		}
 
-		public CatLexica tipo() {
-			return tipoOpBin(opa.op(), exp1.tipo(), exp2.tipo());
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp1 exp1;
 		private Exp2 exp2;
 		private OpAditivo opa;
-		private int etq;
-		private boolean hay_etq;
 
 	}
 
 	public class Exp1R1Debug extends Exp1R1 {
+		private final static String REGLA = "Exp1(0) ::= Exp1(1) OpAditivo Exp2";
+
 		public Exp1R1Debug(Exp1 exp1_1, Exp2 exp2, OpAditivo opAdit) {
 			super(exp1_1, exp2, opAdit);
+			exp1_1.tsh().fijaDescripcion(REGLA + "|exp1_1.tsh");
+			exp1_1.etqh().fijaDescripcion(REGLA + "|exp1_1.etqh");
+			exp2.etqh().fijaDescripcion(REGLA + "|exp2.etqh");
+			exp2.tsh().fijaDescripcion(REGLA + "|exp2.tsh");
+			cod().fijaDescripcion(REGLA + "|exp1_0.cod");
+			etq().fijaDescripcion(REGLA + "|exp1_0.etq");
+			tipo().fijaDescripcion(REGLA + "|exp1_0.tipo");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
-	/*
+
+	/**
+	 * <code>
 	 * Exp1 ::= Exp2
 	 * 
 	 * Exp2.tsh = Exp1.tsh 
@@ -2321,78 +2024,62 @@ public class GA {
 	 * Exp2.etqh = Exp1.etqh 
 	 * Exp1.etq = Exp2.etq 
 	 * Exp1.cod = Exp2.cod
+	 * </code>
 	 */
 	public class Exp1R2 extends Exp1 {
 
 		public Exp1R2(Exp2 exp2) {
 			this.exp2 = exp2;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 
-			exp2.registraCtx(new Exp2Ctx() {
-				public TS tsh() {
-					return Exp1R2.this.tsh();
+			exp2.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp1R2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp1R2.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp1 ::= Exp2 | Exp2";
+				public Integer etqh_exp() {
+					return Exp1R2.this.etqh().val();
 				}
 			});
+			exp2.tsh().ponDependencias(tsh());
+			exp2.etqh().ponDependencias(etqh());
+			cod().ponDependencias(exp2.cod());
+			etq().ponDependencias(exp2.etq());
+			tipo().ponDependencias(exp2.tipo());
 		}
 
-		public String regla() {
-			return " Exp1 ::= Exp2 | Exp1";
+		public List<Instruccion> cod_exp() {
+
+			return exp2.cod().val();
 		}
 
-		public List<Instruccion> cod() {
+		public Integer etq_exp() {
 
-			if (!hay_cod) {
-				cod = exp2.cod();
-				hay_cod = true;
-			}
-			return cod;
+			return exp2.etq().val();
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= exp2.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return exp2.tipo().val();
 		}
 
-		public CatLexica tipo() {
-			return exp2.tipo();
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp2 exp2;
-		private int etq;
-		private boolean hay_etq;
-
 	}
 
 	public class Exp1R2Debug extends Exp1R2 {
+		private final static String REGLA = "Exp1 ::= Exp2";
+
 		public Exp1R2Debug(Exp2 exp2) {
 			super(exp2);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			exp2.tsh().fijaDescripcion(REGLA + "|exp2.tsh");
+			exp2.etqh().fijaDescripcion(REGLA + "|exp2.etqh");
+			cod().fijaDescripcion(REGLA + "|exp1.cod");
+			etq().fijaDescripcion(REGLA + "|exp1.etq");
+			tipo().fijaDescripcion(REGLA + "|exp1.tipo");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp2 ::= Exp2 OpMultiplicativo Exp3 
 	 * Exp2(1).tsh = Exp2(0).tsh 
 	 * Exp3.tsh = Exp2(0).tsh 
@@ -2400,6 +2087,7 @@ public class GA {
 	 * Exp3.etqh = Exp2(1).etq 
 	 * Exp2(0).etq = Exp3.etq + 1
 	 * Exp2(0).cod = Exp2(1).cod || Exp3.cod || OpMultiplicativo.cod
+	 * </code>
 	 */
 	public class Exp2R1 extends Exp2 {
 
@@ -2407,87 +2095,75 @@ public class GA {
 			this.exp2 = exp2;
 			this.exp3 = exp3;
 			this.opm = opm;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 
-			exp2.registraCtx(new Exp2Ctx() {
-				public TS tsh() {
-					return Exp2R1.this.tsh();
+			exp2.tsh().ponDependencias(tsh());
+			exp3.tsh().ponDependencias(tsh());
+			// exp2.etqh().ponDependencias(etqh());
+			exp3.etqh().ponDependencias(exp2.etqh());
+			cod().ponDependencias(exp2.cod(), exp3.cod(), opm.cod());
+			etq().ponDependencias(exp3.etq());
+			tipo().ponDependencias(opm.op(), exp2.tipo(), exp3.tipo());
+
+			exp2.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp2R1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp2R1.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp2(0) ::= Exp2(1) OpMultiplicativo Exp3 | Exp2(1)";
-				}
-			});
-			exp3.registraCtx(new Exp3Ctx() {
-				public TS tsh() {
-					return Exp2R1.this.tsh();
-				}
-
-				public int etqh() {
-					return Exp2R1.this.exp2.etq();
-				}
-
-				public String regla() {
-					return "Exp2(0) ::= Exp2(1) OpMultiplicativo Exp3 | Exp3";
+				public Integer etqh_exp() {
+					return Exp2R1.this.etqh().val();
 				}
 			});
+			exp3.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp2R1.this.tsh().val();
+				}
+
+				public Integer etqh_exp() {
+					return Exp2R1.this.exp2.etq().val();
+				}
+
+			});
 		}
 
-		public String regla() {
-			return "Exp2(0) ::= Exp2(1) OpMultiplicativo Exp3 | Exp2(0)";
+		public List<Instruccion> cod_exp() {
+
+			return concat(exp2.cod().val(),
+					concat(exp3.cod().val(), opm.cod().val()));
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = concat(exp2.cod(), concat(exp3.cod(), opm.cod()));
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp3.etq().val() + 1;
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= exp3.etq()+1;
-				 hay_etq = true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return tipoOpBin(opm.op().val(), exp2.tipo().val(), exp3.tipo()
+					.val());
 		}
 
-		public CatLexica tipo() {
-			return tipoOpBin(opm.op(), exp2.tipo(), exp3.tipo());
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp2 exp2;
 		private Exp3 exp3;
 		private OpMultiplicativo opm;
-		private int etq;
-		private boolean hay_etq;
-
 	}
 
 	public class Exp2R1Debug extends Exp2R1 {
+		private final static String REGLA = "Exp2(0) ::= Exp2(1) OpMultiplicativo Exp3";
+
 		public Exp2R1Debug(Exp2 exp2_1, Exp3 exp3, OpMultiplicativo opMult) {
 			super(exp2_1, exp3, opMult);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			exp2_1.tsh().fijaDescripcion(REGLA + "|exp2_1.tsh");
+			exp2_1.etqh().fijaDescripcion(REGLA + "|exp2_1.etqh");
+			exp3.etqh().fijaDescripcion(REGLA + "|exp3.etqh");
+			exp3.tsh().fijaDescripcion(REGLA + "|exp3.tsh");
+			cod().fijaDescripcion(REGLA + "|exp2_0.cod");
+			etq().fijaDescripcion(REGLA + "|exp2_0.etq");
+			tipo().fijaDescripcion(REGLA + "|exp12_0.tipo");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp2 ::= Exp3
 	 * 
 	 * Propagaci—n de la tabla de s’mbolos 
@@ -2498,76 +2174,62 @@ public class GA {
 	 * Exp3.etqh = Exp2.etqh 
 	 * Exp2.etq = Exp3.etq 
 	 * Exp2.cod = Exp3.cod
+	 * </code>
 	 */
 	public class Exp2R2 extends Exp2 {
 
 		public Exp2R2(Exp3 exp3) {
+			super();
 			this.exp3 = exp3;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
-			exp3.registraCtx(new Exp3Ctx() {
-				public TS tsh() {
-					return Exp2R2.this.tsh();
+
+			exp3.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp2R2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp2R2.this.etqh();
+				public Integer etqh_exp() {
+					return Exp2R2.this.etqh().val();
 				}
 
-				public String regla() {
-					return " Exp2 ::= Exp3 | Exp3";
-				}
 			});
+			exp3.tsh().ponDependencias(tsh());
+			exp3.etqh().ponDependencias(etqh());
+			cod().ponDependencias(exp3.cod());
+			etq().ponDependencias(exp3.etq());
+			tipo().ponDependencias(exp3.tipo());
 		}
 
-		public String regla() {
-			return " Exp2 ::= Exp3 | Exp2";
+		public List<Instruccion> cod_exp() {
+			return exp3.cod().val();
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = exp3.cod();
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp3.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= exp3.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return exp3.tipo().val();
 		}
 
-		public CatLexica tipo() {
-			return exp3.tipo();
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp3 exp3;
 
 	}
 
 	public class Exp2R2Debug extends Exp2R2 {
+		private final static String REGLA = "Exp2 ::= Exp3";
+
 		public Exp2R2Debug(Exp3 exp3) {
 			super(exp3);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			exp3.tsh().fijaDescripcion(REGLA + "|exp3.tsh");
+			exp3.etqh().fijaDescripcion(REGLA + "|exp3.etqh");
+			cod().fijaDescripcion(REGLA + "|exp2.cod");
+			etq().fijaDescripcion(REGLA + "|exp2.etq");
+			tipo().fijaDescripcion(REGLA + "|exp2.tipo");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp3 ::= OpUnario Exp3
 	 * 
 	 * Exp3(1).tsh = Exp3(0).tsh 
@@ -2575,78 +2237,64 @@ public class GA {
 	 * Exp3(1).etqh = Exp3(0).etqh
 	 * Exp3(0).etq = Exp3(1).etq + 1 
 	 * Exp3(0).cod = Exp3(1).cod || OpUnario.cod
+	 * </code>
 	 */
 	public class Exp3R1 extends Exp3 {
 
 		public Exp3R1(Exp3 exp3_1, OpUnario opu) {
 			this.exp3_1 = exp3_1;
 			this.opu = opu;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
-			exp3_1.registraCtx(new Exp3Ctx() {
-				public TS tsh() {
-					return Exp3R1.this.tsh();
+
+			exp3_1.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp3R1.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp3R1.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp3(0) ::= OpUnaria Exp3(1)  | Exp3(1)";
+				public Integer etqh_exp() {
+					return Exp3R1.this.etqh().val();
 				}
 			});
+			exp3_1.tsh().ponDependencias(tsh());
+			exp3_1.etqh().ponDependencias(etqh());
+			cod().ponDependencias(exp3_1.cod(), opu.op());
+			etq().ponDependencias(exp3_1.etq());
+			tipo().ponDependencias(opu.op(), exp3_1.tipo());
 		}
 
-		public String regla() {
-			return "Exp3(0) ::= OpUnaria Exp3(1)  | Exp3(1) | Exp3(0)";
+		public List<Instruccion> cod_exp() {
+
+			return concat(exp3_1.cod().val(), opu.cod().val());
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = concat(exp3_1.cod(), opu.cod());
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp3_1.etq().val() + 1;
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= exp3_1.etq()+1;
-				 hay_etq = true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return tipoOpUnario(opu.op().val(), exp3_1.tipo().val());
 		}
 
-		public CatLexica tipo() {
-			return tipoOpUnario(opu.op(), exp3_1.tipo());
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp3 exp3_1;
 		private OpUnario opu;
 
 	}
 
 	public class Exp3R1Debug extends Exp3R1 {
+		private final static String REGLA = "Exp3(0) ::= OpUnaria Exp3(1)";
+
 		public Exp3R1Debug(Exp3 exp3_1, OpUnario opUnar) {
 			super(exp3_1, opUnar);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			exp3_1.tsh().fijaDescripcion(REGLA + "|exp3_1.tsh");
+			exp3_1.etqh().fijaDescripcion(REGLA + "|exp3_1.etqh");
+			cod().fijaDescripcion(REGLA + "|exp3.cod");
+			etq().fijaDescripcion(REGLA + "|exp3.etq");
+			tipo().fijaDescripcion(REGLA + "|exp3.tipo");
 		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp3 ::= Exp4
 	 * 
 	 * Exp4.tsh = Exp3.tsh 
@@ -2654,1022 +2302,676 @@ public class GA {
 	 * Exp4.etqh = Exp3.etqh 
 	 * Exp3.etq = Exp4.etq 
 	 * Exp3.cod = Exp4.cod
+	 * </code>
 	 */
 	public class Exp3R2 extends Exp3 {
 
 		public Exp3R2(Exp4 exp4) {
 			this.exp4 = exp4;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
 
-			exp4.registraCtx(new Exp4Ctx() {
-				public TS tsh() {
-					return Exp3R2.this.tsh();
+			exp4.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp3R2.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp3R2.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp3 ::= Exp4 | Exp4";
+				public Integer etqh_exp() {
+					return Exp3R2.this.etqh().val();
 				}
 			});
+			exp4.tsh().ponDependencias(tsh());
+			exp4.etqh().ponDependencias(etqh());
+			cod().ponDependencias(exp4.cod());
+			etq().ponDependencias(exp4.etq());
+			tipo().ponDependencias(exp4.tipo());
 		}
 
-		public String regla() {
-			return " Exp3 ::= Exp4 | Exp3";
+		public List<Instruccion> cod_exp() {
+			return exp4.cod().val();
+
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				cod = exp4.cod();
-				hay_cod = true;
-			}
-			return cod;
+		public Integer etq_exp() {
+			return exp4.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq= exp4.etq();
-				 hay_etq = true;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return exp4.tipo().val();
 		}
 
-		public CatLexica tipo() {
-			return exp4.tipo();
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp4 exp4;
-		private int etq;
-		private boolean hay_etq;
-
 	}
 
 	public class Exp3R2Debug extends Exp3R2 {
+		private final static String REGLA = "Exp3 ::= Exp4";
+
 		public Exp3R2Debug(Exp4 exp4) {
 			super(exp4);
+			exp4.tsh().fijaDescripcion(REGLA + "|exp4.tsh");
+			exp4.etqh().fijaDescripcion(REGLA + "|exp4.etqh");
+			cod().fijaDescripcion(REGLA + "|exp3.cod");
+			etq().fijaDescripcion(REGLA + "|exp3.etq");
+			tipo().fijaDescripcion(REGLA + "|exp3.tipo");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp4 ::= true
 	 * 
 	 * Exp4.tipo = boolean 
 	 * Exp4.etq = Exp4.etqh + 1 
 	 * Exp4.cod = apila_true()
+	 * </code>
 	 */
 	public class Exp4R1 extends Exp4 {
 
 		public Exp4R1() {
-			 this.hay_cod = false;
-			 this.hay_etq = false;
+			super();
+			etq().ponDependencias(etqh());
 		}
 
-		public String regla() {
-			return " Exp4 ::= true | Exp4";
+		public List<Instruccion> cod_exp() {
+			return single(apila_true());
+
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-			 hay_cod = true;
-			 cod = single(apila_true());
-			 }
-			 return cod;
+		public Integer etq_exp() {
+			return etqh().val() + 1;
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq =this.etqh() + 1;
-			 }
-			 return etq;
-		}
-
-		public CatLexica tipo() {
+		public CatLexica tipo_exp() {
 			return CatLexica.BOOLEAN;
 		}
 
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class Exp4R1Debug extends Exp4R1 {
+		private final static String REGLA = "Exp4 ::= true";
+
 		public Exp4R1Debug() {
 			super();
+			cod().fijaDescripcion(REGLA + "|exp4.cod");
+			etq().fijaDescripcion(REGLA + "|exp4.etq");
+			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp4 ::= false 
 	 * Exp4.tipo = boolean 
 	 * Exp4.etq = Exp4.etqh + 1 
 	 * Exp4.cod =apila_false()
+	 * </code>
 	 */
 	public class Exp4R2 extends Exp4 {
 
 		public Exp4R2() {
-			 this.hay_cod = false;
-			 this.hay_etq = false;
+			super();
+			etq().ponDependencias(etqh());
 		}
 
-		public String regla() {
-			return " Exp4 ::= false | Exp4";
+		public List<Instruccion> cod_exp() {
+
+			return single(apila_false());
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod = single(apila_false());
-			 }
-			 return cod;
-//			if (!hay_cod) {
-//				cod = new ArrayList<Instruccion>();
-//				cod.add(Instruccion.nuevaIApilaFalse());
-//				hay_cod = true;
-//			}
-//			return cod;
+		public Integer etq_exp() {
+			return this.etqh().val() + 1;
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq =this.etqh() + 1;
-			 }
-			 return etq;
-		
-		}
-
-		public CatLexica tipo() {
+		public CatLexica tipo_exp() {
 			return CatLexica.BOOLEAN;
 		}
 
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class Exp4R2Debug extends Exp4R2 {
+		private final static String REGLA = "Exp4 := false";
+
 		public Exp4R2Debug() {
 			super();
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			cod().fijaDescripcion(REGLA + "|exp4.cod");
+			etq().fijaDescripcion(REGLA + "|exp4.etq");
+			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
 		}
 	}
 
-	/*
-	 * 
+	/**
+	 * <code>
 	 * Exp4 ::= NUM 
 	 * Exp4.tipo = int 
 	 * Exp4.etq = Exp4.etqh + 1 
 	 * Exp4.cod =apila_int(NUM.lex)
+	 * </code>
 	 */
 	public class Exp4R3 extends Exp4 {
 
 		public Exp4R3(Token num) {
 			this.num = num;
-			this.hay_cod = false;
-			this.hay_etq = false;
+			etq().ponDependencias(etqh());
 		}
 
-		public String regla() {
-			return " Exp4 ::= NUM | Exp4";
+		public List<Instruccion> cod_exp() {
+			return single(apila_int(num.leeLexema()));
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-			 hay_cod = true;
-			 cod = single(apila_int(num.leeLexema()));
-			 }
-			 return cod;
+		public Integer etq_exp() {
+			return etqh().val() + 1;
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq =this.etqh() + 1;
-			 }
-			 return etq;
-		}
-
-		public CatLexica tipo() {
+		public CatLexica tipo_exp() {
 			return CatLexica.INT;
 		}
 
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Token num;
 	}
 
 	public class Exp4R3Debug extends Exp4R3 {
+		private final static String REGLA = "Exp4 ::= NUM";
+
 		public Exp4R3Debug(Token num) {
 			super(num);
+			cod().fijaDescripcion(REGLA + "|exp4.cod");
+			etq().fijaDescripcion(REGLA + "|exp4.etq");
+			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
 		}
 
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	/*
+	/**
+	 * <code>
 	 * Exp4 ::= IDEN 
 	 * Exp4.tipo = tipoDe(IDEN.lex,Exp4.tsh) 
 	 * Exp4.etq = Exp4.etqh+ 1 
 	 * Exp4.cod = apila_dir(dirDe(IDEN.lex,Exp4.tsh))
+	 * </code>
 	 */
 	public class Exp4R4 extends Exp4 {
 
 		public Exp4R4(Token iden) {
 			this.iden = iden;
-			 this.hay_cod = false;
-			 this.hay_etq = false;
+			tipo().ponDependencias(tsh());
+			etq().ponDependencias(etqh());
+			cod().ponDependencias(tsh());
+
 		}
 
-		public String regla() {
-			return " Exp4 ::= IDEN | Exp4";
+		public List<Instruccion> cod_exp() {
+			return single(apila_dir(String.valueOf(dirDe(iden.leeLexema(), this
+					.tsh().val()))));
 		}
 
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-			 hay_cod = true;
-			 cod = single(apila_dir(String.valueOf(dirDe(iden.leeLexema(),
-			 this.tsh()))));
-			 }
-			 return cod;
+		public Integer etq_exp() {
+			return etqh().val() + 1;
+
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-				 etq =this.etqh() + 1;
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return tipoDe(iden.leeLexema(), tsh().val());
 		}
 
-		public CatLexica tipo() {
-			return tipoDe(iden.leeLexema(), tsh());
-		}
-
-		private int etq;
-		private boolean hay_etq;
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Token iden;
 
 	}
 
 	public class Exp4R4Debug extends Exp4R4 {
+		private final static String REGLA = "Exp4 ::= IDEN";
+
 		public Exp4R4Debug(Token iden) {
 			super(iden);
-		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			cod().fijaDescripcion(REGLA + "|exp4.cod");
+			etq().fijaDescripcion(REGLA + "|exp4.etq");
+			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
 		}
 	}
 
-	/*
+	/**
 	 * Exp4 ::= ( Exp0 )
 	 * 
-	 * Exp0.tsh = Exp4.tsh Exp4.tipo = Exp0.tipo 
-	 * Exp0.etqh = Exp4.etqh 
-	 * Exp4.etq = Exp0.etq 
-	 * Exp4.cod = Exp0.cod
+	 * Exp0.tsh = Exp4.tsh Exp4.tipo = Exp0.tipo Exp0.etqh = Exp4.etqh Exp4.etq
+	 * = Exp0.etq Exp4.cod = Exp0.cod
 	 */
 	public class Exp4R5 extends Exp4 {
 
 		public Exp4R5(Exp0 exp0) {
 			this.exp0 = exp0;
-			this.hay_cod = false;
-			this.hay_etq = false;
-			exp0.registraCtx(new Exp0Ctx() {
-				public TS tsh() {
-					return Exp4R5.this.tsh();
+
+			exp0.registraCtx(new ExpCtx() {
+				public TS tsh_exp() {
+					return Exp4R5.this.tsh().val();
 				}
 
-				public int etqh() {
-					return Exp4R5.this.etqh();
-				}
-
-				public String regla() {
-					return " Exp4 ::= ( Exp0 ) | Exp0";
+				public Integer etqh_exp() {
+					return Exp4R5.this.etqh().val();
 				}
 			});
+			exp0.etqh().ponDependencias(etqh());
+			exp0.tsh().ponDependencias(tsh());
+			tipo().ponDependencias(exp0.tipo());
+			etq().ponDependencias(exp0.etq());
+			cod().ponDependencias(exp0.cod());
 		}
 
-		public String regla() {
-			return " Exp4 ::= ( Exp0 ) | Exp4";
+		public List<Instruccion> cod_exp() {
+			return exp0.cod().val();
+
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=exp0.cod();
-			 }
-			 return cod;
+		public Integer etq_exp() {
+
+			return exp0.etq().val();
 		}
 
-		public int etq() {
-			 if (!hay_etq){
-			 etq =exp0.etq();
-			 }
-			 return etq;
+		public CatLexica tipo_exp() {
+			return exp0.tipo().val();
 		}
 
-		public CatLexica tipo() {
-			return exp0.tipo();
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 		private Exp0 exp0;
-		private int etq;
-		private boolean hay_etq;
-
 	}
 
 	public class Exp4R5Debug extends Exp4R5 {
+		private final static String REGLA = "Exp4 ::= ( Exp0 ) | Exp0";
+
 		public Exp4R5Debug(Exp0 exp0) {
 			super(exp0);
+			exp0.etqh().fijaDescripcion(REGLA + "|exp0.etqh");
+			exp0.tsh().fijaDescripcion(REGLA + "|exp0.tsh");
+			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
+			etq().fijaDescripcion(REGLA + "|exp4.etq");
+			cod().fijaDescripcion(REGLA + "|exp4.cod");
 		}
-
-		public Error err() {
-			requerido(regla() + ".err");
-			return valor(regla() + ".err", new Error(tipo().toString()));
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
-
 	}
 
-	/*
+	/**
+	 * <code>
 	 * OpComparacion ::= eq 
 	 * Comprobaci—n de las restricciones contextuales
 	 * OpComparacion.op = eq 
 	 * Generaci—n de c—digo 
 	 * OpComparacion.cod = eq()
+	 * </code>
 	 */
-	public class OpComparacionR1 implements OpComparacion {
+	public class OpComparacionR1 extends OpComparacion {
 
 		public OpComparacionR1() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public String regla() {
-			return " OpComparacion ::= eq | OpComparacion";
-		}
-
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.EQ;
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-			 hay_cod = true;
-			 cod=single(eq());
-			 }
-			 return cod;
+		public List<Instruccion> cod_exp() {
+			return single(eq());
 		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class OpComparacionR1Debug extends OpComparacionR1 {
+		private final static String REGLA = "OpComparacion ::= eq";
+
 		public OpComparacionR1Debug() {
 			super();
-		}
+			op().fijaDescripcion(REGLA + "|OpComparacion.op");
+			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
 
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpComparacion ::= eq | OpComparacion";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
 		}
 	}
 
-	public class OpComparacionR2 implements OpComparacion {
+	public class OpComparacionR2 extends OpComparacion {
 
 		public OpComparacionR2() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.NEQ;
 		}
 
-		public String regla() {
-			return " OpComparacion ::= neq | OpComparacion";
+		public List<Instruccion> cod_exp() {
+			return single(neq());
 		}
-
-		public List<Instruccion> cod() {
-			if (!hay_cod) {
-				hay_cod = true;
-				cod = single(neq());
-			}
-			return cod;
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class OpComparacionR2Debug extends OpComparacionR2 {
+
+		private final static String REGLA = "OpComparacion ::= neq";
+
 		public OpComparacionR2Debug() {
+			super();
+			op().fijaDescripcion(REGLA + "|OpComparacion.op");
+			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+		}
+
+	}
+
+	public class OpComparacionR3 extends OpComparacion {
+
+		public OpComparacionR3() {
 			super();
 		}
 
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpComparacion ::= neq | OpComparacion";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
-	}
-
-	public class OpComparacionR3 implements OpComparacion {
-
-		public OpComparacionR3() {
-			this.hay_cod = false;
-		}
-
-		public String regla() {
-			return " OpComparacion ::= gt | OpComparacion";
-		}
-
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.GT;
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(gt());
-			 }
-			 return cod;
-		}
+		public List<Instruccion> cod_exp() {
 
-		private List<Instruccion> cod;
-		private boolean hay_cod;
+			return single(gt());
+
+		}
 	}
 
 	public class OpComparacionR3Debug extends OpComparacionR3 {
+		private final static String REGLA = "OpComparacion ::= gt";
+
 		public OpComparacionR3Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpComparacion ::= gt | OpComparacion";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpComparacion.op");
+			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
 		}
 	}
 
-	public class OpComparacionR4 implements OpComparacion {
+	public class OpComparacionR4 extends OpComparacion {
 
 		public OpComparacionR4() {
-			this.hay_cod = false;
+
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.GE;
 		}
 
-		public String regla() {
-			return " OpComparacion ::= ge | OpComparacion";
+		public List<Instruccion> cod_exp() {
+
+			return single(ge());
+
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(ge());
-			 }
-			 return cod;
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class OpComparacionR4Debug extends OpComparacionR4 {
+		private final static String REGLA = "OpComparacion ::= ge";
+
 		public OpComparacionR4Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpComparacion ::= ge | OpComparacion";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpComparacion.op");
+			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
 		}
 	}
 
-	public class OpComparacionR5 implements OpComparacion {
+	public class OpComparacionR5 extends OpComparacion {
 
 		public OpComparacionR5() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public String regla() {
-			return " OpComparacion ::= lt | OpComparacion";
-		}
-
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.LT;
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(lt());
-			 }
-			 return cod;
-		}
+		public List<Instruccion> cod_exp() {
 
-		private List<Instruccion> cod;
-		private boolean hay_cod;
+			return single(lt());
+
+		}
 
 	}
 
 	public class OpComparacionR5Debug extends OpComparacionR5 {
+		private final static String REGLA = "OpComparacion ::= lt";
+
 		public OpComparacionR5Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpComparacion ::= lt | OpComparacion";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpComparacion.op");
+			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
 		}
 	}
 
-	public class OpComparacionR6 implements OpComparacion {
+	public class OpComparacionR6 extends OpComparacion {
 
 		public OpComparacionR6() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.LE;
 		}
 
-		public String regla() {
-			return " OpComparacion ::= le | OpComparacion";
-		}
+		public List<Instruccion> cod_exp() {
+			return single(le());
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(le());
-			 }
-			 return cod;
 		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class OpComparacionR6Debug extends OpComparacionR6 {
+		private final static String REGLA = "OpComparacion ::= le";
+
 		public OpComparacionR6Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpComparacion ::= le | OpComparacion";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpComparacion.op");
+			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
 		}
 	}
 
-	public class OpAditivoR1 implements OpAditivo {
+	public class OpAditivoR1 extends OpAditivo {
 
 		public OpAditivoR1() {
-			this.hay_cod = false;
+			super();
 		}
 
 		public String regla() {
 			return " OpAditivo ::= + | OpAditivo";
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.MAS;
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(suma());
-			 }
-			 return cod;
-		}
+		public List<Instruccion> cod_exp() {
+			return single(suma());
 
-		private List<Instruccion> cod;
-		private boolean hay_cod;
+		}
 
 	}
 
 	public class OpAditivoR1Debug extends OpAditivoR1 {
+		private final static String REGLA = "OpAditivo ::= +";
+
 		public OpAditivoR1Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpAditivo ::= + | OpAditivo";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpAditivo.op");
+			cod().fijaDescripcion(REGLA + "|OpAditivo.cod");
 		}
 	}
 
-	public class OpAditivoR2 implements OpAditivo {
+	public class OpAditivoR2 extends OpAditivo {
 
 		public OpAditivoR2() {
-			this.hay_cod = false;
+
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.MENOS;
 		}
 
-		public String regla() {
-			return " OpAditivo ::= - | OpAditivo";
-		}
+		public List<Instruccion> cod_exp() {
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(resta());
-			 }
-			 return cod;
-		}
+			return single(resta());
 
-		private List<Instruccion> cod;
-		private boolean hay_cod;
+		}
 
 	}
 
 	public class OpAditivoR2Debug extends OpAditivoR2 {
+		private final static String REGLA = "OpAditivo:= -";
+
 		public OpAditivoR2Debug() {
 			super();
+			op().fijaDescripcion(REGLA + "|OpAditivo.op");
+			cod().fijaDescripcion(REGLA + "|OpAditivo.cod");
 		}
 
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpAditivo ::= - | OpAditivo";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
-		}
 	}
 
-	public class OpAditivoR3 implements OpAditivo {
+	public class OpAditivoR3 extends OpAditivo {
 
 		public OpAditivoR3() {
-			this.hay_cod = false;
+
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.OR;
 		}
 
-		public String regla() {
-			return " OpAditivo ::= or | OpAditivo";
+		public List<Instruccion> cod_exp() {
+
+			return single(or());
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(or());
-			 }
-			 return cod;
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class OpAditivoR3Debug extends OpAditivoR3 {
+		private final static String REGLA = "OpAditivo:= or";
+
 		public OpAditivoR3Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpAditivo ::= or | OpAditivo";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpAditivo.op");
+			cod().fijaDescripcion(REGLA + "|OpAditivo.cod");
 		}
 	}
 
-	public class OpMultiplicativoR1 implements OpMultiplicativo {
+	public class OpMultiplicativoR1 extends OpMultiplicativo {
 
 		public OpMultiplicativoR1() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public String regla() {
-			return " OpMultiplicativo ::= * | OpMultiplicativo";
-		}
-
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.ASTERISCO;
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(mul());
-			 }
-			 return cod;
+		public List<Instruccion> cod_exp() {
+			return single(mul());
 		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
-
 	}
 
 	public class OpMultiplicativoR1Debug extends OpMultiplicativoR1 {
+		private final static String REGLA = "OpMultiplicativo:= *";
+
 		public OpMultiplicativoR1Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpMultiplicativo ::= * | OpMultiplicativo";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpMultiplicativo.op");
+			cod().fijaDescripcion(REGLA + "|OpMultiplicativo.cod");
 		}
 	}
 
-	public class OpMultiplicativoR2 implements OpMultiplicativo {
+	public class OpMultiplicativoR2 extends OpMultiplicativo {
 
 		public OpMultiplicativoR2() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.BARRA;
 		}
 
-		public String regla() {
-			return " OpMultiplicativo ::= / | OpMultiplicativo";
+		public List<Instruccion> cod_exp() {
+			return single(div());
 		}
-
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-			 hay_cod = true;
-			 cod=single(div());
-			 }
-			 return cod;
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
-
 	}
 
 	public class OpMultiplicativoR2Debug extends OpMultiplicativoR2 {
+		private final static String REGLA = "OpMultiplicativo:= /";
+
 		public OpMultiplicativoR2Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpMultiplicativo ::= / | OpMultiplicativo";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpMultiplicativo.op");
+			cod().fijaDescripcion(REGLA + "|OpMultiplicativo.cod");
 		}
 	}
 
-	public class OpMultiplicativoR3 implements OpMultiplicativo {
+	public class OpMultiplicativoR3 extends OpMultiplicativo {
 
 		public OpMultiplicativoR3() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.AND;
 		}
 
-		public String regla() {
-			return " OpMultiplicativo ::= and | OpMultiplicativo";
-		}
+		public List<Instruccion> cod_exp() {
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(and());
-			 }
-			 return cod;
-		}
+			return single(and());
 
-		private List<Instruccion> cod;
-		private boolean hay_cod;
+		}
 
 	}
 
 	public class OpMultiplicativoR3Debug extends OpMultiplicativoR3 {
+		private final static String REGLA = "OpMultiplicativo:= and";
+
 		public OpMultiplicativoR3Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpMultiplicativo ::= and | OpMultiplicativo";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpMultiplicativo.op");
+			cod().fijaDescripcion(REGLA + "|OpMultiplicativo.cod");
 		}
 	}
 
-	public class OpUnarioR1 implements OpUnario {
+	public class OpUnarioR1 extends OpUnario {
 
 		public OpUnarioR1() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.MENOS;
 		}
 
-		public String regla() {
-			return " OpUnario ::= - | OpUnario";
+		public List<Instruccion> cod_exp() {
+			return single(menos());
+
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(menos());
-			 }
-			 return cod;
-		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 	}
 
 	public class OpUnarioR1Debug extends OpUnarioR1 {
+		private final static String REGLA = "OpUnario:= -";
+
 		public OpUnarioR1Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpUnario ::= - | OpUnario";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpUnario.op");
+			cod().fijaDescripcion(REGLA + "|OpUnario.cod");
 		}
 	}
 
-	public class OpUnarioR2 implements OpUnario {
+	public class OpUnarioR2 extends OpUnario {
 
 		public OpUnarioR2() {
-			this.hay_cod = false;
+			super();
 		}
 
-		public String regla() {
-			return " OpUnario ::= not | OpUnario";
-		}
-
-		public CatLexica op() {
+		public CatLexica op_exp() {
 			return CatLexica.NOT;
 		}
 
-		public List<Instruccion> cod() {
-			 if (!hay_cod) {
-				 hay_cod = true;
-				 cod=single(not());
-			 }
-			 return cod;
+		public List<Instruccion> cod_exp() {
+			return single(not());
 		}
-
-		private List<Instruccion> cod;
-		private boolean hay_cod;
 
 	}
 
 	public class OpUnarioR2Debug extends OpUnarioR2 {
+		private final static String REGLA = "OpUnario:= not";
+
 		public OpUnarioR2Debug() {
 			super();
-		}
-
-		public CatLexica op() {
-			return super.op();
-		}
-
-		public String regla() {
-			return " OpUnario ::= not | OpUnario";
-		}
-
-		public List<Instruccion> cod() {
-			return valor(regla() + ".cod=", super.cod());
+			op().fijaDescripcion(REGLA + "|OpUnario.op");
+			cod().fijaDescripcion(REGLA + "|OpUnario.cod");
 		}
 	}
 
@@ -3723,7 +3025,8 @@ public class GA {
 					|| op.equals(CatLexica.LT) || op.equals(CatLexica.LE))
 				return CatLexica.BOOLEAN;
 			else if (op.equals(CatLexica.MAS) || op.equals(CatLexica.MENOS)
-					|| op.equals(CatLexica.ASTERISCO) || op.equals(CatLexica.BARRA))
+					|| op.equals(CatLexica.ASTERISCO)
+					|| op.equals(CatLexica.BARRA))
 				return CatLexica.INT;
 
 		}
@@ -3868,5 +3171,4 @@ public class GA {
 		for (int i = 0; i < identado; i++)
 			System.out.print(".");
 	}
-
 }

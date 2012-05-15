@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-public class ConstructorArbolesTiny {
+public class ConstructorArboles {
 
 	public static final boolean DEBUG = false;
 	private Token tact;
@@ -9,7 +9,7 @@ public class ConstructorArbolesTiny {
 
 	private GA gramaticaAtributos = new GA();
 
-	public ConstructorArbolesTiny(AnalizadorLexico analizadorLexico) {
+	public ConstructorArboles(AnalizadorLexico analizadorLexico) {
 		this.analizadorLexico = analizadorLexico;
 	}
 
@@ -820,6 +820,7 @@ public class ConstructorArbolesTiny {
 			return gramaticaAtributos.new OpUnarioR1Debug();
 		else
 			return gramaticaAtributos.new OpUnarioR1();
+
 	}
 
 	private GA.OpUnario opUnario2() {

@@ -743,9 +743,13 @@ public class GA {
 
 	}
 
-	/*
-	 * Programa ::= Instrucciones Instrucciones.tsh = creaTS() Programa.error =
-	 * Instrucciones.error Instrucciones.etqh=0 Programa.cod = Instrucciones.cod
+	/**<code>
+	 * Programa ::= Instrucciones
+	 * Instrucciones.tsh = creaTS() 
+	 * Programa.error = Instrucciones.error 
+	 * Instrucciones.etqh=0 
+	 * Programa.cod = Instrucciones.cod
+	 *</code>
 	 */
 	public class ProgR2 extends Programa {
 
@@ -1533,7 +1537,7 @@ public class GA {
 	 * Caso.tsh=Casos(0).tsh 
 	 * Casos(0).error = Casos(1).error or Caso.error 
 	 * Casos(1).etqh = Casos(0).etqh 
-	 * Caso.etqh = Casos(1).etq 
+	 * Caso.etqh = Casos(1).etq
 	 * Casos(0).etq = Caso.etq
 	 * Casos(1).irh = Casos(0).irh 
 	 * Caso.irh = Casos(0).irh 
@@ -1542,8 +1546,8 @@ public class GA {
 	 */
 	public class CasosR1 extends Casos {
 
-		public CasosR1(Casos casos, Caso caso) {
-			this.casos1 = casos;
+		public CasosR1(Casos casos1, Caso caso) {
+			this.casos1 = casos1;
 			this.caso = caso;
 
 			casos1.registraCtx(new CasosCtx() {
@@ -1574,7 +1578,7 @@ public class GA {
 				}
 			});
 			caso.tsh().ponDependencias(tsh());
-			caso.etqh().ponDependencias(casos1.etqh());
+			caso.etqh().ponDependencias(casos1.etq());
 			caso.irh().ponDependencias(irh());
 			casos1.tsh().ponDependencias(tsh());
 			casos1.etqh().ponDependencias(etqh());
@@ -1733,6 +1737,7 @@ public class GA {
 					return CasoR1.this.exp0.etq().val() + 1;
 				}
 			});
+			exp0.etqh().ponDependencias(etqh());
 			exp0.tsh().ponDependencias(tsh());
 			etq().ponDependencias(insts.etq());
 			err().ponDependencias(insts.err(), exp0.tipo());
@@ -1971,7 +1976,7 @@ public class GA {
 			exp1.tsh().ponDependencias(tsh());
 			exp2.tsh().ponDependencias(tsh());
 			exp1.etqh().ponDependencias(etqh());
-			exp2.etqh().ponDependencias(exp1.etqh());
+			exp2.etqh().ponDependencias(exp1.etq());
 			cod().ponDependencias(exp1.cod(), exp2.cod(), opa.cod());
 			etq().ponDependencias(exp2.etq());
 			tipo().ponDependencias(opa.op(), exp1.tipo(), exp2.tipo());
@@ -2083,7 +2088,8 @@ public class GA {
 	 * Exp2 ::= Exp2 OpMultiplicativo Exp3 
 	 * Exp2(1).tsh = Exp2(0).tsh 
 	 * Exp3.tsh = Exp2(0).tsh 
-	 * Exp2(0).tipo = tipoOpBin(OpMultiplicativo.op,Exp2(1).tipo,Exp3.tipo) Exp2(1).etqh = Exp2(0).etqh 
+	 * Exp2(0).tipo = tipoOpBin(OpMultiplicativo.op,Exp2(1).tipo,Exp3.tipo)
+	 * Exp2(1).etqh = Exp2(0).etqh 
 	 * Exp3.etqh = Exp2(1).etq 
 	 * Exp2(0).etq = Exp3.etq + 1
 	 * Exp2(0).cod = Exp2(1).cod || Exp3.cod || OpMultiplicativo.cod
@@ -2096,10 +2102,10 @@ public class GA {
 			this.exp3 = exp3;
 			this.opm = opm;
 
+			exp2.etqh().ponDependencias(etqh());
 			exp2.tsh().ponDependencias(tsh());
 			exp3.tsh().ponDependencias(tsh());
-			// exp2.etqh().ponDependencias(etqh());
-			exp3.etqh().ponDependencias(exp2.etqh());
+			exp3.etqh().ponDependencias(exp2.etq());
 			cod().ponDependencias(exp2.cod(), exp3.cod(), opm.cod());
 			etq().ponDependencias(exp3.etq());
 			tipo().ponDependencias(opm.op(), exp2.tipo(), exp3.tipo());
@@ -2169,10 +2175,10 @@ public class GA {
 	 * Propagaci—n de la tabla de s’mbolos 
 	 * Exp3.tsh = Exp2.tsh 
 	 * Comprobaci—n de las restricciones contextuales 
-	 * Exp2.tipo = Exp3.tipo 
-	 * Generaci—n de c—digo
-	 * Exp3.etqh = Exp2.etqh 
-	 * Exp2.etq = Exp3.etq 
+	 * Exp2.tipo = Exp3.tipo
+	 * Generación de código
+	 * Exp3.etqh = Exp2.etqh
+	 * Exp2.etq = Exp3.etq
 	 * Exp2.cod = Exp3.cod
 	 * </code>
 	 */
@@ -2497,7 +2503,6 @@ public class GA {
 			tipo().ponDependencias(tsh());
 			etq().ponDependencias(etqh());
 			cod().ponDependencias(tsh());
-
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -2529,11 +2534,15 @@ public class GA {
 		}
 	}
 
-	/**
+	/**<code>
 	 * Exp4 ::= ( Exp0 )
 	 * 
-	 * Exp0.tsh = Exp4.tsh Exp4.tipo = Exp0.tipo Exp0.etqh = Exp4.etqh Exp4.etq
-	 * = Exp0.etq Exp4.cod = Exp0.cod
+	 * Exp0.tsh = Exp4.tsh
+	 * Exp4.tipo = Exp0.tipo 
+	 * Exp0.etqh = Exp4.etqh 
+	 * Exp4.etq = Exp0.etq 
+	 * Exp4.cod = Exp0.cod
+	 * </code>
 	 */
 	public class Exp4R5 extends Exp4 {
 

@@ -3,10 +3,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GA {
-	private int identado;
+	//private int identado;
 
 	public GA() {
-		identado = -1;
+		//identado = -1;
 	}
 
 	public abstract class Programa {
@@ -147,12 +147,12 @@ public class GA {
 
 	public abstract class Tipo {
 		protected Tipo() {
-			tipo = new Atributo<CatLexica>();
-			tipo.fijaExpresion(new ExpSem<CatLexica>() {
-				public CatLexica val() {
-					return tipo_exp();
-				}
-			});
+//			tipo = new Atributo<CatLexica>();
+//			tipo.fijaExpresion(new ExpSem<CatLexica>() {
+//				public CatLexica val() {
+//					return tipo_exp();
+//				}
+//			});
 			err = new Atributo<Error>();
 			err.fijaExpresion(new ExpSem<Error>() {
 				public Error val() {
@@ -163,9 +163,9 @@ public class GA {
 
 		protected abstract Error err_exp();
 
-		protected abstract CatLexica tipo_exp();
+		//protected abstract CatLexica tipo_exp();
 
-		public Atributo<CatLexica> tipo() {
+		public CatLexica tipo() {
 			return tipo;
 		}
 
@@ -173,7 +173,7 @@ public class GA {
 			return err;
 		}
 
-		private Atributo<CatLexica> tipo;
+		protected CatLexica tipo;
 		private Atributo<Error> err;
 	}
 
@@ -713,7 +713,7 @@ public class GA {
 				}
 			});
 
-			err().ponDependencias(decs.err(), insts.err());
+			err().ponDependencias(insts.err(),decs.err());
 			cod().ponDependencias(insts.cod());
 			insts.tsh().ponDependencias(decs.ts());
 		}
@@ -809,7 +809,7 @@ public class GA {
 			super();
 			this.dec = dec;
 			this.decs_1 = decs_1;
-			err().ponDependencias(decs_1.err(), decs_1.ts(),dec.iden());
+			err().ponDependencias(decs_1.ts(),dec.iden(),dec.fila(),dec.col(),decs_1.err());
 			dir().ponDependencias(decs_1.dir());
 			ts().ponDependencias(decs_1.ts(), decs_1.dir(),dec.iden(),dec.tipo());
 		}
@@ -904,7 +904,6 @@ public class GA {
 			super();
 			this.tipo = tipo;
 			this.iden = IDEN;
-			tipo().ponDependencias(tipo.tipo());
 		}
 
 		public String iden_exp() {
@@ -912,7 +911,7 @@ public class GA {
 		}
 
 		public CatLexica tipo_exp() {
-			return tipo.tipo().val();
+			return tipo.tipo();
 		}
 
 		protected final Integer fila_exp() {
@@ -962,7 +961,7 @@ public class GA {
 				return noError();
 		}
 
-		private CatLexica tipo;
+		//private CatLexica tipo;
 	}
 
 	public class TipoR1Debug extends TipoR1 {
@@ -971,7 +970,7 @@ public class GA {
 		public TipoR1Debug(Token tDeInt) {
 			super(tDeInt);
 			err().fijaDescripcion(REGLA + " | tipo.err");
-			tipo().fijaDescripcion(REGLA + " | tipo.tipo");
+			//tipo().fijaDescripcion(REGLA + " | tipo.tipo");
 		}
 	}
 
@@ -996,7 +995,7 @@ public class GA {
 			return tipo;
 		}
 
-		private CatLexica tipo;
+		//private CatLexica tipo;
 	}
 
 	public class TipoR2Debug extends TipoR2 {
@@ -1005,7 +1004,7 @@ public class GA {
 		public TipoR2Debug(Token tDeInt) {
 			super(tDeInt);
 			err().fijaDescripcion(REGLA + " | tipo.err");
-			tipo().fijaDescripcion(REGLA + " | tipo.tipo");
+			//tipo().fijaDescripcion(REGLA + " | tipo.tipo");
 		}
 	}
 
@@ -1360,7 +1359,7 @@ public class GA {
 					return IAsigR1.this.etqh().val();
 				}
 			});
-			err().ponDependencias(tsh());
+			err().ponDependencias(tsh(),exp0.tipo());
 			etq().ponDependencias(exp0.etq());
 			cod().ponDependencias(exp0.cod(), tsh());
 			exp0.tsh().ponDependencias(tsh());
@@ -1399,8 +1398,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | IAsignacion.err");
 			etq().fijaDescripcion(REGLA + " | IAsignacion.etq");
 			cod().fijaDescripcion(REGLA + " | IAsignacion.cod");
-			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.cod");
-			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.cod");
+			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.tsh");
+			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.etqh");
 
 		}
 	}
@@ -1686,9 +1685,7 @@ public class GA {
 		}
 
 		public Error err_exp() {
-
 			return caso.err().val();
-
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -1793,6 +1790,7 @@ public class GA {
 
 		public CasoR1Debug(Exp0 exp0, Insts insts) {
 			super(exp0, insts);
+			exp0.etqh().fijaDescripcion(REGLA + " | exp0.etqh");
 			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
 			etq().fijaDescripcion(REGLA + " | insts.etq");
 			err().fijaDescripcion(REGLA + " | insts.err");
@@ -1842,9 +1840,9 @@ public class GA {
 				}
 			});
 			exp1_0.tsh().ponDependencias(tsh());
+			exp1_1.tsh().ponDependencias(tsh());
 			exp1_0.etqh().ponDependencias(etqh());
 			exp1_1.etqh().ponDependencias(exp1_0.etq());
-			exp1_1.tsh().ponDependencias(exp1_0.tsh());
 			cod().ponDependencias(exp1_0.cod(), exp1_1.cod(), opc.cod());
 			etq().ponDependencias(exp1_1.etq());
 			tipo().ponDependencias(opc.op(), exp1_0.tipo(), exp1_1.tipo());
@@ -1922,12 +1920,10 @@ public class GA {
 			cod().ponDependencias(exp1.cod());
 			etq().ponDependencias(exp1.etq());
 			tipo().ponDependencias(exp1.tipo());
-
 		}
 
 		public List<Instruccion> cod_exp() {
 			return exp1.cod().val();
-
 		}
 
 		public Integer etq_exp() {
@@ -1942,7 +1938,7 @@ public class GA {
 	}
 
 	public class Exp0R2Debug extends Exp0R2 {
-		private final static String REGLA = "Exp0 ::= Exp1 | Exp0";
+		private final static String REGLA = "Exp0 ::= Exp1";
 
 		public Exp0R2Debug(Exp1 exp1) {
 			super(exp1);
@@ -3175,21 +3171,21 @@ public class GA {
 		return (tipoDe(leeLexema, tsh).compareTo(tipo) == 0);
 	}
 
-	private void requerido(String ctx) {
-		identado++;
-		identa();
-		System.out.println("REQUERIDO " + ctx);
-	}
-
-	private <O> O valor(String ctx, O val) {
-		identa();
-		System.out.println("VALOR DE " + ctx + ":" + val);
-		identado--;
-		return val;
-	}
-
-	private void identa() {
-		for (int i = 0; i < identado; i++)
-			System.out.print(".");
-	}
+//	private void requerido(String ctx) {
+//		identado++;
+//		identa();
+//		System.out.println("REQUERIDO " + ctx);
+//	}
+//
+//	private <O> O valor(String ctx, O val) {
+//		identa();
+//		System.out.println("VALOR DE " + ctx + ":" + val);
+//		identado--;
+//		return val;
+//	}
+//
+//	private void identa() {
+//		for (int i = 0; i < identado; i++)
+//			System.out.print(".");
+//	}
 }

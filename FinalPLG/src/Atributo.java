@@ -22,7 +22,7 @@ public class Atributo<Valor> {
    }
    public Valor val() {
      if (! calculado()) 
-         throw new RuntimeException("Atributo no calculado:"+descripcion); 
+         throw new RuntimeException("Atributo no calculado: "+descripcion); 
      return valor;   
    } 
    public Atributo siguienteDependencia() {

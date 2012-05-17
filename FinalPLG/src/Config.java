@@ -1,4 +1,4 @@
 
 public interface Config {
-  public final static boolean DEBUG=false;
+  public final static boolean DEBUG=true;
 }

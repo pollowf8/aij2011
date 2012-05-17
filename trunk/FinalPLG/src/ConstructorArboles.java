@@ -2,7 +2,6 @@ import java.io.IOException;
 
 public class ConstructorArboles {
 
-	public static final boolean DEBUG = false;
 	private Token tact;
 
 	private AnalizadorLexico analizadorLexico;
@@ -535,147 +534,147 @@ public class ConstructorArboles {
 
 	// Funciones de conexion con Gramatica de atributos
 	private GA.Programa progR1(GA.Decs decs, GA.Insts insts) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new ProgR1Debug(decs, insts);
 		else
 			return gramaticaAtributos.new ProgR1(decs, insts);
 	}
 
 	private GA.Programa progR2(GA.Insts insts) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new ProgR2Debug(insts);
 		else
 			return gramaticaAtributos.new ProgR2(insts);
 	}
 
 	private GA.Decs decsR2(GA.Dec aDec) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new DecsR2Debug(aDec);
 		else
 			return gramaticaAtributos.new DecsR2(aDec);
 	}
 
 	private GA.Dec decR1(GA.Tipo tipo, Token iden) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new DecR1Debug(tipo, iden);
 		else
 			return gramaticaAtributos.new DecR1(tipo, iden);
 	}
 
 	private GA.Decs decsR1(GA.Decs ahDeRDecs_0, GA.Dec aDec) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new DecsR1Debug(ahDeRDecs_0, aDec);
 		else
 			return gramaticaAtributos.new DecsR1(ahDeRDecs_0, aDec);
 	}
 
 	private GA.Tipo tipoR1(Token tDeInt) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new TipoR1Debug(tDeInt);
 		else
 			return gramaticaAtributos.new TipoR1(tDeInt);
 	}
 
 	private GA.Tipo tipoR2(Token tDeBool) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new TipoR2Debug(tDeBool);
 		else
 			return gramaticaAtributos.new TipoR2(tDeBool);
 	}
 
 	private GA.Insts instsR2(GA.Inst inst) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new InstsR2Debug(inst);
 		else
 			return gramaticaAtributos.new InstsR2(inst);
 	}
 
 	private GA.Insts instsR1(GA.Insts ahDeRInsts0, GA.Inst aInst) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new InstsR1Debug(ahDeRInsts0, aInst);
 		else
 			return gramaticaAtributos.new InstsR1(ahDeRInsts0, aInst);
 	}
 
 	private GA.Inst iasigR1(Token iden, GA.Exp0 exp0) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new IAsigR1Debug(iden, exp0);
 		else
 			return gramaticaAtributos.new IAsigR1(iden, exp0);
 	}
 
 	private GA.Inst iifR1(GA.Casos casos) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new IIFR1Debug(casos);
 		else
 			return gramaticaAtributos.new IIFR1(casos);
 	}
 
 	private GA.Inst idoR1(GA.Casos casos) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new IDOR1Debug(casos);
 		else
 			return gramaticaAtributos.new IDOR1(casos);
 	}
 
 	private GA.Caso casoR1(GA.Exp0 exp0, GA.Insts insts) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new CasoR1Debug(exp0, insts);
 		else
 			return gramaticaAtributos.new CasoR1(exp0, insts);
 	}
 
 	private GA.Casos casosR2(GA.Caso aCaso) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new CasosR2Debug(aCaso);
 		else
 			return gramaticaAtributos.new CasosR2(aCaso);
 	}
 
 	private GA.Casos casosR1(GA.Casos casos, GA.Caso caso) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new CasosR1Debug(casos, caso);
 		else
 			return gramaticaAtributos.new CasosR1(casos, caso);
 	}
 
 	private GA.Exp0 exp0R1(GA.Exp1 exp1, GA.Exp1 exp1_1, GA.OpComparacion opcomp) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp0R1Debug(exp1, exp1_1, opcomp);
 		else
 			return gramaticaAtributos.new Exp0R1(exp1, exp1_1, opcomp);
 	}
 
 	private GA.Exp0 exp0R2(GA.Exp1 exp1) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp0R2Debug(exp1);
 		else
 			return gramaticaAtributos.new Exp0R2(exp1);
 	}
 
 	private GA.Exp1 exp1R2(GA.Exp2 exp2) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp1R2Debug(exp2);
 		else
 			return gramaticaAtributos.new Exp1R2(exp2);
 	}
 
 	private GA.Exp1 exp1R1(GA.Exp1 exp1, GA.Exp2 exp2, GA.OpAditivo opaditivo) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp1R1Debug(exp1, exp2, opaditivo);
 		else
 			return gramaticaAtributos.new Exp1R1(exp1, exp2, opaditivo);
 	}
 
 	private GA.Exp2 exp2R2(GA.Exp3 exp3) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp2R2Debug(exp3);
 		else
 			return gramaticaAtributos.new Exp2R2(exp3);
 	}
 
 	private GA.Exp2 exp2R1(GA.Exp2 exp2, GA.Exp3 exp3, GA.OpMultiplicativo opmul) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp2R1Debug(exp2, exp3, opmul);
 		else
 			return gramaticaAtributos.new Exp2R1(exp2, exp3, opmul);
@@ -683,140 +682,140 @@ public class ConstructorArboles {
 	}
 
 	private GA.Exp3 exp3R1(GA.OpUnario opunario, GA.Exp3 exp3) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp3R1Debug(exp3, opunario);
 		else
 			return gramaticaAtributos.new Exp3R1(exp3, opunario);
 	}
 
 	private GA.Exp3 exp3R2(GA.Exp4 exp4) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp3R2Debug(exp4);
 		else
 			return gramaticaAtributos.new Exp3R2(exp4);
 	}
 
 	private GA.Exp4 exp4R1() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp4R1Debug();
 		else
 			return gramaticaAtributos.new Exp4R1();
 	}
 
 	private GA.Exp4 exp4R2() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp4R2Debug();
 		else
 			return gramaticaAtributos.new Exp4R2();
 	}
 
 	private GA.Exp4 exp4R3(Token num) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp4R3Debug(num);
 		else
 			return gramaticaAtributos.new Exp4R3(num);
 	}
 
 	private GA.Exp4 exp4R4(Token iden) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp4R4Debug(iden);
 		else
 			return gramaticaAtributos.new Exp4R4(iden);
 	}
 
 	private GA.Exp4 exp4R5(GA.Exp0 exp0) {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new Exp4R5Debug(exp0);
 		else
 			return gramaticaAtributos.new Exp4R5(exp0);
 	}
 
 	private GA.OpComparacion opComparacionR1() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpComparacionR1Debug();
 		else
 			return gramaticaAtributos.new OpComparacionR1();
 	}
 
 	private GA.OpComparacion opComparacionR2() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpComparacionR2Debug();
 		else
 			return gramaticaAtributos.new OpComparacionR2();
 	}
 
 	private GA.OpComparacion opComparacionR3() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpComparacionR3Debug();
 		else
 			return gramaticaAtributos.new OpComparacionR3();
 	}
 
 	private GA.OpComparacion opComparacionR4() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpComparacionR4Debug();
 		else
 			return gramaticaAtributos.new OpComparacionR4();
 	}
 
 	private GA.OpComparacion opComparacionR5() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpComparacionR5Debug();
 		else
 			return gramaticaAtributos.new OpComparacionR5();
 	}
 
 	private GA.OpComparacion opComparacionR6() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpComparacionR6Debug();
 		else
 			return gramaticaAtributos.new OpComparacionR6();
 	}
 
 	private GA.OpAditivo opAditivoR1() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpAditivoR1Debug();
 		else
 			return gramaticaAtributos.new OpAditivoR1();
 	}
 
 	private GA.OpAditivo opAditivoR2() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpAditivoR2Debug();
 		else
 			return gramaticaAtributos.new OpAditivoR2();
 	}
 
 	private GA.OpAditivo opAditivoR3() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpAditivoR3Debug();
 		else
 			return gramaticaAtributos.new OpAditivoR3();
 	}
 
 	private GA.OpMultiplicativo opMultiplicativo1() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpMultiplicativoR1Debug();
 		else
 			return gramaticaAtributos.new OpMultiplicativoR1();
 	}
 
 	private GA.OpMultiplicativo opMultiplicativo2() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpMultiplicativoR2Debug();
 		else
 			return gramaticaAtributos.new OpMultiplicativoR2();
 	}
 
 	private GA.OpMultiplicativo opMultiplicativo3() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpMultiplicativoR3Debug();
 		else
 			return gramaticaAtributos.new OpMultiplicativoR3();
 	}
 
 	private GA.OpUnario opUnario1() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpUnarioR1Debug();
 		else
 			return gramaticaAtributos.new OpUnarioR1();
@@ -824,7 +823,7 @@ public class ConstructorArboles {
 	}
 
 	private GA.OpUnario opUnario2() {
-		if (DEBUG)
+		if (Config.DEBUG)
 			return gramaticaAtributos.new OpUnarioR2Debug();
 		else
 			return gramaticaAtributos.new OpUnarioR2();

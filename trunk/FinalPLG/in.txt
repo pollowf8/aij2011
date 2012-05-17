@@ -1,14 +1,3 @@
-int x;
-int y;
-int mcd
+int x
 &
-x:=456;
-y:=342;
-do 
-	case x gt y ->
-		x:=x-y
-[]
-	case y gt x ->
-		y:=y-x		
-od;
-mcd:=x
+x:=456

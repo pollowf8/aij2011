@@ -1,6 +1,7 @@
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -9,7 +10,7 @@ public class VM {
    private Stack<PValue> pilaEvaluacion;
    private Instruccion[] programa;
    private int cp;
-   private Vector<Integer> memoria;
+   private ArrayList<Integer> memoria;
    // para una m√°quina m√°s complicada existir√° tambi√©n una memoria de
    // evaluaci√≥n. Puede representarse, por ejemplo, mediante un array,
    // o mediante Vector (aunque Vector, como Stack, suponen una carga
@@ -45,7 +46,7 @@ public class VM {
 	   }
    public VM(String fprograma) {
       try {
-    	 memoria = new Vector<Integer>();//AÒadido
+    	 memoria = new ArrayList<Integer>();//AÒadido
          pilaEvaluacion = new Stack<PValue>();
          List<Instruccion> instrucciones = (List<Instruccion>)new ObjectInputStream(new FileInputStream(fprograma)).readObject();
          programa = new Instruccion[instrucciones.size()];
@@ -85,12 +86,22 @@ public class VM {
       VM vm = new VM(args[0]);
       vm.run(true);
    }     
-   //aÒadido
-   public void addValMem(int val){
-	   memoria.add(val);
-   }
-   
-   public int getValMem(int dir){
-	   return memoria.get(dir);
-   }
+   // aÒadido
+	public void addValMem(int dir, int val) {
+		try {
+			memoria.add(dir, val);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			memoria.ensureCapacity(dir+1);
+			memoria.add(dir, val);
+		}
+	}
+
+	public Integer getValMem(int dir) {
+		try {
+			Integer a= memoria.get(dir);
+			return a;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return new Integer(-1);
+		}
+	}
 }

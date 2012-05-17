@@ -743,13 +743,14 @@ public class GA {
 
 	}
 
-	/**<code>
+	/**
+	 * <code>
 	 * Programa ::= Instrucciones
 	 * Instrucciones.tsh = creaTS() 
 	 * Programa.error = Instrucciones.error 
 	 * Instrucciones.etqh=0 
 	 * Programa.cod = Instrucciones.cod
-	 *</code>
+	 * </code>
 	 */
 	public class ProgR2 extends Programa {
 
@@ -805,11 +806,12 @@ public class GA {
 	public class DecsR1 extends Decs {
 
 		public DecsR1(Decs decs_1, Dec dec) {
+			super();
 			this.dec = dec;
 			this.decs_1 = decs_1;
-			err().ponDependencias(decs_1.err(), decs_1.ts());
+			err().ponDependencias(decs_1.err(), decs_1.ts(),dec.iden());
 			dir().ponDependencias(decs_1.dir());
-			ts().ponDependencias(decs_1.ts(), decs_1.dir());
+			ts().ponDependencias(decs_1.ts(), decs_1.dir(),dec.iden(),dec.tipo());
 		}
 
 		public TS ts_exp() {
@@ -856,7 +858,9 @@ public class GA {
 	public class DecsR2 extends Decs {
 
 		public DecsR2(Dec dec) {
+			super();
 			this.dec = dec;
+			ts().ponDependencias(dec.iden(),dec.tipo());
 		}
 
 		public TS ts_exp() {
@@ -900,6 +904,7 @@ public class GA {
 			super();
 			this.tipo = tipo;
 			this.iden = IDEN;
+			tipo().ponDependencias(tipo.tipo());
 		}
 
 		public String iden_exp() {
@@ -942,6 +947,7 @@ public class GA {
 	public class TipoR1 extends Tipo {
 
 		public TipoR1(Token tDeInt) {
+			super();
 			this.tipo = tDeInt.leeCategoria();
 		}
 
@@ -975,6 +981,7 @@ public class GA {
 	public class TipoR2 extends Tipo {
 
 		public TipoR2(Token tDeBol) {
+			super();
 			this.tipo = tDeBol.leeCategoria();
 		}
 
@@ -1017,15 +1024,9 @@ public class GA {
 	public class InstsR1 extends Insts {
 
 		public InstsR1(Insts insts_1, Inst inst) {
+			super();
 			this.insts_1 = insts_1;
 			this.inst = inst;
-			insts_1.tsh().ponDependencias(tsh());
-			insts_1.etqh().ponDependencias(etqh());
-			etq().ponDependencias(inst.etq());
-			cod().ponDependencias(insts_1.cod(), inst.cod());
-			err().ponDependencias(insts_1.err(), inst.err());
-			inst.etqh().ponDependencias(insts_1.etq());
-			inst.tsh().ponDependencias(tsh());
 
 			insts_1.registraCtx(new InstsCtx() {
 				public TS tsh_exp() {
@@ -1046,6 +1047,13 @@ public class GA {
 					return InstsR1.this.insts_1.etq().val();
 				}
 			});
+			insts_1.tsh().ponDependencias(tsh());
+			insts_1.etqh().ponDependencias(etqh());
+			etq().ponDependencias(inst.etq());
+			cod().ponDependencias(insts_1.cod(), inst.cod());
+			err().ponDependencias(insts_1.err(), inst.err());
+			inst.etqh().ponDependencias(insts_1.etq());
+			inst.tsh().ponDependencias(tsh());
 
 		}
 
@@ -1093,6 +1101,7 @@ public class GA {
 	public class InstsR2 extends Insts {
 
 		public InstsR2(Inst inst) {
+			super();
 			this.inst = inst;
 			inst.registraCtx(new InstCtx() {
 				public TS tsh_exp() {
@@ -1152,6 +1161,7 @@ public class GA {
 	public class InstR1 extends Inst {
 
 		public InstR1(Inst iasig) {
+			super();
 			this.iasig = iasig;
 			iasig.registraCtx(new InstCtx() {
 				public TS tsh_exp() {
@@ -1213,6 +1223,7 @@ public class GA {
 	public class InstR2 extends Inst {
 
 		public InstR2(Inst iIF) {
+			super();
 			this.iIF = iIF;
 			iIF.registraCtx(new InstCtx() {
 				public TS tsh_exp() {
@@ -1274,6 +1285,7 @@ public class GA {
 	public class InstR3 extends Inst {
 
 		public InstR3(Inst iDO) {
+			super();
 			this.iDO = iDO;
 			iDO.registraCtx(new InstCtx() {
 				public TS tsh_exp() {
@@ -1336,6 +1348,7 @@ public class GA {
 	public class IAsigR1 extends Inst {
 
 		public IAsigR1(Token iden, Exp0 exp0) {
+			super();
 			this.iden = iden;
 			this.exp0 = exp0;
 			exp0.registraCtx(new ExpCtx() {
@@ -1406,6 +1419,7 @@ public class GA {
 	public class IIFR1 extends Inst {
 
 		public IIFR1(Casos casos) {
+			super();
 			this.casos = casos;
 			casos.registraCtx(new CasosCtx() {
 				public TS tsh_exp() {
@@ -1474,6 +1488,7 @@ public class GA {
 	public class IDOR1 extends Inst {
 
 		public IDOR1(Casos casos) {
+			super();
 			this.casos = casos;
 
 			casos.registraCtx(new CasosCtx() {
@@ -1547,6 +1562,7 @@ public class GA {
 	public class CasosR1 extends Casos {
 
 		public CasosR1(Casos casos1, Caso caso) {
+			super();
 			this.casos1 = casos1;
 			this.caso = caso;
 
@@ -1641,6 +1657,7 @@ public class GA {
 	public class CasosR2 extends Casos {
 
 		public CasosR2(Caso caso) {
+			super();
 			this.caso = caso;
 
 			caso.registraCtx(new CasoCtx() {
@@ -1716,6 +1733,7 @@ public class GA {
 	public class CasoR1 extends Caso {
 
 		public CasoR1(Exp0 exp0, Insts insts) {
+			super();
 			this.exp0 = exp0;
 			this.insts = insts;
 
@@ -1800,6 +1818,7 @@ public class GA {
 	public class Exp0R1 extends Exp0 {
 
 		public Exp0R1(Exp1 exp1_0, Exp1 exp1_1, OpComparacion opc) {
+			super();
 			this.exp1_0 = exp1_0;
 			this.exp1_1 = exp1_1;
 			this.opc = opc;
@@ -1886,6 +1905,7 @@ public class GA {
 	public class Exp0R2 extends Exp0 {
 
 		public Exp0R2(Exp1 exp1) {
+			super();
 			this.exp1 = exp1;
 
 			exp1.registraCtx(new ExpCtx() {
@@ -1950,6 +1970,7 @@ public class GA {
 	public class Exp1R1 extends Exp1 {
 
 		public Exp1R1(Exp1 exp1, Exp2 exp2, OpAditivo opa) {
+			super();
 			this.exp1 = exp1;
 			this.exp2 = exp2;
 			this.opa = opa;
@@ -2034,6 +2055,7 @@ public class GA {
 	public class Exp1R2 extends Exp1 {
 
 		public Exp1R2(Exp2 exp2) {
+			super();
 			this.exp2 = exp2;
 
 			exp2.registraCtx(new ExpCtx() {
@@ -2098,6 +2120,7 @@ public class GA {
 	public class Exp2R1 extends Exp2 {
 
 		public Exp2R1(Exp2 exp2, Exp3 exp3, OpMultiplicativo opm) {
+			super();
 			this.exp2 = exp2;
 			this.exp3 = exp3;
 			this.opm = opm;
@@ -2248,6 +2271,7 @@ public class GA {
 	public class Exp3R1 extends Exp3 {
 
 		public Exp3R1(Exp3 exp3_1, OpUnario opu) {
+			super();
 			this.exp3_1 = exp3_1;
 			this.opu = opu;
 
@@ -2262,7 +2286,7 @@ public class GA {
 			});
 			exp3_1.tsh().ponDependencias(tsh());
 			exp3_1.etqh().ponDependencias(etqh());
-			cod().ponDependencias(exp3_1.cod(), opu.op());
+			cod().ponDependencias(exp3_1.cod(), opu.cod());
 			etq().ponDependencias(exp3_1.etq());
 			tipo().ponDependencias(opu.op(), exp3_1.tipo());
 		}
@@ -2313,6 +2337,7 @@ public class GA {
 	public class Exp3R2 extends Exp3 {
 
 		public Exp3R2(Exp4 exp4) {
+			super();
 			this.exp4 = exp4;
 
 			exp4.registraCtx(new ExpCtx() {
@@ -2421,7 +2446,6 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return single(apila_false());
 		}
 
@@ -2457,6 +2481,7 @@ public class GA {
 	public class Exp4R3 extends Exp4 {
 
 		public Exp4R3(Token num) {
+			super();
 			this.num = num;
 			etq().ponDependencias(etqh());
 		}
@@ -2534,7 +2559,8 @@ public class GA {
 		}
 	}
 
-	/**<code>
+	/**
+	 * <code>
 	 * Exp4 ::= ( Exp0 )
 	 * 
 	 * Exp0.tsh = Exp4.tsh
@@ -2547,6 +2573,7 @@ public class GA {
 	public class Exp4R5 extends Exp4 {
 
 		public Exp4R5(Exp0 exp0) {
+			super();
 			this.exp0 = exp0;
 
 			exp0.registraCtx(new ExpCtx() {
@@ -2571,7 +2598,6 @@ public class GA {
 		}
 
 		public Integer etq_exp() {
-
 			return exp0.etq().val();
 		}
 
@@ -2668,7 +2694,6 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return single(gt());
 
 		}
@@ -2695,9 +2720,7 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return single(ge());
-
 		}
 
 	}
@@ -2772,23 +2795,17 @@ public class GA {
 			super();
 		}
 
-		public String regla() {
-			return " OpAditivo ::= + | OpAditivo";
-		}
-
 		public CatLexica op_exp() {
 			return CatLexica.MAS;
 		}
 
 		public List<Instruccion> cod_exp() {
 			return single(suma());
-
 		}
-
 	}
 
 	public class OpAditivoR1Debug extends OpAditivoR1 {
-		private final static String REGLA = "OpAditivo ::= +";
+		private final static String REGLA = "OpAditivo := +";
 
 		public OpAditivoR1Debug() {
 			super();
@@ -2800,7 +2817,7 @@ public class GA {
 	public class OpAditivoR2 extends OpAditivo {
 
 		public OpAditivoR2() {
-
+			super();
 		}
 
 		public CatLexica op_exp() {
@@ -2808,15 +2825,13 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return single(resta());
-
 		}
 
 	}
 
 	public class OpAditivoR2Debug extends OpAditivoR2 {
-		private final static String REGLA = "OpAditivo:= -";
+		private final static String REGLA = "OpAditivo := -";
 
 		public OpAditivoR2Debug() {
 			super();
@@ -2829,7 +2844,7 @@ public class GA {
 	public class OpAditivoR3 extends OpAditivo {
 
 		public OpAditivoR3() {
-
+			super();
 		}
 
 		public CatLexica op_exp() {
@@ -2837,14 +2852,13 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return single(or());
 		}
 
 	}
 
 	public class OpAditivoR3Debug extends OpAditivoR3 {
-		private final static String REGLA = "OpAditivo:= or";
+		private final static String REGLA = "OpAditivo := or";
 
 		public OpAditivoR3Debug() {
 			super();

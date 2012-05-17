@@ -1078,10 +1078,12 @@ public class GA {
 
 		public InstsR1Debug(Insts insts_1, Inst inst) {
 			super(insts_1, inst);
-			err().fijaDescripcion(REGLA + " | Instrucciones.err");
-			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
-			etqh().fijaDescripcion(REGLA + " | Instrucciones.etqh");
-			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			insts_1.tsh().fijaDescripcion(REGLA + " | Instrucciones(1).tsh");
+			insts_1.etqh().fijaDescripcion(REGLA + " | Instrucciones(1).etqh");
+			err().fijaDescripcion(REGLA + " | Instrucciones(0).err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones(0).cod");
+			etqh().fijaDescripcion(REGLA + " | Instrucciones(0).etqh");
+			etq().fijaDescripcion(REGLA + " | Instrucciones(0).etq");
 			inst.etqh().fijaDescripcion(REGLA + " | Instruccion.etqh");
 			inst.tsh().fijaDescripcion(REGLA + " | Instruccion.tsh");
 		}
@@ -1308,9 +1310,7 @@ public class GA {
 		}
 
 		public Error err_exp() {
-
 			return iDO.err().val();
-
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -1331,7 +1331,6 @@ public class GA {
 			iDO.tsh().fijaDescripcion(REGLA + " | IDO.tsh");
 			iDO.etqh().fijaDescripcion(REGLA + " | IDO.etqh");
 		}
-
 	}
 
 	/**

@@ -736,9 +736,9 @@ public class GA {
 
 		public ProgR1Debug(Decs decs, Insts insts) {
 			super(decs, insts);
-			err().fijaDescripcion(REGLA + "|Programa.err");
-			cod().fijaDescripcion(REGLA + "|Programa.cod");
-			insts.tsh().fijaDescripcion(REGLA + "|Instrucciones.tsh");
+			err().fijaDescripcion(REGLA + " | Programa.err");
+			cod().fijaDescripcion(REGLA + " | Programa.cod");
+			insts.tsh().fijaDescripcion(REGLA + " | Instrucciones.tsh");
 		}
 
 	}
@@ -787,10 +787,10 @@ public class GA {
 
 		public ProgR2Debug(Insts insts) {
 			super(insts);
-			err().fijaDescripcion(REGLA + "|Programa.err");
-			cod().fijaDescripcion(REGLA + "|Programa.cod");
-			insts.tsh().fijaDescripcion(REGLA + "|Instrucciones.tsh");
-			insts.etqh().fijaDescripcion(REGLA + "|Instrucciones.etqh");
+			err().fijaDescripcion(REGLA + " | Programa.err");
+			cod().fijaDescripcion(REGLA + " | Programa.cod");
+			insts.tsh().fijaDescripcion(REGLA + " | Instrucciones.tsh");
+			insts.etqh().fijaDescripcion(REGLA + " | Instrucciones.etqh");
 		}
 	}
 
@@ -838,9 +838,9 @@ public class GA {
 
 		public DecsR1Debug(Decs decs_1, Dec dec) {
 			super(decs_1, dec);
-			err().fijaDescripcion(REGLA + "|Declaraciones(0).err");
-			dir().fijaDescripcion(REGLA + "|Declaraciones(0).dir");
-			ts().fijaDescripcion(REGLA + "|Declaraciones(0).ts");
+			err().fijaDescripcion(REGLA + " | Declaraciones(0).err");
+			dir().fijaDescripcion(REGLA + " | Declaraciones(0).dir");
+			ts().fijaDescripcion(REGLA + " | Declaraciones(0).ts");
 		}
 
 	}
@@ -875,13 +875,13 @@ public class GA {
 	}
 
 	public class DecsR2Debug extends DecsR2 {
-		private final static String REGLA = "Declaraciones  ::= Declaracion | Declaraciones";
+		private final static String REGLA = "Declaraciones  ::= Declaracion";
 
 		public DecsR2Debug(Dec dec) {
 			super(dec);
-			ts().fijaDescripcion(REGLA + "Decs.ts");
-			dir().fijaDescripcion(REGLA + "Decs.dir");
-			err().fijaDescripcion(REGLA + "Decs.error");
+			ts().fijaDescripcion(REGLA + " | Decs.ts");
+			dir().fijaDescripcion(REGLA + " | Decs.dir");
+			err().fijaDescripcion(REGLA + " | Decs.error");
 		}
 	}
 
@@ -928,10 +928,10 @@ public class GA {
 
 		public DecR1Debug(Tipo tipo, Token iden) {
 			super(tipo, iden);
-			iden().fijaDescripcion(REGLA + "|iden.lex");
-			tipo().fijaDescripcion(REGLA + "|Declaracion.tipo");
-			fila().fijaDescripcion(REGLA + "|Declaracion.fila");
-			col().fijaDescripcion(REGLA + "|Declaracion.col");
+			iden().fijaDescripcion(REGLA + " | iden.lex");
+			tipo().fijaDescripcion(REGLA + " | Declaracion.tipo");
+			fila().fijaDescripcion(REGLA + " | Declaracion.fila");
+			col().fijaDescripcion(REGLA + " | Declaracion.col");
 		}
 
 	}
@@ -964,8 +964,8 @@ public class GA {
 
 		public TipoR1Debug(Token tDeInt) {
 			super(tDeInt);
-			err().fijaDescripcion(REGLA + "|tipo.err");
-			tipo().fijaDescripcion(REGLA + "|tipo.tipo");
+			err().fijaDescripcion(REGLA + " | tipo.err");
+			tipo().fijaDescripcion(REGLA + " | tipo.tipo");
 		}
 	}
 
@@ -997,8 +997,8 @@ public class GA {
 
 		public TipoR2Debug(Token tDeInt) {
 			super(tDeInt);
-			err().fijaDescripcion(REGLA + "|tipo.err");
-			tipo().fijaDescripcion(REGLA + "|tipo.tipo");
+			err().fijaDescripcion(REGLA + " | tipo.err");
+			tipo().fijaDescripcion(REGLA + " | tipo.tipo");
 		}
 	}
 
@@ -1071,12 +1071,12 @@ public class GA {
 
 		public InstsR1Debug(Insts insts_1, Inst inst) {
 			super(insts_1, inst);
-			err().fijaDescripcion(REGLA + "|Instrucciones.err");
-			cod().fijaDescripcion(REGLA + "|Instrucciones.cod");
-			etqh().fijaDescripcion(REGLA + "|Instrucciones.etqh");
-			etq().fijaDescripcion(REGLA + "|Instrucciones.etq");
-			inst.etqh().fijaDescripcion(REGLA + "|Instruccion.etqh");
-			inst.tsh().fijaDescripcion(REGLA + "|Instruccion.tsh");
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etqh().fijaDescripcion(REGLA + " | Instrucciones.etqh");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			inst.etqh().fijaDescripcion(REGLA + " | Instruccion.etqh");
+			inst.tsh().fijaDescripcion(REGLA + " | Instruccion.tsh");
 		}
 	}
 
@@ -1131,11 +1131,11 @@ public class GA {
 
 		public InstsR2Debug(Inst inst) {
 			super(inst);
-			err().fijaDescripcion(REGLA + "|Instrucciones.err");
-			cod().fijaDescripcion(REGLA + "|Instrucciones.cod");
-			etq().fijaDescripcion(REGLA + "|Instrucciones.etq");
-			inst.etqh().fijaDescripcion(REGLA + "|Instruccion.etqh");
-			inst.tsh().fijaDescripcion(REGLA + "|Instruccion.tsh");
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			inst.etqh().fijaDescripcion(REGLA + " | Instruccion.etqh");
+			inst.tsh().fijaDescripcion(REGLA + " | Instruccion.tsh");
 		}
 	}
 
@@ -1191,11 +1191,11 @@ public class GA {
 
 		public InstR1Debug(Inst iAsig) {
 			super(iAsig);
-			err().fijaDescripcion(REGLA + "|Instrucciones.err");
-			cod().fijaDescripcion(REGLA + "|Instrucciones.cod");
-			etq().fijaDescripcion(REGLA + "|Instrucciones.etq");
-			iAsig.etqh().fijaDescripcion(REGLA + "|Iasignacion.etqh");
-			iAsig.tsh().fijaDescripcion(REGLA + "|Iasignacion.tsh");
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			iAsig.etqh().fijaDescripcion(REGLA + " | Iasignacion.etqh");
+			iAsig.tsh().fijaDescripcion(REGLA + " | Iasignacion.tsh");
 		}
 
 	}
@@ -1249,15 +1249,15 @@ public class GA {
 	}
 
 	public class InstR2Debug extends InstR2 {
-		private final static String REGLA = "Instruccion ::= IIF | IIF";
+		private final static String REGLA = "Instruccion ::= IIF ";
 
 		public InstR2Debug(Inst iIF) {
 			super(iIF);
-			err().fijaDescripcion(REGLA + "Instruccion.err");
-			etq().fijaDescripcion(REGLA + "Instruccion.etq");
-			cod().fijaDescripcion(REGLA + "Instruccion.cod");
-			iIF.tsh().fijaDescripcion(REGLA + "IIF.tsh");
-			iIF.etqh().fijaDescripcion(REGLA + "IIF.etqh");
+			err().fijaDescripcion(REGLA + " | Instruccion.err");
+			etq().fijaDescripcion(REGLA + " | Instruccion.etq");
+			cod().fijaDescripcion(REGLA + " | Instruccion.cod");
+			iIF.tsh().fijaDescripcion(REGLA + " | IIF.tsh");
+			iIF.etqh().fijaDescripcion(REGLA + " | IIF.etqh");
 		}
 	}
 
@@ -1310,15 +1310,15 @@ public class GA {
 	}
 
 	public class InstR3Debug extends InstR3 {
-		private final static String REGLA = "Instruccion ::= IDO | Instruccion";
+		private final static String REGLA = "Instruccion ::= IDO";
 
 		public InstR3Debug(Inst iDO) {
 			super(iDO);
-			err().fijaDescripcion(REGLA + "Instruccion.err");
-			etq().fijaDescripcion(REGLA + "Instruccion.etq");
-			cod().fijaDescripcion(REGLA + "Instruccion.cod");
-			iDO.tsh().fijaDescripcion(REGLA + "IDO.tsh");
-			iDO.etqh().fijaDescripcion(REGLA + "IDO.etqh");
+			err().fijaDescripcion(REGLA + " | Instruccion.err");
+			etq().fijaDescripcion(REGLA + " | Instruccion.etq");
+			cod().fijaDescripcion(REGLA + " | Instruccion.cod");
+			iDO.tsh().fijaDescripcion(REGLA + " | IDO.tsh");
+			iDO.etqh().fijaDescripcion(REGLA + " | IDO.etqh");
 		}
 
 	}
@@ -1383,11 +1383,11 @@ public class GA {
 
 		public IAsigR1Debug(Token iden, Exp0 exp0) {
 			super(iden, exp0);
-			err().fijaDescripcion(REGLA + "IAsignacion.err");
-			etq().fijaDescripcion(REGLA + "Asignacion.etq");
-			cod().fijaDescripcion(REGLA + "IAsignacion.cod");
-			exp0.tsh().fijaDescripcion(REGLA + "Exp0.cod");
-			exp0.etqh().fijaDescripcion(REGLA + "Exp0.cod");
+			err().fijaDescripcion(REGLA + " | IAsignacion.err");
+			etq().fijaDescripcion(REGLA + " | IAsignacion.etq");
+			cod().fijaDescripcion(REGLA + " | IAsignacion.cod");
+			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.cod");
+			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.cod");
 
 		}
 	}
@@ -1450,12 +1450,12 @@ public class GA {
 
 		public IIFR1Debug(Casos casos) {
 			super(casos);
-			err().fijaDescripcion(REGLA + "|IIF.err");
-			etq().fijaDescripcion(REGLA + "|IIF.etq");
-			cod().fijaDescripcion(REGLA + "|IIF.cod");
-			casos.tsh().fijaDescripcion(REGLA + "|Casos.tsh");
-			casos.etqh().fijaDescripcion(REGLA + "|Casos.etqh");
-			casos.irh().fijaDescripcion(REGLA + "|Casos.irh");
+			err().fijaDescripcion(REGLA + " | IIF.err");
+			etq().fijaDescripcion(REGLA + " | IIF.etq");
+			cod().fijaDescripcion(REGLA + " | IIF.cod");
+			casos.tsh().fijaDescripcion(REGLA + " | Casos.tsh");
+			casos.etqh().fijaDescripcion(REGLA + " | Casos.etqh");
+			casos.irh().fijaDescripcion(REGLA + " | Casos.irh");
 		}
 	}
 
@@ -1521,12 +1521,12 @@ public class GA {
 
 		public IDOR1Debug(Casos casos) {
 			super(casos);
-			err().fijaDescripcion(REGLA + "|IDO.err");
-			etq().fijaDescripcion(REGLA + "|IDO.etq");
-			cod().fijaDescripcion(REGLA + "|IDO.cod");
-			casos.tsh().fijaDescripcion(REGLA + "|Casos.tsh");
-			casos.etqh().fijaDescripcion(REGLA + "|Casos.etqh");
-			casos.irh().fijaDescripcion(REGLA + "|Casos.irh");
+			err().fijaDescripcion(REGLA + " | IDO.err");
+			etq().fijaDescripcion(REGLA + " | IDO.etq");
+			cod().fijaDescripcion(REGLA + " | IDO.cod");
+			casos.tsh().fijaDescripcion(REGLA + " | Casos.tsh");
+			casos.etqh().fijaDescripcion(REGLA + " | Casos.etqh");
+			casos.irh().fijaDescripcion(REGLA + " | Casos.irh");
 		}
 	}
 
@@ -1611,15 +1611,15 @@ public class GA {
 
 		public CasosR1Debug(Casos casos_1, Caso caso) {
 			super(casos_1, caso);
-			caso.tsh().fijaDescripcion(REGLA + "|Caso.tsh");
-			caso.etqh().fijaDescripcion(REGLA + "|Caso.etqh");
-			caso.irh().fijaDescripcion(REGLA + "|Caso.irh");
-			casos_1.tsh().fijaDescripcion(REGLA + "|Casos1.tsh");
-			casos_1.etqh().fijaDescripcion(REGLA + "|Casos1.etqh");
-			casos_1.irh().fijaDescripcion(REGLA + "|Casos1.irh");
-			err().fijaDescripcion(REGLA + "|Casos0.err");
-			cod().fijaDescripcion(REGLA + "|Casos0.cod");
-			etq().fijaDescripcion(REGLA + "|Casos0.etq");
+			caso.tsh().fijaDescripcion(REGLA + " | Caso.tsh");
+			caso.etqh().fijaDescripcion(REGLA + " | Caso.etqh");
+			caso.irh().fijaDescripcion(REGLA + " | Caso.irh");
+			casos_1.tsh().fijaDescripcion(REGLA + " | Casos1.tsh");
+			casos_1.etqh().fijaDescripcion(REGLA + " | Casos1.etqh");
+			casos_1.irh().fijaDescripcion(REGLA + " | Casos1.irh");
+			err().fijaDescripcion(REGLA + " | Casos0.err");
+			cod().fijaDescripcion(REGLA + " | Casos0.cod");
+			etq().fijaDescripcion(REGLA + " | Casos0.etq");
 		}
 	}
 
@@ -1688,12 +1688,12 @@ public class GA {
 
 		public CasosR2Debug(Caso caso) {
 			super(caso);
-			caso.tsh().fijaDescripcion(REGLA + "|Caso.tsh");
-			caso.etqh().fijaDescripcion(REGLA + "|Caso.etqh");
-			caso.irh().fijaDescripcion(REGLA + "|Caso.irh");
-			err().fijaDescripcion(REGLA + "|Casos.err");
-			cod().fijaDescripcion(REGLA + "|Casos.cod");
-			etq().fijaDescripcion(REGLA + "|Casos.etq");
+			caso.tsh().fijaDescripcion(REGLA + " | Caso.tsh");
+			caso.etqh().fijaDescripcion(REGLA + " | Caso.etqh");
+			caso.irh().fijaDescripcion(REGLA + " | Caso.irh");
+			err().fijaDescripcion(REGLA + " | Casos.err");
+			cod().fijaDescripcion(REGLA + " | Casos.cod");
+			etq().fijaDescripcion(REGLA + " | Casos.etq");
 		}
 	}
 
@@ -1775,10 +1775,10 @@ public class GA {
 
 		public CasoR1Debug(Exp0 exp0, Insts insts) {
 			super(exp0, insts);
-			exp0.tsh().fijaDescripcion(REGLA + "|exp0.tsh");
-			etq().fijaDescripcion(REGLA + "|insts.etq");
-			err().fijaDescripcion(REGLA + "|insts.err");
-			cod().fijaDescripcion(REGLA + "|insts.cod");
+			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
+			etq().fijaDescripcion(REGLA + " | insts.etq");
+			err().fijaDescripcion(REGLA + " | insts.err");
+			cod().fijaDescripcion(REGLA + " | insts.cod");
 		}
 
 	}
@@ -1794,7 +1794,7 @@ public class GA {
 	 * Exp1(0).etqh =Exp0.etqh 
 	 * Exp1(1).etqh = Exp1(0).etq 
 	 * Exp0.etq = Exp1(1).etq + 1 
-	 * Exp0.cod= Exp1(0).cod || Exp1(1).cod ||OpComparacion.cod
+	 * Exp0.cod= Exp1(0).cod || Exp1(1).cod || OpComparacion.cod
 	 * </code>
 	 */
 	public class Exp0R1 extends Exp0 {
@@ -1859,13 +1859,13 @@ public class GA {
 
 		public Exp0R1Debug(Exp1 exp1_0, Exp1 exp1_1, OpComparacion op) {
 			super(exp1_0, exp1_1, op);
-			exp1_0.tsh().fijaDescripcion(REGLA + "|exp1_0.tsh");
-			exp1_0.etqh().fijaDescripcion(REGLA + "|exp1_0.etqh");
-			exp1_1.etqh().fijaDescripcion(REGLA + "|exp1_1.etqh");
-			exp1_1.tsh().fijaDescripcion(REGLA + "|exp1_1.tsh");
-			cod().fijaDescripcion(REGLA + "|exp0.cod");
-			etq().fijaDescripcion(REGLA + "|exp0.etq");
-			tipo().fijaDescripcion(REGLA + "|exp0.tipo");
+			exp1_0.tsh().fijaDescripcion(REGLA + " | exp1_0.tsh");
+			exp1_0.etqh().fijaDescripcion(REGLA + " | exp1_0.etqh");
+			exp1_1.etqh().fijaDescripcion(REGLA + " | exp1_1.etqh");
+			exp1_1.tsh().fijaDescripcion(REGLA + " | exp1_1.tsh");
+			cod().fijaDescripcion(REGLA + " | exp0.cod");
+			etq().fijaDescripcion(REGLA + " | exp0.etq");
+			tipo().fijaDescripcion(REGLA + " | exp0.tipo");
 		}
 	}
 
@@ -1926,11 +1926,11 @@ public class GA {
 
 		public Exp0R2Debug(Exp1 exp1) {
 			super(exp1);
-			exp1.tsh().fijaDescripcion(REGLA + "|exp1.tsh");
-			exp1.etqh().fijaDescripcion(REGLA + "|exp1.etqh");
-			cod().fijaDescripcion(REGLA + "|exp0.cod");
-			etq().fijaDescripcion(REGLA + "|exp0.etq");
-			tipo().fijaDescripcion(REGLA + "|exp0.tipo");
+			exp1.tsh().fijaDescripcion(REGLA + " | exp1.tsh");
+			exp1.etqh().fijaDescripcion(REGLA + " | exp1.etqh");
+			cod().fijaDescripcion(REGLA + " | exp0.cod");
+			etq().fijaDescripcion(REGLA + " | exp0.etq");
+			tipo().fijaDescripcion(REGLA + " | exp0.tipo");
 		}
 
 	}
@@ -2009,13 +2009,13 @@ public class GA {
 
 		public Exp1R1Debug(Exp1 exp1_1, Exp2 exp2, OpAditivo opAdit) {
 			super(exp1_1, exp2, opAdit);
-			exp1_1.tsh().fijaDescripcion(REGLA + "|exp1_1.tsh");
-			exp1_1.etqh().fijaDescripcion(REGLA + "|exp1_1.etqh");
-			exp2.etqh().fijaDescripcion(REGLA + "|exp2.etqh");
-			exp2.tsh().fijaDescripcion(REGLA + "|exp2.tsh");
-			cod().fijaDescripcion(REGLA + "|exp1_0.cod");
-			etq().fijaDescripcion(REGLA + "|exp1_0.etq");
-			tipo().fijaDescripcion(REGLA + "|exp1_0.tipo");
+			exp1_1.tsh().fijaDescripcion(REGLA + " | exp1_1.tsh");
+			exp1_1.etqh().fijaDescripcion(REGLA + " | exp1_1.etqh");
+			exp2.etqh().fijaDescripcion(REGLA + " | exp2.etqh");
+			exp2.tsh().fijaDescripcion(REGLA + " | exp2.tsh");
+			cod().fijaDescripcion(REGLA + " | exp1_0.cod");
+			etq().fijaDescripcion(REGLA + " | exp1_0.etq");
+			tipo().fijaDescripcion(REGLA + " | exp1_0.tipo");
 		}
 
 	}
@@ -2075,11 +2075,11 @@ public class GA {
 
 		public Exp1R2Debug(Exp2 exp2) {
 			super(exp2);
-			exp2.tsh().fijaDescripcion(REGLA + "|exp2.tsh");
-			exp2.etqh().fijaDescripcion(REGLA + "|exp2.etqh");
-			cod().fijaDescripcion(REGLA + "|exp1.cod");
-			etq().fijaDescripcion(REGLA + "|exp1.etq");
-			tipo().fijaDescripcion(REGLA + "|exp1.tipo");
+			exp2.tsh().fijaDescripcion(REGLA + " | exp2.tsh");
+			exp2.etqh().fijaDescripcion(REGLA + " | exp2.etqh");
+			cod().fijaDescripcion(REGLA + " | exp1.cod");
+			etq().fijaDescripcion(REGLA + " | exp1.etq");
+			tipo().fijaDescripcion(REGLA + " | exp1.tipo");
 		}
 	}
 
@@ -2158,13 +2158,13 @@ public class GA {
 
 		public Exp2R1Debug(Exp2 exp2_1, Exp3 exp3, OpMultiplicativo opMult) {
 			super(exp2_1, exp3, opMult);
-			exp2_1.tsh().fijaDescripcion(REGLA + "|exp2_1.tsh");
-			exp2_1.etqh().fijaDescripcion(REGLA + "|exp2_1.etqh");
-			exp3.etqh().fijaDescripcion(REGLA + "|exp3.etqh");
-			exp3.tsh().fijaDescripcion(REGLA + "|exp3.tsh");
-			cod().fijaDescripcion(REGLA + "|exp2_0.cod");
-			etq().fijaDescripcion(REGLA + "|exp2_0.etq");
-			tipo().fijaDescripcion(REGLA + "|exp12_0.tipo");
+			exp2_1.tsh().fijaDescripcion(REGLA + " | exp2_1.tsh");
+			exp2_1.etqh().fijaDescripcion(REGLA + " | exp2_1.etqh");
+			exp3.etqh().fijaDescripcion(REGLA + " | exp3.etqh");
+			exp3.tsh().fijaDescripcion(REGLA + " | exp3.tsh");
+			cod().fijaDescripcion(REGLA + " | exp2_0.cod");
+			etq().fijaDescripcion(REGLA + " | exp2_0.etq");
+			tipo().fijaDescripcion(REGLA + " | exp12_0.tipo");
 		}
 	}
 
@@ -2226,11 +2226,11 @@ public class GA {
 
 		public Exp2R2Debug(Exp3 exp3) {
 			super(exp3);
-			exp3.tsh().fijaDescripcion(REGLA + "|exp3.tsh");
-			exp3.etqh().fijaDescripcion(REGLA + "|exp3.etqh");
-			cod().fijaDescripcion(REGLA + "|exp2.cod");
-			etq().fijaDescripcion(REGLA + "|exp2.etq");
-			tipo().fijaDescripcion(REGLA + "|exp2.tipo");
+			exp3.tsh().fijaDescripcion(REGLA + " | exp3.tsh");
+			exp3.etqh().fijaDescripcion(REGLA + " | exp3.etqh");
+			cod().fijaDescripcion(REGLA + " | exp2.cod");
+			etq().fijaDescripcion(REGLA + " | exp2.etq");
+			tipo().fijaDescripcion(REGLA + " | exp2.tipo");
 		}
 	}
 
@@ -2291,11 +2291,11 @@ public class GA {
 
 		public Exp3R1Debug(Exp3 exp3_1, OpUnario opUnar) {
 			super(exp3_1, opUnar);
-			exp3_1.tsh().fijaDescripcion(REGLA + "|exp3_1.tsh");
-			exp3_1.etqh().fijaDescripcion(REGLA + "|exp3_1.etqh");
-			cod().fijaDescripcion(REGLA + "|exp3.cod");
-			etq().fijaDescripcion(REGLA + "|exp3.etq");
-			tipo().fijaDescripcion(REGLA + "|exp3.tipo");
+			exp3_1.tsh().fijaDescripcion(REGLA + " | exp3_1.tsh");
+			exp3_1.etqh().fijaDescripcion(REGLA + " | exp3_1.etqh");
+			cod().fijaDescripcion(REGLA + " | exp3.cod");
+			etq().fijaDescripcion(REGLA + " | exp3.etq");
+			tipo().fijaDescripcion(REGLA + " | exp3.tipo");
 		}
 	}
 
@@ -2352,11 +2352,11 @@ public class GA {
 
 		public Exp3R2Debug(Exp4 exp4) {
 			super(exp4);
-			exp4.tsh().fijaDescripcion(REGLA + "|exp4.tsh");
-			exp4.etqh().fijaDescripcion(REGLA + "|exp4.etqh");
-			cod().fijaDescripcion(REGLA + "|exp3.cod");
-			etq().fijaDescripcion(REGLA + "|exp3.etq");
-			tipo().fijaDescripcion(REGLA + "|exp3.tipo");
+			exp4.tsh().fijaDescripcion(REGLA + " | exp4.tsh");
+			exp4.etqh().fijaDescripcion(REGLA + " | exp4.etqh");
+			cod().fijaDescripcion(REGLA + " | exp3.cod");
+			etq().fijaDescripcion(REGLA + " | exp3.etq");
+			tipo().fijaDescripcion(REGLA + " | exp3.tipo");
 		}
 
 	}
@@ -2398,9 +2398,9 @@ public class GA {
 
 		public Exp4R1Debug() {
 			super();
-			cod().fijaDescripcion(REGLA + "|exp4.cod");
-			etq().fijaDescripcion(REGLA + "|exp4.etq");
-			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
+			cod().fijaDescripcion(REGLA + " | exp4.cod");
+			etq().fijaDescripcion(REGLA + " | exp4.etq");
+			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 		}
 
 	}
@@ -2440,9 +2440,9 @@ public class GA {
 
 		public Exp4R2Debug() {
 			super();
-			cod().fijaDescripcion(REGLA + "|exp4.cod");
-			etq().fijaDescripcion(REGLA + "|exp4.etq");
-			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
+			cod().fijaDescripcion(REGLA + " | exp4.cod");
+			etq().fijaDescripcion(REGLA + " | exp4.etq");
+			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 		}
 	}
 
@@ -2481,9 +2481,9 @@ public class GA {
 
 		public Exp4R3Debug(Token num) {
 			super(num);
-			cod().fijaDescripcion(REGLA + "|exp4.cod");
-			etq().fijaDescripcion(REGLA + "|exp4.etq");
-			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
+			cod().fijaDescripcion(REGLA + " | exp4.cod");
+			etq().fijaDescripcion(REGLA + " | exp4.etq");
+			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 		}
 
 	}
@@ -2528,9 +2528,9 @@ public class GA {
 
 		public Exp4R4Debug(Token iden) {
 			super(iden);
-			cod().fijaDescripcion(REGLA + "|exp4.cod");
-			etq().fijaDescripcion(REGLA + "|exp4.etq");
-			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
+			cod().fijaDescripcion(REGLA + " | exp4.cod");
+			etq().fijaDescripcion(REGLA + " | exp4.etq");
+			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 		}
 	}
 
@@ -2583,15 +2583,15 @@ public class GA {
 	}
 
 	public class Exp4R5Debug extends Exp4R5 {
-		private final static String REGLA = "Exp4 ::= ( Exp0 ) | Exp0";
+		private final static String REGLA = "Exp4 ::= ( Exp0 )";
 
 		public Exp4R5Debug(Exp0 exp0) {
 			super(exp0);
-			exp0.etqh().fijaDescripcion(REGLA + "|exp0.etqh");
-			exp0.tsh().fijaDescripcion(REGLA + "|exp0.tsh");
-			tipo().fijaDescripcion(REGLA + "|exp4.tipo");
-			etq().fijaDescripcion(REGLA + "|exp4.etq");
-			cod().fijaDescripcion(REGLA + "|exp4.cod");
+			exp0.etqh().fijaDescripcion(REGLA + " | exp0.etqh");
+			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
+			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
+			etq().fijaDescripcion(REGLA + " | exp4.etq");
+			cod().fijaDescripcion(REGLA + " | exp4.cod");
 		}
 	}
 
@@ -2624,8 +2624,8 @@ public class GA {
 
 		public OpComparacionR1Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpComparacion.op");
-			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+			op().fijaDescripcion(REGLA + " | OpComparacion.op");
+			cod().fijaDescripcion(REGLA + " | OpComparacion.cod");
 
 		}
 	}
@@ -2651,8 +2651,8 @@ public class GA {
 
 		public OpComparacionR2Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpComparacion.op");
-			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+			op().fijaDescripcion(REGLA + " | OpComparacion.op");
+			cod().fijaDescripcion(REGLA + " | OpComparacion.cod");
 		}
 
 	}
@@ -2679,8 +2679,8 @@ public class GA {
 
 		public OpComparacionR3Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpComparacion.op");
-			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+			op().fijaDescripcion(REGLA + " | OpComparacion.op");
+			cod().fijaDescripcion(REGLA + " | OpComparacion.cod");
 		}
 	}
 
@@ -2707,8 +2707,8 @@ public class GA {
 
 		public OpComparacionR4Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpComparacion.op");
-			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+			op().fijaDescripcion(REGLA + " | OpComparacion.op");
+			cod().fijaDescripcion(REGLA + " | OpComparacion.cod");
 		}
 	}
 
@@ -2735,8 +2735,8 @@ public class GA {
 
 		public OpComparacionR5Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpComparacion.op");
-			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+			op().fijaDescripcion(REGLA + " | OpComparacion.op");
+			cod().fijaDescripcion(REGLA + " | OpComparacion.cod");
 		}
 	}
 
@@ -2761,8 +2761,8 @@ public class GA {
 
 		public OpComparacionR6Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpComparacion.op");
-			cod().fijaDescripcion(REGLA + "|OpComparacion.cod");
+			op().fijaDescripcion(REGLA + " | OpComparacion.op");
+			cod().fijaDescripcion(REGLA + " | OpComparacion.cod");
 		}
 	}
 
@@ -2792,8 +2792,8 @@ public class GA {
 
 		public OpAditivoR1Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpAditivo.op");
-			cod().fijaDescripcion(REGLA + "|OpAditivo.cod");
+			op().fijaDescripcion(REGLA + " | OpAditivo.op");
+			cod().fijaDescripcion(REGLA + " | OpAditivo.cod");
 		}
 	}
 
@@ -2820,8 +2820,8 @@ public class GA {
 
 		public OpAditivoR2Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpAditivo.op");
-			cod().fijaDescripcion(REGLA + "|OpAditivo.cod");
+			op().fijaDescripcion(REGLA + " | OpAditivo.op");
+			cod().fijaDescripcion(REGLA + " | OpAditivo.cod");
 		}
 
 	}
@@ -2848,8 +2848,8 @@ public class GA {
 
 		public OpAditivoR3Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpAditivo.op");
-			cod().fijaDescripcion(REGLA + "|OpAditivo.cod");
+			op().fijaDescripcion(REGLA + " | OpAditivo.op");
+			cod().fijaDescripcion(REGLA + " | OpAditivo.cod");
 		}
 	}
 
@@ -2873,8 +2873,8 @@ public class GA {
 
 		public OpMultiplicativoR1Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpMultiplicativo.op");
-			cod().fijaDescripcion(REGLA + "|OpMultiplicativo.cod");
+			op().fijaDescripcion(REGLA + " | OpMultiplicativo.op");
+			cod().fijaDescripcion(REGLA + " | OpMultiplicativo.cod");
 		}
 	}
 
@@ -2898,8 +2898,8 @@ public class GA {
 
 		public OpMultiplicativoR2Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpMultiplicativo.op");
-			cod().fijaDescripcion(REGLA + "|OpMultiplicativo.cod");
+			op().fijaDescripcion(REGLA + " | OpMultiplicativo.op");
+			cod().fijaDescripcion(REGLA + " | OpMultiplicativo.cod");
 		}
 	}
 
@@ -2914,9 +2914,7 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return single(and());
-
 		}
 
 	}
@@ -2926,8 +2924,8 @@ public class GA {
 
 		public OpMultiplicativoR3Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpMultiplicativo.op");
-			cod().fijaDescripcion(REGLA + "|OpMultiplicativo.cod");
+			op().fijaDescripcion(REGLA + " | OpMultiplicativo.op");
+			cod().fijaDescripcion(REGLA + " | OpMultiplicativo.cod");
 		}
 	}
 
@@ -2953,8 +2951,8 @@ public class GA {
 
 		public OpUnarioR1Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpUnario.op");
-			cod().fijaDescripcion(REGLA + "|OpUnario.cod");
+			op().fijaDescripcion(REGLA + " | OpUnario.op");
+			cod().fijaDescripcion(REGLA + " | OpUnario.cod");
 		}
 	}
 
@@ -2979,8 +2977,8 @@ public class GA {
 
 		public OpUnarioR2Debug() {
 			super();
-			op().fijaDescripcion(REGLA + "|OpUnario.op");
-			cod().fijaDescripcion(REGLA + "|OpUnario.cod");
+			op().fijaDescripcion(REGLA + " | OpUnario.op");
+			cod().fijaDescripcion(REGLA + " | OpUnario.cod");
 		}
 	}
 

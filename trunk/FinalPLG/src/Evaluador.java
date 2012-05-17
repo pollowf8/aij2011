@@ -13,7 +13,7 @@ public class Evaluador {
      Atributo newTop = top.siguienteDependencia();
      if (newTop == null) {
         if (Config.DEBUG) 
-           System.err.print("VALOR DE "+top.descripcion());
+           System.err.print("VALOR DE "+top.descripcion()+"\n");
         top.calcula();
         if (Config.DEBUG)
            System.err.println(top.val()); 

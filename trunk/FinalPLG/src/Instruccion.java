@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-abstract public class Instruccion {
+abstract public class Instruccion implements Serializable {
 	public enum ICOD {
 		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A
 	};
@@ -39,6 +39,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "OR()";
 		}
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -58,7 +59,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "DIV()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -78,7 +79,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "AND()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -98,6 +99,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "MENOS()";
 		}
+
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
 			vm.push(new VM.IntPValue(-op1.asInt()));
@@ -116,7 +118,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "NOT()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
 			vm.push(new VM.BooleanPValue(!op1.asBoolean()));
@@ -135,6 +137,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "EQ()";
 		}
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -154,7 +157,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "NEQ()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -174,6 +177,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "GT()";
 		}
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -193,7 +197,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "GE()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -213,7 +217,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "LT()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -233,7 +237,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "LE()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op2 = vm.pop();
 			VM.PValue op1 = vm.pop();
@@ -272,6 +276,7 @@ abstract public class Instruccion {
 			vm.push(new VM.IntPValue(op1.asInt() - op2.asInt()));
 			vm.incCP();
 		}
+
 		public ICOD ci() {
 			return ICOD.RESTA;
 		}
@@ -307,15 +312,16 @@ abstract public class Instruccion {
 		private IIr_f(int etq) {
 			this.etq = Integer.valueOf(etq).intValue();
 		}
-		
+
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
-			if(op1.asBoolean()==false){
+			if (op1.asBoolean() == false) {
 				vm.setCP(etq);
-			}else{
-				vm.incCP();}
+			} else {
+				vm.incCP();
+			}
 		}
-		
+
 		public ICOD ci() {
 			return ICOD.IR_F;
 		}
@@ -335,11 +341,11 @@ abstract public class Instruccion {
 		private IIr_a(int etq) {
 			this.etq = etq;
 		}
-		
+
 		public void ejecuta(VM vm) {
 			vm.setCP(etq);
 		}
-		
+
 		public ICOD ci() {
 			return ICOD.IR_A;
 		}
@@ -393,7 +399,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "APILA_TRUE()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			vm.push(new VM.BooleanPValue(true));
 			vm.incCP();
@@ -411,7 +417,7 @@ abstract public class Instruccion {
 		public String toString() {
 			return "APILA_FALSE()";
 		}
-		
+
 		public void ejecuta(VM vm) {
 			vm.push(new VM.BooleanPValue(false));
 			vm.incCP();
@@ -433,7 +439,7 @@ abstract public class Instruccion {
 			vm.addValMem(dir, op1.asInt());
 			vm.incCP();
 		}
-		
+
 		public ICOD ci() {
 			return ICOD.DESAPILA_DIR;
 		}
@@ -459,13 +465,13 @@ abstract public class Instruccion {
 				this.dir = 0;
 			}
 		}
-		
+
 		public void ejecuta(VM vm) {
-			Integer a=vm.getValMem(dir);
+			Integer a = vm.getValMem(dir);
 			vm.push(new VM.IntPValue(a));
 			vm.incCP();
 		}
-		
+
 		public ICOD ci() {
 			return ICOD.APILA_DIR;
 		}

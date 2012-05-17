@@ -28,7 +28,7 @@ public class Atributo<Valor> {
    public Atributo siguienteDependencia() {
        while (! dependencias.isEmpty()) {
          Atributo siguiente = dependencias.pop();
-         if (siguiente.calculado()) return siguiente;
+         if (!siguiente.calculado()) return siguiente;
       }
       return null; 
    } 

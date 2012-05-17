@@ -4,7 +4,7 @@ import java.util.Stack;
 public class Atributo<Valor> {
    public Atributo()  {
     dependencias = new Stack<Atributo>();
-    calculado = true;
+    calculado = false;
     descripcion = "<descripcion de atributo no disponible>";
    } 
    public void fijaExpresion(ExpSem<Valor> exp) {

@@ -308,7 +308,6 @@ abstract public class Instruccion {
 			this.etq = Integer.valueOf(etq).intValue();
 		}
 		
-		//TODO Puede que sea asi
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
 			if(op1.asBoolean()==false){
@@ -336,7 +335,7 @@ abstract public class Instruccion {
 		private IIr_a(int etq) {
 			this.etq = etq;
 		}
-		//TODO Duda igual que
+		
 		public void ejecuta(VM vm) {
 			vm.setCP(etq);
 		}
@@ -431,8 +430,8 @@ abstract public class Instruccion {
 
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
-			//TODO como consigues meter op1 en la direccion dir
-			vm.decCP();
+			vm.addValMem(dir, op1.asInt());
+			vm.incCP();
 		}
 		
 		public ICOD ci() {
@@ -462,8 +461,8 @@ abstract public class Instruccion {
 		}
 		
 		public void ejecuta(VM vm) {
-			//TODO como consigues el valor de la direccion dir
-			
+			Integer a=vm.getValMem(dir);
+			vm.push(new VM.IntPValue(a));
 			vm.incCP();
 		}
 		

@@ -4,9 +4,13 @@ int tmp
 &
 x:=456;
 y:=342;
-if 
+if
 	case x gt y ->
 		tmp:=x;
 		x:=y;
 		y:=tmp
+[]
+	case true ->
+		x:=0;
+		y:=2*y		
 fi

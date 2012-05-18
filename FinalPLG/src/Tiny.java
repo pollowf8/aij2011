@@ -19,11 +19,7 @@ public class Tiny {
 			ConstructorArboles constructorArboles = new ConstructorArboles(
 					analizadorLexico);
 			GA.Programa programa = constructorArboles.parse();
-//			if (programa.err().hayError()) {
-//				for (String e : programa.err().errores())
-//					System.out.println(e);
-//			} else
-//				System.out.println(programa.cod());
+
 			Evaluador evaluador = new Evaluador();
 			if (evaluador.evalua(programa.err()).val().hayError()) {
 				for (String e : programa.err().val().errores())

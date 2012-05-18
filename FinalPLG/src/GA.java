@@ -1399,7 +1399,6 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | IAsignacion.cod");
 			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.tsh");
 			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.etqh");
-
 		}
 	}
 
@@ -1751,8 +1750,11 @@ public class GA {
 					return CasoR1.this.exp0.etq().val() + 1;
 				}
 			});
-			exp0.etqh().ponDependencias(etqh());
+			
+			insts.tsh().ponDependencias(tsh());
 			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(etqh());
+			insts.etqh().ponDependencias(exp0.etq());
 			etq().ponDependencias(insts.etq());
 			err().ponDependencias(insts.err(), exp0.tipo());
 			cod().ponDependencias(exp0.cod(), insts.etq(), insts.cod(), irh());
@@ -1789,6 +1791,8 @@ public class GA {
 
 		public CasoR1Debug(Exp0 exp0, Insts insts) {
 			super(exp0, insts);
+			insts.etqh().fijaDescripcion(REGLA + " | insts.etqh");
+			insts.tsh().fijaDescripcion(REGLA + " | insts.tsh");
 			exp0.etqh().fijaDescripcion(REGLA + " | exp0.etqh");
 			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
 			etq().fijaDescripcion(REGLA + " | insts.etq");

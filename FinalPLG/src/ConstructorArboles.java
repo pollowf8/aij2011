@@ -18,31 +18,55 @@ public class ConstructorArboles {
 		rec(CatLexica.EOF);
 		return aDePrograma;
 	}
-
-	// Programa ::= Declaraciones & Instrucciones
-	// Programa.a = progR1(Declaraciones.a,Instrucciones.a)
-	// Programa ::= Instrucciones
-	// Programa.a = progR2(Instrucciones.a)
+	
+	//Programa ::= Bloque
+		//Programa.a = progR1(Bloque.a)
 	private GA.Programa recPrograma() throws IOException {
-		if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)) {
+		GA.Bloque aBloque = recBloque();
+		return progR1(aBloque);
+	}
+	
+	// Bloque ::= Declaraciones & Instrucciones
+		// Bloque.a = bloqueR1(Declaraciones.a,Instrucciones.a)
+	// Bloque ::= Instrucciones
+		// Bloque.a = bloqueR2(Instrucciones.a)
+	private GA.Bloque recBloque() throws IOException {
+	//un bloque empieza por decs o por insts
+		//un decs empieza por Tipo,tipo o proc
+				//un Tipo empieza por catLexica int,boolean,tabla,registro,puntero,IDEN
+		//un insts empieza por IAsig, INew, IDispose, Ilectura, IEscritura, ILlamada, IIF, IDO
+				//IAsig por Mem, q es un IDEN
+				//Inew por new, IDispose por delete
+				//ILectura por leer y IEscritura por escribir
+				//IILamada empieza por IDEN
+				//IIF por if y IDO por do
+		if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
+				|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
+				|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
+				|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)) {
+						// IDEN ESTA BIEN ASI? porq instrucciones tb acepta iden :S
 			GA.Decs aDecs = recDecs();
 			if (tokenActual(CatLexica.AMPERSAND)) {
 				rec(CatLexica.AMPERSAND);
 				GA.Insts aInsts = recInsts();
-				return progR1(aDecs, aInsts);
+				return bloqueR1(aDecs, aInsts);
 			}
-		} else if (tokenActual(CatLexica.IDEN) || tokenActual(CatLexica.IF)
-				|| tokenActual(CatLexica.DO)) {
+		} else if (tokenActual(CatLexica.IDEN) 
+				|| tokenActual(CatLexica.IF) || tokenActual(CatLexica.DO)
+				|| tokenActual(CatLexica.NEW)|| tokenActual(CatLexica.DELETE)
+				|| tokenActual(CatLexica.LEER)|| tokenActual(CatLexica.ESCRIBIR)) {
 			GA.Insts aInsts = recInsts();
-			return progR2(aInsts);
+			return bloqueR2(aInsts);
 		}
 		errorSintactico();
 		return null;
 	}
 
+	
+	
 	// Declaraciones ::= Declaracion RDecs
-	// Declaraciones.a = RDecs.a
-	// RDecs.ah = decsR2(Declaracion.a)
+		// Declaraciones.a = RDecs.a
+		// RDecs.ah = decsR2(Declaracion.a)
 	private GA.Decs recDecs() throws IOException {
 		GA.Dec aDec = recDec();
 		GA.Decs aRDecs = recRDecs(decsR2(aDec));
@@ -533,20 +557,33 @@ public class ConstructorArboles {
 	}
 
 	// Funciones de conexion con Gramatica de atributos
-	private GA.Programa progR1(GA.Decs decs, GA.Insts insts) {
+	private GA.Programa progR1(GA.Bloque bloque) {
 		if (Config.DEBUG)
-			return gramaticaAtributos.new ProgR1Debug(decs, insts);
+			return gramaticaAtributos.new ProgR1Debug(bloque);
 		else
-			return gramaticaAtributos.new ProgR1(decs, insts);
+			return gramaticaAtributos.new ProgR1(bloque);
 	}
 
-	private GA.Programa progR2(GA.Insts insts) {
+	private GA.Bloque bloqueR1(GA.Decs decs,GA.Insts insts) {
 		if (Config.DEBUG)
-			return gramaticaAtributos.new ProgR2Debug(insts);
+			return gramaticaAtributos.new BloqueR1Debug(decs,insts);
 		else
-			return gramaticaAtributos.new ProgR2(insts);
+			return gramaticaAtributos.new BloqueR1(decs,insts);
 	}
-
+	private GA.Bloque bloqueR2(GA.Insts insts) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new BloqueR2Debug(insts);
+		else
+			return gramaticaAtributos.new BloqueR2(insts);
+	}
+	
+	private GA.Decs decsR1(GA.Decs ahDeRDecs_0, GA.Dec aDec) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new DecsR1Debug(ahDeRDecs_0, aDec);
+		else
+			return gramaticaAtributos.new DecsR1(ahDeRDecs_0, aDec);
+	}
+	
 	private GA.Decs decsR2(GA.Dec aDec) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new DecsR2Debug(aDec);
@@ -559,13 +596,6 @@ public class ConstructorArboles {
 			return gramaticaAtributos.new DecR1Debug(tipo, iden);
 		else
 			return gramaticaAtributos.new DecR1(tipo, iden);
-	}
-
-	private GA.Decs decsR1(GA.Decs ahDeRDecs_0, GA.Dec aDec) {
-		if (Config.DEBUG)
-			return gramaticaAtributos.new DecsR1Debug(ahDeRDecs_0, aDec);
-		else
-			return gramaticaAtributos.new DecsR1(ahDeRDecs_0, aDec);
 	}
 
 	private GA.Tipo tipoR1(Token tDeInt) {
@@ -581,19 +611,19 @@ public class ConstructorArboles {
 		else
 			return gramaticaAtributos.new TipoR2(tDeBool);
 	}
-
-	private GA.Insts instsR2(GA.Inst inst) {
-		if (Config.DEBUG)
-			return gramaticaAtributos.new InstsR2Debug(inst);
-		else
-			return gramaticaAtributos.new InstsR2(inst);
-	}
-
+	
 	private GA.Insts instsR1(GA.Insts ahDeRInsts0, GA.Inst aInst) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new InstsR1Debug(ahDeRInsts0, aInst);
 		else
 			return gramaticaAtributos.new InstsR1(ahDeRInsts0, aInst);
+	}
+	
+	private GA.Insts instsR2(GA.Inst inst) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstsR2Debug(inst);
+		else
+			return gramaticaAtributos.new InstsR2(inst);
 	}
 
 	private GA.Inst iasigR1(Token iden, GA.Exp0 exp0) {

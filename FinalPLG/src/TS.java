@@ -13,8 +13,9 @@ public class TS {
    public boolean estaEn(String cte) {
       return tabla.containsKey(cte); 
    }
-   //0 TIPO
+   //0 TIPO una expresion de tipo
    //1 DIR
+   //2 CLASE
    public TS aniade(String cte,ArrayList<Object> val) {
 //       TS result = new TS(new HashMap<String,ArrayList<Object>>(tabla));
 //       result.tabla.put(cte,val);

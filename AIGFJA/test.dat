@@ -1,5 +1,0 @@
-Algoritmo                Coste       Abiertos    Expandidos  MaxNodos    Completo    Optimo      Tiempo(r=18)Espacio(r=18)
-Primero en anchura       4.0         39835       3227        39836       S           S           r^P         r^P         
-Profundidad Limitada     6.0         -           42662       -           S(L>=P)     N           r^L         r*L
-Voraz                    4.0         126         9           127         N           N           r^m         r^m         
-A*                       4.0         178         13          179         S           S           r^P         r^P      

@@ -104,4 +104,8 @@ public class VM {
 			return new Integer(-1);
 		}
 	}
+	public Integer getPrimeraPosLibre() {
+		return memoria.size();
+	}
+	
 }

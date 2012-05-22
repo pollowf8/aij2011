@@ -1,4 +1,3 @@
-
 public enum CatLexica {
 
 	NUM, IDEN, MAS {
@@ -81,7 +80,8 @@ public enum CatLexica {
 		public String toString() {
 			return "=";
 		}
-	},DOSPUNTOS {
+	},
+	DOSPUNTOS {
 		public String toString() {
 			return ":";
 		}
@@ -145,24 +145,79 @@ public enum CatLexica {
 		public String toString() {
 			return "boolean";
 		}
-	}
-	,
+	},
 	ERROR {
 
 		@Override
 		public String toString() {
 			return "error";
 		}
-	},	
+	},
 	AMPERSAND {
 		public String toString() {
 			return "&";
 		}
 	},
-	EOF
+	EOF,
+	// NUEVAS CATEGORIAS LÉXICAS
+	TABLA {
+		public String toString() {
+			return "tabla";
+		}
+	},
+	DE {
+		public String toString() {
+			return "de";
+		}
+	},
+	REG {
+		public String toString() {
+			return "registro";
+		}
+	},
+	PUNTERO {
+		public String toString() {
+			return "puntero";
+		}
+	},
+	TIPO {
+		public String toString() {
+			return "tipo";
+		}
+	},
+	VAR {
+		public String toString() {
+			return "var";
+		}
+	},
+	ARRAY {
+		public String toString() {
+			return "array";
+		}
+	},
+	PROC {
+		public String toString() {
+			return "proc";
+		}
+	},
+	NEW {
+		public String toString() {
+			return "new";
+		}
+	},
+	DELETE {
+		public String toString() {
+			return "delete";
+		}
+	},
+	LEER {
+		public String toString() {
+			return "leer";
+		}
+	},
+	ESCRIBIR {
+		public String toString() {
+			return "escribir";
+		}
+	},
 };
-
-
-
-
-

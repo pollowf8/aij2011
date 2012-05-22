@@ -2,7 +2,7 @@ import java.io.Serializable;
 
 abstract public class Instruccion implements Serializable {
 	public enum ICOD {
-		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A
+		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL
 	};
 
 	private static ISuma iSuma = null;
@@ -487,6 +487,106 @@ abstract public class Instruccion implements Serializable {
 		private int dir;
 
 	}
+	
+	public static class IMueve extends Instruccion {
+
+		private IMueve(String dir) {
+			try {
+				this.tamMover = Integer.valueOf(dir).intValue();
+			} catch (NumberFormatException e) {
+				this.tamMover = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			VM.PValue origen = vm.pop();
+			VM.PValue destino = vm.pop();
+			for (int i = 0; i < tamMover-1; i++) {
+				Integer a=vm.getValMem(origen.asInt()+i);
+				vm.addValMem(destino.asInt()+i, a);	
+			}
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.MUEVE;
+		}
+
+		public int arg1() {
+			return tamMover;
+		}
+
+		public String toString() {
+			return "APILA_DIR(" + tamMover + ")";
+		}
+
+		private int tamMover;
+
+	}
+	
+	public static class IDesapilaInd extends Instruccion {
+
+		private IDesapilaInd(String dir) {
+			try {
+				this.dir = Integer.valueOf(dir).intValue();
+			} catch (NumberFormatException e) {
+				this.dir = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			VM.PValue op1 = vm.pop();
+			vm.addValMem(dir, op1.asInt());
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.DESAPILA_IND;
+		}
+
+		public int arg1() {
+			return dir;
+		}
+
+		public String toString() {
+			return "DESAPILA_IND(" + dir + ")";
+		}
+
+		private int dir;
+
+	}
+	
+	public static class IApilaInd extends Instruccion {
+
+		private IApilaInd(String dir) {
+			try {
+				this.dir = Integer.valueOf(dir).intValue();
+			} catch (NumberFormatException e) {
+				this.dir = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			Integer a = vm.getValMem(dir);
+			vm.push(new VM.IntPValue(a));
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.APILA_IND;
+		}
+
+		public int arg1() {
+			return dir;
+		}
+
+		public String toString() {
+			return "APILA_IND(" + dir + ")";
+		}
+
+		private int dir;
+
+	}
 
 	public static class IApilaInt extends Instruccion {
 		private int val;
@@ -517,6 +617,70 @@ abstract public class Instruccion implements Serializable {
 		}
 	}
 
+	public static class INew extends Instruccion {
+
+		private INew(String tamReserva) {
+			try {
+				this.tamReserva = Integer.valueOf(tamReserva).intValue();
+			} catch (NumberFormatException e) {
+				this.tamReserva = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			Integer poslibre = vm.getPrimeraPosLibre();
+			//TODO RESERVA?¿
+			vm.push(new VM.IntPValue(poslibre));
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.INEW;
+		}
+
+		public int arg1() {
+			return tamReserva;
+		}
+
+		public String toString() {
+			return "NEW(" + tamReserva + ")";
+		}
+
+		private int tamReserva;
+
+	}
+	public static class IDel extends Instruccion {
+
+		private IDel(String tamReserva) {
+			try {
+				this.tamReserva = Integer.valueOf(tamReserva).intValue();
+			} catch (NumberFormatException e) {
+				this.tamReserva = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			VM.PValue posinicio = vm.pop();
+			//TODO LIBREA?¿
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.IDEL;
+		}
+
+		public int arg1() {
+			return tamReserva;
+		}
+
+		public String toString() {
+			return "DEL(" + tamReserva + ")";
+		}
+
+		private int tamReserva;
+
+	}
+	
 	public static Instruccion nuevaIOr() {
 		if (iOr == null) {
 			iOr = new IOr();

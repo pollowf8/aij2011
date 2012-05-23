@@ -95,9 +95,9 @@ public class GA {
 					return dirInicio_exp();
 				}
 			});
-			llamadasPendientes = new Atributo<Integer>();
-			llamadasPendientes.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
+			llamadasPendientes = new Atributo<List<Integer>>();
+			llamadasPendientes.fijaExpresion(new ExpSem<List<Integer>>() {
+				public List<Integer> val() {
 					return llamadasPendientes_exp();
 				}
 			});
@@ -142,7 +142,7 @@ public class GA {
 			return dirInicio;
 		}
 
-		public Atributo<Integer> llamadasPendientes() {
+		public Atributo<List<Integer>> llamadasPendientes() {
 			return llamadasPendientes;
 		}
 
@@ -158,7 +158,7 @@ public class GA {
 
 		protected abstract Integer dirInicio_exp();
 
-		protected abstract Integer llamadasPendientes_exp();
+		protected abstract List<Integer> llamadasPendientes_exp();
 
 		protected abstract Integer anidamiento_exp();
 
@@ -169,7 +169,7 @@ public class GA {
 		private Atributo<Integer> dirh;
 		private Atributo<Integer> nivelh;
 		private Atributo<Integer> dirInicio;
-		private Atributo<Integer> llamadasPendientes;
+		private Atributo<List<Integer>> llamadasPendientes;
 		private Atributo<Integer> anidamiento;
 		private Atributo<TS> tsh;
 		private BloqueCtx ctx;
@@ -575,12 +575,6 @@ public class GA {
 					return refsAChequear_exp();
 				}
 			});
-			anidamiento = new Atributo<Integer>();
-			anidamiento.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
-					return anidamiento_exp();
-				}
-			});
 			params = new Atributo<List<ExpTipo>>();
 			params.fijaExpresion(new ExpSem<List<ExpTipo>>() {
 				public List<ExpTipo> val() {
@@ -614,8 +608,8 @@ public class GA {
 			return ts;
 		}
 
-		public Atributo<Integer> anidamiento() {
-			return anidamiento;
+		public Atributo<List<ExpTipo>> refsAChequear() {
+			return refsAChequear;
 		}
 
 		public Atributo<List<ExpTipo>> params() {
@@ -638,8 +632,6 @@ public class GA {
 
 		protected abstract List<ExpTipo> params_exp();
 
-		protected abstract Integer anidamiento_exp();
-
 		protected abstract List<ExpTipo> refsAChequear_exp();
 
 		private Atributo<Integer> nivelh;
@@ -647,7 +639,6 @@ public class GA {
 
 		private Atributo<List<ExpTipo>> params;
 		private Atributo<List<ExpTipo>> refsAChequear;
-		private Atributo<Integer> anidamiento;
 		private Atributo<Error> err;
 		private Atributo<TS> ts;
 		private Atributo<Integer> dir;
@@ -694,12 +685,6 @@ public class GA {
 					return refsAChequear_exp();
 				}
 			});
-			anidamiento = new Atributo<Integer>();
-			anidamiento.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
-					return anidamiento_exp();
-				}
-			});
 			params = new Atributo<List<ExpTipo>>();
 			params.fijaExpresion(new ExpSem<List<ExpTipo>>() {
 				public List<ExpTipo> val() {
@@ -733,12 +718,12 @@ public class GA {
 			return ts;
 		}
 
-		public Atributo<Integer> anidamiento() {
-			return anidamiento;
-		}
-
 		public Atributo<List<ExpTipo>> params() {
 			return params;
+		}
+
+		public Atributo<List<ExpTipo>> refsAChequear() {
+			return refsAChequear;
 		}
 
 		public Atributo<Integer> nivelh() {
@@ -757,8 +742,6 @@ public class GA {
 
 		protected abstract List<ExpTipo> params_exp();
 
-		protected abstract Integer anidamiento_exp();
-
 		protected abstract List<ExpTipo> refsAChequear_exp();
 
 		private Atributo<Integer> nivelh;
@@ -766,7 +749,6 @@ public class GA {
 
 		private Atributo<List<ExpTipo>> params;
 		private Atributo<List<ExpTipo>> refsAChequear;
-		private Atributo<Integer> anidamiento;
 		private Atributo<Error> err;
 		private Atributo<TS> ts;
 		private Atributo<Integer> dir;
@@ -909,6 +891,224 @@ public class GA {
 		public TS tsh_exp();
 	}
 
+	public abstract class ParamsReales {
+		protected ParamsReales() {
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			nparams = new Atributo<Integer>();
+			nparams.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return nparams_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			subProgramah = new Atributo<String>();
+			subProgramah.fijaExpresion(new ExpSem<String>() {
+				public String val() {
+					return ctx.subprogramah_exp();
+				}
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
+				}
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+		}
+
+		public Atributo<Integer> nparams() {
+			return nparams;
+		}
+
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		public Atributo<String> subProgramah() {
+			return subProgramah;
+		}
+
+		public Atributo<Integer> etqh() {
+			return etqh;
+		}
+
+		public Atributo<TS> tsh() {
+			return tsh;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract Integer nparams_exp();
+
+		protected abstract Integer etq_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		private Atributo<String> subProgramah;
+		private Atributo<TS> tsh;
+		private Atributo<Integer> etqh;
+
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Error> err;
+		private Atributo<Integer> etq;
+		private Atributo<Integer> nparams;
+		private ParamsRealesCtx ctx;
+
+		public void registraCtx(ParamsRealesCtx ctx) {
+			this.ctx = ctx;
+		}
+
+		public ParamsRealesCtx contexto() {
+			return ctx;
+		}
+	}
+
+	public interface ParamsRealesCtx {
+		public TS tsh_exp();
+
+		public String subprogramah_exp();
+
+		public int etqh_exp();
+	}
+
+	public abstract class ListaParamsReales {
+		protected ListaParamsReales() {
+			err = new Atributo<Error>();
+			err.fijaExpresion(new ExpSem<Error>() {
+				public Error val() {
+					return err_exp();
+				}
+			});
+			nparams = new Atributo<Integer>();
+			nparams.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return nparams_exp();
+				}
+			});
+			etq = new Atributo<Integer>();
+			etq.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return etq_exp();
+				}
+			});
+			cod = new Atributo<List<Instruccion>>();
+			cod.fijaExpresion(new ExpSem<List<Instruccion>>() {
+				public List<Instruccion> val() {
+					return cod_exp();
+				}
+			});
+			subProgramah = new Atributo<String>();
+			subProgramah.fijaExpresion(new ExpSem<String>() {
+				public String val() {
+					return ctx.subprogramah_exp();
+				}
+			});
+			tsh = new Atributo<TS>();
+			tsh.fijaExpresion(new ExpSem<TS>() {
+				public TS val() {
+					return ctx.tsh_exp();
+				}
+			});
+			etqh = new Atributo<Integer>();
+			etqh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.etqh_exp();
+				}
+			});
+		}
+
+		public Atributo<Integer> nparams() {
+			return nparams;
+		}
+
+		public Atributo<Integer> etq() {
+			return etq;
+		}
+
+		public Atributo<Error> err() {
+			return err;
+		}
+
+		public Atributo<List<Instruccion>> cod() {
+			return cod;
+		}
+
+		public Atributo<String> subProgramah() {
+			return subProgramah;
+		}
+
+		public Atributo<Integer> etqh() {
+			return etqh;
+		}
+
+		public Atributo<TS> tsh() {
+			return tsh;
+		}
+
+		protected abstract Error err_exp();
+
+		protected abstract Integer nparams_exp();
+
+		protected abstract Integer etq_exp();
+
+		protected abstract List<Instruccion> cod_exp();
+
+		private Atributo<String> subProgramah;
+		private Atributo<TS> tsh;
+		private Atributo<Integer> etqh;
+
+		private Atributo<List<Instruccion>> cod;
+		private Atributo<Error> err;
+		private Atributo<Integer> etq;
+		private Atributo<Integer> nparams;
+		private ListaParamsRealesCtx ctx;
+
+		public void registraCtx(ListaParamsRealesCtx ctx) {
+			this.ctx = ctx;
+		}
+
+		public ListaParamsRealesCtx contexto() {
+			return ctx;
+		}
+	}
+
+	public interface ListaParamsRealesCtx {
+		public TS tsh_exp();
+
+		public String subprogramah_exp();
+
+		public int etqh_exp();
+	}
+
 	// Tipo
 	public abstract class Tipo {
 		protected Tipo() {
@@ -942,19 +1142,25 @@ public class GA {
 
 		protected abstract List<ExpTipo> refsAChequear_exp();
 
-		public ExpTipo tipo() {
-			return tipo;
+		protected abstract ExpTipo tipo_exp();
+
+		public Atributo<List<ExpTipo>> refsAChequear() {
+			return refsAChequear;
 		}
 
 		public Atributo<Error> err() {
 			return err;
 		}
 
+		public Atributo<ExpTipo> tipo() {
+			return tipo;
+		}
+
 		public Atributo<TS> tsh() {
 			return tsh;
 		}
 
-		protected ExpTipo tipo;
+		protected Atributo<ExpTipo> tipo;
 		private Atributo<Error> err;
 		private Atributo<List<ExpTipo>> refsAChequear;
 		private Atributo<TS> tsh;
@@ -999,12 +1205,6 @@ public class GA {
 					return campos_exp();
 				}
 			});
-			desplazamientoh = new Atributo<Integer>();
-			desplazamientoh.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
-					return ctx.desplazamientoh_exp();
-				}
-			});
 			tsh = new Atributo<TS>();
 			tsh.fijaExpresion(new ExpSem<TS>() {
 				public TS val() {
@@ -1041,17 +1241,12 @@ public class GA {
 			return tsh;
 		}
 
-		public Atributo<Integer> desplazamientoh() {
-			return desplazamientoh;
-		}
-
 		protected Atributo<List<ExpTipo>> campos;
 
 		private Atributo<Error> err;
 		private Atributo<List<ExpTipo>> refsAChequear;
 		private Atributo<Integer> tam;
 
-		private Atributo<Integer> desplazamientoh;
 		private Atributo<TS> tsh;
 		private CamposCtx ctx;
 
@@ -1067,11 +1262,11 @@ public class GA {
 	public interface CamposCtx {
 		public TS tsh_exp();
 
-		public Integer desplazamientoh_exp();
+		// public Integer desplazamientoh_exp();
 	}
 
-	public abstract class ExpTipo {
-		protected ExpTipo() {
+	public abstract class Campo {
+		protected Campo() {
 			err = new Atributo<Error>();
 			err.fijaExpresion(new ExpSem<Error>() {
 				public Error val() {
@@ -1088,12 +1283,6 @@ public class GA {
 			tam.fijaExpresion(new ExpSem<Integer>() {
 				public Integer val() {
 					return tam_exp();
-				}
-			});
-			campos = new Atributo<List<ExpTipo>>();
-			campos.fijaExpresion(new ExpSem<List<ExpTipo>>() {
-				public List<ExpTipo> val() {
-					return campos_exp();
 				}
 			});
 			campo = new Atributo<ExpTipo>();
@@ -1114,6 +1303,13 @@ public class GA {
 					return ctx.tsh_exp();
 				}
 			});
+			iden = new Atributo<String>();
+			iden.fijaExpresion(new ExpSem<String>() {
+				public String val() {
+					return iden_exp();
+				}
+			});
+
 		}
 
 		protected abstract Error err_exp();
@@ -1122,9 +1318,9 @@ public class GA {
 
 		protected abstract Integer tam_exp();
 
-		protected abstract List<ExpTipo> campos_exp();
-
 		protected abstract ExpTipo campo_exp();
+
+		protected abstract String iden_exp();
 
 		public Atributo<Error> err() {
 			return err;
@@ -1132,10 +1328,6 @@ public class GA {
 
 		public Atributo<Integer> tam() {
 			return tam;
-		}
-
-		public Atributo<List<ExpTipo>> campos() {
-			return campos;
 		}
 
 		public Atributo<ExpTipo> campo() {
@@ -1146,6 +1338,10 @@ public class GA {
 			return refsAChequear;
 		}
 
+		public Atributo<String> iden() {
+			return iden;
+		}
+
 		public Atributo<TS> tsh() {
 			return tsh;
 		}
@@ -1154,11 +1350,11 @@ public class GA {
 			return desplazamientoh;
 		}
 
-		protected Atributo<List<ExpTipo>> campos;
 		protected Atributo<ExpTipo> campo;
 		private Atributo<Error> err;
 		private Atributo<List<ExpTipo>> refsAChequear;
 		private Atributo<Integer> tam;
+		private Atributo<String> iden;
 
 		private Atributo<Integer> desplazamientoh;
 		private Atributo<TS> tsh;
@@ -1200,9 +1396,9 @@ public class GA {
 					return etq_exp();
 				}
 			});
-			llamadasPendientes = new Atributo<Integer>();
-			llamadasPendientes.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
+			llamadasPendientes = new Atributo<List<Integer>>();
+			llamadasPendientes.fijaExpresion(new ExpSem<List<Integer>>() {
+				public List<Integer> val() {
 					return llamadasPendientes_exp();
 				}
 			});
@@ -1232,7 +1428,7 @@ public class GA {
 			return etq;
 		}
 
-		public Atributo<Integer> llamadasPendientes() {
+		public Atributo<List<Integer>> llamadasPendientes() {
 			return llamadasPendientes;
 		}
 
@@ -1250,11 +1446,11 @@ public class GA {
 
 		protected abstract Integer etq_exp();
 
-		protected abstract Integer llamadasPendientes_exp();
+		protected abstract List<Integer> llamadasPendientes_exp();
 
 		private Atributo<Error> err;
 		private Atributo<List<Instruccion>> cod;
-		private Atributo<Integer> llamadasPendientes;
+		private Atributo<List<Integer>> llamadasPendientes;
 		private Atributo<Integer> etq;
 		private Atributo<Integer> etqh;
 		private Atributo<TS> tsh;
@@ -1297,9 +1493,9 @@ public class GA {
 					return etq_exp();
 				}
 			});
-			llamadasPendientes = new Atributo<Integer>();
-			llamadasPendientes.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
+			llamadasPendientes = new Atributo<List<Integer>>();
+			llamadasPendientes.fijaExpresion(new ExpSem<List<Integer>>() {
+				public List<Integer> val() {
 					return llamadasPendientes_exp();
 				}
 			});
@@ -1337,7 +1533,7 @@ public class GA {
 			return etq;
 		}
 
-		public Atributo<Integer> llamadasPendientes() {
+		public Atributo<List<Integer>> llamadasPendientes() {
 			return llamadasPendientes;
 		}
 
@@ -1347,9 +1543,9 @@ public class GA {
 
 		protected abstract Integer etq_exp();
 
-		protected abstract Integer llamadasPendientes_exp();
+		protected abstract List<Integer> llamadasPendientes_exp();
 
-		private Atributo<Integer> llamadasPendientes;
+		private Atributo<List<Integer>> llamadasPendientes;
 		private Atributo<Error> err;
 		private Atributo<List<Instruccion>> cod;
 		private Atributo<Integer> etqh;
@@ -1394,9 +1590,9 @@ public class GA {
 					return etq_exp();
 				}
 			});
-			llamadasPendientes = new Atributo<Integer>();
-			llamadasPendientes.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
+			llamadasPendientes = new Atributo<List<Integer>>();
+			llamadasPendientes.fijaExpresion(new ExpSem<List<Integer>>() {
+				public List<Integer> val() {
 					return llamadasPendientes_exp();
 				}
 			});
@@ -1444,7 +1640,7 @@ public class GA {
 			return etq;
 		}
 
-		public Atributo<Integer> llamadasPendientes() {
+		public Atributo<List<Integer>> llamadasPendientes() {
 			return llamadasPendientes;
 		}
 
@@ -1454,9 +1650,9 @@ public class GA {
 
 		protected abstract Integer etq_exp();
 
-		protected abstract Integer llamadasPendientes_exp();
+		protected abstract List<Integer> llamadasPendientes_exp();
 
-		private Atributo<Integer> llamadasPendientes;
+		private Atributo<List<Integer>> llamadasPendientes;
 		private Atributo<Error> err;
 		private Atributo<List<Instruccion>> cod;
 		private Atributo<Integer> etqh;
@@ -1488,9 +1684,9 @@ public class GA {
 	abstract public class Caso {
 
 		protected Caso() {
-			llamadasPendientes = new Atributo<Integer>();
-			llamadasPendientes.fijaExpresion(new ExpSem<Integer>() {
-				public Integer val() {
+			llamadasPendientes = new Atributo<List<Integer>>();
+			llamadasPendientes.fijaExpresion(new ExpSem<List<Integer>>() {
+				public List<Integer> val() {
 					return llamadasPendientes_exp();
 				}
 			});
@@ -1556,7 +1752,7 @@ public class GA {
 			return etq;
 		}
 
-		public Atributo<Integer> llamadasPendientes() {
+		public Atributo<List<Integer>> llamadasPendientes() {
 			return llamadasPendientes;
 		}
 
@@ -1566,9 +1762,9 @@ public class GA {
 
 		protected abstract Integer etq_exp();
 
-		protected abstract Integer llamadasPendientes_exp();
+		protected abstract List<Integer> llamadasPendientes_exp();
 
-		private Atributo<Integer> llamadasPendientes;
+		private Atributo<List<Integer>> llamadasPendientes;
 		private Atributo<Error> err;
 		private Atributo<List<Instruccion>> cod;
 		private Atributo<Integer> etqh;
@@ -1621,9 +1817,9 @@ public class GA {
 					return etq_exp();
 				}
 			});
-			tipo = new Atributo<CatLexica>();
-			tipo.fijaExpresion(new ExpSem<CatLexica>() {
-				public CatLexica val() {
+			tipo = new Atributo<ExpTipo>();
+			tipo.fijaExpresion(new ExpSem<ExpTipo>() {
+				public ExpTipo val() {
 					return tipo_exp();
 				}
 			});
@@ -1652,7 +1848,7 @@ public class GA {
 			return etq;
 		}
 
-		public Atributo<CatLexica> tipo() {
+		public Atributo<ExpTipo> tipo() {
 			return tipo;
 		}
 
@@ -1664,7 +1860,7 @@ public class GA {
 
 		protected abstract Integer etq_exp();
 
-		protected abstract CatLexica tipo_exp();
+		protected abstract ExpTipo tipo_exp();
 
 		protected abstract Boolean esDesignador_exp();
 
@@ -1672,7 +1868,7 @@ public class GA {
 		private Atributo<Integer> etqh;
 		private Atributo<Integer> etq;
 		private Atributo<TS> tsh;
-		private Atributo<CatLexica> tipo;
+		private Atributo<ExpTipo> tipo;
 		private Atributo<Boolean> esDesignador;
 		private ExpCtx ctx;
 
@@ -1733,9 +1929,9 @@ public class GA {
 					return etq_exp();
 				}
 			});
-			tipo = new Atributo<CatLexica>();
-			tipo.fijaExpresion(new ExpSem<CatLexica>() {
-				public CatLexica val() {
+			tipo = new Atributo<ExpTipo>();
+			tipo.fijaExpresion(new ExpSem<ExpTipo>() {
+				public ExpTipo val() {
 					return tipo_exp();
 				}
 			});
@@ -1758,7 +1954,7 @@ public class GA {
 			return etq;
 		}
 
-		public Atributo<CatLexica> tipo() {
+		public Atributo<ExpTipo> tipo() {
 			return tipo;
 		}
 
@@ -1766,13 +1962,13 @@ public class GA {
 
 		protected abstract Integer etq_exp();
 
-		protected abstract CatLexica tipo_exp();
+		protected abstract ExpTipo tipo_exp();
 
 		private Atributo<List<Instruccion>> cod;
 		private Atributo<Integer> etqh;
 		private Atributo<Integer> etq;
 		private Atributo<TS> tsh;
-		private Atributo<CatLexica> tipo;
+		private Atributo<ExpTipo> tipo;
 		private MemCtx ctx;
 
 		public void registraCtx(MemCtx ctx) {
@@ -2002,7 +2198,7 @@ public class GA {
 		}
 
 		@Override
-		protected Integer llamadasPendientes_exp() {
+		protected List<Integer> llamadasPendientes_exp() {
 			return insts.llamadasPendientes().val();
 		}
 
@@ -2095,7 +2291,7 @@ public class GA {
 		}
 
 		@Override
-		protected Integer llamadasPendientes_exp() {
+		protected List<Integer> llamadasPendientes_exp() {
 			return insts.llamadasPendientes().val();
 		}
 
@@ -2126,6 +2322,7 @@ public class GA {
 
 	/**
 	 * <code>
+	 * Declaraciones ::= Declaraciones ; Declaracion
 	 * Construcción de la tabla de símbolos
 	 * 	Declaraciones(1).tsh = Declaraciones(0).tsh
 	 * 	Declaraciones(1).nivelh = Declaraciones(0).nivelh
@@ -2283,6 +2480,7 @@ public class GA {
 
 	/**
 	 * <code>
+	 * Declaraciones ::= Declaracion
 	 * Decs ::= Dec 
 	 * Declaraciones.ts = aniadeSimb(creaTS(),Declaracion.iden,Declaracion.tipo,0) 
 	 * Declaraciones.dir = 1 
@@ -2382,11 +2580,21 @@ public class GA {
 
 	/**
 	 * <code>
-	 * Declaracion ::= Tipo IDEN 
-	 * Declaracion.tipo = Tipo.tipo 
-	 * Declaracion.iden =IDEN.lex 
-	 * Declaracion.fila = id.fila 
-	 * Declaracion.col = id.col
+	 * Declaracion ::= Tipo IDEN
+	 * Construcción de la tabla de símbolos
+	 * Declaracion.clase = var
+	 * Declaracion.tipo = Tipo.tipo
+	 * Declaracion.tam = Tipo.tipo.tam
+	 * Declaracion.iden = IDEN.lex
+	 * Propagación de la tabla de símbolos
+	 * Tipo.tsh = Declaracion.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Declaracion.refsAChequear = Tipo.refsAChequear
+	 * Declaracion.error = Tipo.error or tipoRefIncorrecto(Declaracion.tsh,Tipo.tipo)
+	 * Generación de código
+	 * Declaracion.etq = Declaracion.etqh
+	 * Declaracion.cod = programaVacio()
+	 * Declaracion.anidamiento=0
 	 * </code>
 	 */
 	public class DecR1 extends Dec {
@@ -2395,14 +2603,27 @@ public class GA {
 			super();
 			this.tipo = tipo;
 			this.iden = IDEN;
+			tipo.registraCtx(new TipoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return DecR1.this.tsh().val();
+				}
+			});
+
+			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			etq().ponDependencias(etqh());
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().ponDependencias(tipo.refsAChequear());
+			tipo.tsh().ponDependencias(tsh());
 		}
 
 		public String iden_exp() {
-			return iden.leeLexema();
+			return iden.lex();
 		}
 
-		public CatLexica tipo_exp() {
-			return tipo.tipo();
+		public ExpTipo tipo_exp() {
+			return tipo.tipo_exp();
 		}
 
 		protected final Integer fila_exp() {
@@ -2413,9 +2634,44 @@ public class GA {
 			return new Integer(iden.leeCol());
 		}
 
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return tipo.refsAChequear().val();
+		}
+
+		@Override
+		protected Integer etq_exp() {
+			return etqh().val();
+		}
+
+		@Override
+		protected List<Instruccion> cod_exp() {
+			return programaVacio();
+		}
+
+		@Override
+		protected Integer anidamiento_exp() {
+			return 0;
+		}
+
+		@Override
+		protected Error err_exp() {
+			return joinErrors(tipo.err().val(),
+					tipoRefIncorrecto(tsh().val(), tipo.tipo_exp()));
+		}
+
+		@Override
+		protected CatLexica clase_exp() {
+			return CatLexica.VAR;
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return tipo.tipo_exp().tam();
+		}
+
 		private Token iden;
 		private Tipo tipo;
-
 	}
 
 	public class DecR1Debug extends DecR1 {
@@ -2423,77 +2679,875 @@ public class GA {
 
 		public DecR1Debug(Tipo tipo, Token iden) {
 			super(tipo, iden);
-			iden().fijaDescripcion(REGLA + " | iden.lex");
-			tipo().fijaDescripcion(REGLA + " | Declaracion.tipo");
-			fila().fijaDescripcion(REGLA + " | Declaracion.fila");
-			col().fijaDescripcion(REGLA + " | Declaracion.col");
+			err().fijaDescripcion(REGLA + " | Dec.err");
+			etq().fijaDescripcion(REGLA + " | Dec.etq");
+			// ni clase ni tipo ni tam ni iden
+			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
+			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Declaracion ::= tipo Tipo IDEN
+	 * Construcción de la tabla de símbolos
+	 * Declaracion.clase = tipo
+	 * Declaracion.tipo = Tipo.tipo
+	 * Declaracion.tam = 0
+	 * Declaracion.iden = IDEN.lex
+	 * Propagación de la tabla de símbolos
+	 * Tipo.tsh = Declaracion.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Declaracion.refsAChequear = Tipo.refsAChequear
+	 * Declaracion.error = Tipo.error or tipoRefIncorrecto(Declaracion.tsh,Tipo.tipo)
+	 * Generación de código
+	 * Declaracion.etq = Declaracion.etqh
+	 * Declaracion.cod = programaVacio()
+	 * Declaracion.anidamiento=0
+	 * </code>
+	 */
+	public class DecR2 extends Dec {
+
+		public DecR2(Tipo tipo, Token IDEN) {
+			super();
+			this.tipo = tipo;
+			this.iden = IDEN;
+			tipo.registraCtx(new TipoCtx() {
+				@Override
+				public TS tsh_exp() {
+					return DecR2.this.tsh().val();
+				}
+			});
+
+			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			etq().ponDependencias(etqh());
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().ponDependencias(tipo.refsAChequear());
+			tipo.tsh().ponDependencias(tsh());
+		}
+
+		public String iden_exp() {
+			return iden.lex();
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipo.tipo_exp();
+		}
+
+		protected final Integer fila_exp() {
+			return new Integer(iden.leeFila());
+		}
+
+		protected final Integer col_exp() {
+			return new Integer(iden.leeCol());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return tipo.refsAChequear().val();
+		}
+
+		@Override
+		protected Integer etq_exp() {
+			return etqh().val();
+		}
+
+		@Override
+		protected List<Instruccion> cod_exp() {
+			return programaVacio();
+		}
+
+		@Override
+		protected Integer anidamiento_exp() {
+			return 0;
+		}
+
+		@Override
+		protected Error err_exp() {
+			return joinErrors(tipo.err().val(),
+					tipoRefIncorrecto(tsh().val(), tipo.tipo_exp()));
+		}
+
+		@Override
+		protected CatLexica clase_exp() {
+			return CatLexica.TIPO;
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return 0;
+		}
+
+		private Token iden;
+		private Tipo tipo;
+
+	}
+
+	public class DecR2Debug extends DecR2 {
+		private final static String REGLA = "Declaracion ::= tipo Tipo IDEN";
+
+		public DecR2Debug(Tipo tipo, Token iden) {
+			super(tipo, iden);
+			err().fijaDescripcion(REGLA + " | Dec.err");
+			etq().fijaDescripcion(REGLA + " | Dec.etq");
+			// ni clase ni tipo ni tam ni iden
+			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
+			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
 		}
 
 	}
 
-	/*
-	 * Tipo := INT
+	/**
+	 * <code>
+	 * Declaracion ::= proc IDEN ( ParametrosFormales ) { Bloque }
+	 * Construcción de la tabla de símbolos
+	 * Declaracion.clase = proc
+	 * Declaracion.tipo = <t:proc, params: ParametrosFormales.params>
+	 * Declaracion.tam = 0
+	 * Declaracion.iden = IDEN.lex
+	 * ParametrosFormales.nivelh = Declaracion.nivelh + 1
+	 * Bloque.nivelh = Declaracion.nivelh + 1
+	 * ParametrosFormales.tsh = añadeSimb(creaNivel(Declaracion.tsh),IDEN.lex,
+	 * proc,
+	 * <t:proc, params: ParametrosFormales.params>,
+	 * ?, Declaracion.nivelh+1)
+	 * Bloque.tsh = ParametrosFormales.ts
+	 * Bloque.dirh = ParametrosFormales.dir
+	 * Comprobación de las restricciones contextuales
+	 * Declaracion.refsAChequear = ParametrosFormales.refsAChequear
+	 * Declaracion.error = ParametrosFormales.error or Bloque.error
+	 * Generación de código
+	 * Bloque.etqh = Declaracion.etqh
+	 * Declaracion.etq = Bloque.etq
+	 * Declaracion.cod = fijaLlamadasPendientes(Bloque.cod,Bloque.llamadasPendientes,Bloque.dirInicio)
+	 * Declaracion.anidamiento = Bloque.anidamiento
+	 * </code>
+	 */
+	public class DecR3 extends Dec {
+
+		public DecR3(Token iden, ParamsFormales paramsForms, Bloque bloque) {
+			super();
+			this.iden = iden;
+			this.paramsForms = paramsForms;
+			this.bloque = bloque;
+
+			paramsForms.registraCtx(new ParamsFormalesCtx() {
+				@Override
+				public TS tsh_exp() {
+					// TODO crear ExpTipo para proc
+					return aniadeSimb(creaNivel(tsh()), DecR3.this.iden.lex(),
+							CatLexica.PROC, null, -1, nivelh().val() + 1);
+				}
+
+				@Override
+				public int nivelh_exp() {
+					return nivelh().val() + 1;
+				}
+			});
+
+			bloque.registraCtx(new BloqueCtx() {
+				@Override
+				public TS tsh_exp() {
+					return DecR3.this.paramsForms.ts().val();
+				}
+
+				@Override
+				public int nivelh_exp() {
+					return nivelh().val() + 1;
+				}
+
+				@Override
+				public int etqh_exp() {
+					return DecR3.this.paramsForms.dir().val();
+				}
+
+				@Override
+				public int dirh_exp() {
+					return DecR3.this.etqh().val();
+				}
+			});
+
+			err().ponDependencias(paramsForms.err(), bloque.err());
+			etq().ponDependencias(bloque.etq());
+			cod().ponDependencias(bloque.cod(), bloque.llamadasPendientes(),
+					bloque.dirInicio());
+			refsAChequear().ponDependencias(paramsForms.refsAChequear());
+
+			paramsForms.nivelh().ponDependencias(nivelh());
+			paramsForms.tsh().ponDependencias(tsh(), paramsForms.params(),
+					nivelh());
+
+			bloque.nivelh().ponDependencias(nivelh());
+			bloque.etqh().ponDependencias(etqh());
+			bloque.tsh().ponDependencias(paramsForms.ts());
+			bloque.dirh().ponDependencias(paramsForms.dir());
+		}
+
+		public String iden_exp() {
+			return iden.lex();
+		}
+
+		protected ExpTipo tipo_exp() {
+			// TODO como implementar ExpTipo
+			return null;
+		}
+
+		protected final Integer fila_exp() {
+			return new Integer(iden.leeFila());
+		}
+
+		protected final Integer col_exp() {
+			return new Integer(iden.leeCol());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return paramsForms.refsAChequear().val();
+		}
+
+		@Override
+		protected Integer etq_exp() {
+			return bloque.etq().val();
+		}
+
+		@Override
+		protected List<Instruccion> cod_exp() {
+			return fijaLlamadasPendientes(bloque.cod.val(), bloque
+					.llamadasPendientes().val(), bloque.dirInicio().val());
+		}
+
+		@Override
+		protected Integer anidamiento_exp() {
+			return bloque.anidamiento().val();
+		}
+
+		@Override
+		protected Error err_exp() {
+			return joinErrors(paramsForms.err().val(), bloque.err().val());
+		}
+
+		@Override
+		protected CatLexica clase_exp() {
+			return CatLexica.PROC;
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return 0;
+		}
+
+		private Token iden;
+		private ParamsFormales paramsForms;
+		private Bloque bloque;
+
+	}
+
+	public class DecR3Debug extends DecR3 {
+		private final static String REGLA = "Declaracion ::= proc IDEN ( ParametrosFormales ) { Bloque }";
+
+		public DecR3Debug(Token iden, ParamsFormales paramsForms, Bloque bloque) {
+			super(iden, paramsForms, bloque);
+			err().fijaDescripcion(REGLA + " | Dec.err");
+			etq().fijaDescripcion(REGLA + " | Dec.etq");
+			cod().fijaDescripcion(REGLA + " | Dec.cod");
+			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
+
+			paramsForms.nivelh().fijaDescripcion(
+					REGLA + " | ParamsForms.nivelh");
+			paramsForms.tsh().fijaDescripcion(REGLA + " | ParamsForms.tsh");
+
+			bloque.nivelh().fijaDescripcion(REGLA + " | Bloque.nivelh");
+			bloque.etqh().fijaDescripcion(REGLA + " | Bloque.etqh");
+			bloque.tsh().fijaDescripcion(REGLA + " | Bloque.tsh");
+			bloque.dirh().fijaDescripcion(REGLA + " | Bloque.dirh");
+		}
+
+	}
+
+	/**
+	 * <code>
+	 * ParametrosFormales ::= ListaParametrosFormales
+	 * Construcción de la tabla de símbolos
+	 * ListaParametrosFormales.tsh = ParametrosFormales.tsh
+	 * ListaParametrosFormales.nivelh = ParametrosFormales.nivelh
+	 * ParametrosFormales.params = ListaParametrosFormales.params
+	 * ParametrosFormales.ts = ListaParametrosFormales.ts
+	 * ParametrosFormales.dir = ListaParametrosFormales.dir
+	 * Comprobación de las restricciones contextuales
+	 * ParametrosFormales.error = ListaParametrosFormales.error
+	 * ParametrosFormales.refsAChequear = ListaParametrosFormales.refsAChequear
+	 * </code>
+	 */
+	public class ParamsFormalesR1 extends ParamsFormales {
+
+		public ParamsFormalesR1(ListaParamsFormales listaParamsForms) {
+			super();
+			this.listaParamsForms = listaParamsForms;
+
+			listaParamsForms.registraCtx(new ListaParamsFormalesCtx() {
+				@Override
+				public TS tsh_exp() {
+					return ParamsFormalesR1.this.tsh().val();
+				}
+
+				@Override
+				public int nivelh_exp() {
+					return ParamsFormalesR1.this.nivelh().val();
+				}
+			});
+			params().ponDependencias(listaParamsForms.params());
+			ts().ponDependencias(listaParamsForms.ts());
+			dir().ponDependencias(listaParamsForms.dir());
+			err().ponDependencias(listaParamsForms.err());
+			refsAChequear().ponDependencias(listaParamsForms.refsAChequear());
+
+			listaParamsForms.tsh().ponDependencias(tsh());
+			listaParamsForms.nivelh().ponDependencias(nivelh());
+		}
+
+		protected final Error err_exp() {
+			return listaParamsForms.err().val();
+		}
+
+		private ListaParamsFormales listaParamsForms;
+
+		@Override
+		protected TS ts_exp() {
+			return listaParamsForms.ts().val();
+		}
+
+		@Override
+		protected Integer dir_exp() {
+			return listaParamsForms.dir().val();
+		}
+
+		@Override
+		protected List<ExpTipo> params_exp() {
+			return listaParamsForms.params().val();
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return listaParamsForms.refsAChequear().val();
+		}
+	}
+
+	public class ParamsFormalesR1Debug extends ParamsFormalesR1 {
+		private final static String REGLA = "ParametrosFormales ::= ListaParametrosFormales";
+
+		public ParamsFormalesR1Debug(ListaParamsFormales listaParamsForms) {
+			super(listaParamsForms);
+			params().fijaDescripcion(REGLA + " | ParametrosFormales.params");
+			ts().fijaDescripcion(REGLA + " | ParametrosFormales.ts");
+			dir().fijaDescripcion(REGLA + " | ParametrosFormales.dir");
+			err().fijaDescripcion(REGLA + " | ParametrosFormales.err");
+			refsAChequear().fijaDescripcion(
+					REGLA + " | ParametrosFormales.refsAChequear");
+
+			listaParamsForms.tsh().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales.tsh");
+			listaParamsForms.nivelh().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales.nivelh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ParametrosFormales ::= lambda
+	 * Construcción de la tabla de símbolos
+	 * ParametrosFormales.ts = ParametrosFormales.tsh
+	 * ParametrosFormales.params = listaVacia()
+	 * ParametrosFormales.dir = 0
+	 * Comprobación de las restricciones contextuales
+	 * ParametrosFormales.error = false
+	 * ParametrosFormales.refsAChequear = vacio
+	 * </code>
+	 */
+	public class ParamsFormalesR2 extends ParamsFormales {
+
+		public ParamsFormalesR2() {
+			super();
+			ts().ponDependencias(tsh());
+		}
+
+		protected final Error err_exp() {
+			return noError();
+		}
+
+		@Override
+		protected TS ts_exp() {
+			return tsh().val();
+		}
+
+		@Override
+		protected Integer dir_exp() {
+			return 0;
+		}
+
+		@Override
+		protected List<ExpTipo> params_exp() {
+			return listaExpTipoVacia();
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return listaExpTipoVacia();
+		}
+	}
+
+	public class ParamsFormalesR2Debug extends ParamsFormalesR2 {
+		private final static String REGLA = "ParametrosFormales ::= lambda";
+
+		public ParamsFormalesR2Debug() {
+			super();
+			params().fijaDescripcion(REGLA + " | ParametrosFormales.params");
+			ts().fijaDescripcion(REGLA + " | ParametrosFormales.ts");
+			dir().fijaDescripcion(REGLA + " | ParametrosFormales.dir");
+			err().fijaDescripcion(REGLA + " | ParametrosFormales.err");
+			refsAChequear().fijaDescripcion(
+					REGLA + " | ParametrosFormales.refsAChequear");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ListaParametrosFormales ::= ListaParametrosFormales , ParametroFormal
+	 * Construcción de la tabla de símbolos
+	 * ListaParametrosFormales(1).tsh = ListaParametrosFormales(0).tsh
+	 * ListaParametrosFormales(1).nivelh = ListaParametrosFormales(0).nivelh
+	 * ListaParametrosFormales(0).params = añadeA(ListaParametrosFormales(1).params, ParametroFormal.param)
+	 * ListaParametrosFormales(0).ts = añadeSimb(ListaParametrosFormales(1).ts,
+	 * ParametroFormal.iden, ParametroFormal.clase,
+	 * ParametroFormal.tipo, ListaParametrosFormales(1).dir,
+	 * ListaParametrosFormales(0).nivelh)
+	 * ListaParametrosFormales(0).dir = ListaParametrosFormales(1).dir + ParametroFormal.tam
+	 * Propagación de la tabla de símbolos
+	 * ParametroFormal.tsh = ListaParametrosFormales(1).ts
+	 * Comprobación de las restricciones contextuales
+	 * ListaParametrosFormales(0).error =ListaParametrosFormales(1).error orParametroFormal.error or
+	 * existeSimbEnUltimoNivel(ListaParametrosFormales(1).ts,ParametroFormal.iden)
+	 * ListaParametrosFormales(0).refsAChequear = ListaParametrosFormales(1).refsAChequear U
+	 * ParametroFormal.refsAChequear </code>
+	 */
+	public class ListaParamsFormalesR1 extends ListaParamsFormales {
+
+		public ListaParamsFormalesR1(ListaParamsFormales listaParamsForms_1,
+				ParamFormal paramFormal) {
+			super();
+			this.listaParamsForms_1 = listaParamsForms_1;
+			this.paramFormal = paramFormal;
+			listaParamsForms_1.registraCtx(new ListaParamsFormalesCtx() {
+				@Override
+				public TS tsh_exp() {
+					return ListaParamsFormalesR1.this.tsh().val();
+				}
+
+				@Override
+				public int nivelh_exp() {
+					return ListaParamsFormalesR1.this.nivelh().val();
+				}
+			});
+			paramFormal.registraCtx(new ParamFormalCtx() {
+				@Override
+				public TS tsh_exp() {
+					return ListaParamsFormalesR1.this.listaParamsForms_1.ts()
+							.val();
+				}
+			});
+			params().ponDependencias(listaParamsForms_1.params(),
+					paramFormal.param());
+			ts().ponDependencias(listaParamsForms_1.ts(), paramFormal.iden(),
+					paramFormal.clase(), paramFormal.tipo(),
+					listaParamsForms_1.dir(), listaParamsForms_1.nivelh());
+			dir().ponDependencias(listaParamsForms_1.dir(), paramFormal.tam());
+			err().ponDependencias(listaParamsForms_1.err(), paramFormal.err(),
+					listaParamsForms_1.ts(), paramFormal.iden());
+			refsAChequear().ponDependencias(listaParamsForms_1.refsAChequear(),
+					paramFormal.refsAChequear());
+
+			paramFormal.tsh().ponDependencias(listaParamsForms_1.ts());
+			listaParamsForms_1.tsh().ponDependencias(tsh());
+			listaParamsForms_1.nivelh().ponDependencias(nivelh());
+		}
+
+		protected final Error err_exp() {
+			Error e = joinErrors(listaParamsForms_1.err().val(), paramFormal
+					.err().val());
+			return joinErrors(
+					e,
+					existeSimbEnUltimoNivel(listaParamsForms_1.ts().val(),
+							paramFormal.iden().val()));
+		}
+
+		@Override
+		protected TS ts_exp() {
+			return aniadeSimb(listaParamsForms_1.ts().val(), paramFormal.iden()
+					.val(), paramFormal.clase().val(),
+					paramFormal.tipo().val(), listaParamsForms_1.dir().val(),
+					nivelh().val());
+		}
+
+		@Override
+		protected Integer dir_exp() {
+			return listaParamsForms_1.dir().val() + paramFormal.tam().val();
+		}
+
+		@Override
+		protected List<ExpTipo> params_exp() {
+			return aniadeA(listaParamsForms_1.params().val(), paramFormal
+					.param().val());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return union(listaParamsForms_1.refsAChequear().val(), paramFormal
+					.refsAChequear().val());
+		}
+
+		private ListaParamsFormales listaParamsForms_1;
+		private ParamFormal paramFormal;
+	}
+
+	public class ListaParamsFormalesR1Debug extends ListaParamsFormalesR1 {
+		private final static String REGLA = "ListaParametrosFormales(0) ::= ListaParametrosFormales(1) , ParametroFormal";
+
+		public ListaParamsFormalesR1Debug(
+				ListaParamsFormales listaParamsForms_1, ParamFormal paramFormal) {
+			super(listaParamsForms_1, paramFormal);
+			params().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales(0).params");
+			ts().fijaDescripcion(REGLA + " | ListaParametrosFormales(0).ts");
+			dir().fijaDescripcion(REGLA + " | ListaParametrosFormales(0).dir");
+			err().fijaDescripcion(REGLA + " | ListaParametrosFormales(0).err");
+			refsAChequear().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales(0).refsAChequear");
+
+			paramFormal.tsh().fijaDescripcion(REGLA + " | ParametroFormal.tsh");
+			listaParamsForms_1.tsh().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales(1).tsh");
+			listaParamsForms_1.nivelh().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales(1).nivelh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Construcción de la tabla de símbolos
+	 * ListaParametrosFormales.params = nuevaLista(ParametroFormal.param)
+	 * ListaParametrosFormales.ts = añadeSimb(ListaParametrosFormales.tsh,
+	 * ParametroFormal.iden, ParametroFormal.clase,
+	 * ParametroFormal.tipo, 0,
+	 * ListaParametrosFormales.nivelh)
+	 * ListaParametrosFormales.dir = ParametroFormal.tam
+	 * Propagación de la tabla de símbolos
+	 * ParametroFormal.tsh = ListaParametrosFormales.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ListaParametrosFormales.error =
+	 * ParametroFormal.error or
+	 * existeSimbEnUltimoNivel(ListaParametrosFormales.tsh,ParametroFormal.iden)
+	 * ListaParametrosFormales.refsAChequear = ParametroFormal.refsAChequear </code>
+	 */
+	public class ListaParamsFormalesR2 extends ListaParamsFormales {
+
+		public ListaParamsFormalesR2(ParamFormal paramFormal) {
+			super();
+			this.paramFormal = paramFormal;
+			paramFormal.registraCtx(new ParamFormalCtx() {
+				@Override
+				public TS tsh_exp() {
+					return ListaParamsFormalesR2.this.tsh().val();
+				}
+			});
+			params().ponDependencias(paramFormal.param());
+			ts().ponDependencias(tsh(), paramFormal.iden(),
+					paramFormal.clase(), paramFormal.tipo(), nivelh());
+			dir().ponDependencias(paramFormal.tam());
+			err().ponDependencias(paramFormal.err(), tsh(), paramFormal.iden());
+			refsAChequear().ponDependencias(paramFormal.refsAChequear());
+
+			paramFormal.tsh().ponDependencias(tsh());
+		}
+
+		protected final Error err_exp() {
+			return joinErrors(
+					paramFormal.err().val(),
+					existeSimbEnUltimoNivel(tsh().val(), paramFormal.iden()
+							.val()));
+		}
+
+		@Override
+		protected TS ts_exp() {
+			return aniadeSimb(tsh().val(), paramFormal.iden().val(),
+					paramFormal.clase().val(), paramFormal.tipo().val(), 0,
+					nivelh().val());
+		}
+
+		@Override
+		protected Integer dir_exp() {
+			return paramFormal.tam().val();
+		}
+
+		@Override
+		protected List<ExpTipo> params_exp() {
+			return nuevaLista(paramFormal.param().val());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return paramFormal.refsAChequear().val();
+		}
+
+		private ParamFormal paramFormal;
+	}
+
+	public class ListaParamsFormalesR2Debug extends ListaParamsFormalesR2 {
+		private final static String REGLA = "ListaParametrosFormales ::= ParametroFormal";
+
+		public ListaParamsFormalesR2Debug(ParamFormal paramFormal) {
+			super(paramFormal);
+			params().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales.params");
+			ts().fijaDescripcion(REGLA + " | ListaParametrosFormales.ts");
+			dir().fijaDescripcion(REGLA + " | ListaParametrosFormales.dir");
+			err().fijaDescripcion(REGLA + " | ListaParametrosFormales.err");
+			refsAChequear().fijaDescripcion(
+					REGLA + " | ListaParametrosFormales.refsAChequear");
+
+			paramFormal.tsh().fijaDescripcion(REGLA + " | paramFormal.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ParametroFormal ::= Tipo IDEN
+	 * Construcción de la tabla de símbolos
+	 * ParametroFormal.clase = var
+	 * ParametroFormal.tipo = Tipo.tipo
+	 * ParametroFormal.tam = Tipo.tipo.tam
+	 * ParametroFormal.iden = IDEN.lex
+	 * ParametroFormal.param = <tipo: Tipo.tipo, modo: valor>
+	 * Propagación de la tabla de símbolos
+	 * Tipo.tsh = ParametroFormal.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ParametroFormal.refsAChequear = Tipo.refsAChequear
+	 * ParametroFormal.error = Tipo.error or tipoRefIncorrecto(ParametroFormal.tsh,Tipo.tipo)
+	 * </code>
+	 */
+	public class ParamFormalR1 extends ParamFormal {
+
+		public ParamFormalR1(Tipo tipo, Token IDEN) {
+			super();
+			this.tipo = tipo;
+			this.iden = IDEN;
+			tipo.registraCtx(new TipoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return ParamFormalR1.this.tsh().val();
+				}
+			});
+
+			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().ponDependencias(tipo.refsAChequear());
+			tipo.tsh().ponDependencias(tsh());
+		}
+
+		public String iden_exp() {
+			return iden.lex();
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipo.tipo_exp();
+		}
+
+		protected final Integer fila_exp() {
+			return new Integer(iden.leeFila());
+		}
+
+		protected final Integer col_exp() {
+			return new Integer(iden.leeCol());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return tipo.refsAChequear().val();
+		}
+
+		@Override
+		protected Error err_exp() {
+			return joinErrors(tipo.err().val(),
+					tipoRefIncorrecto(tsh().val(), tipo.tipo_exp()));
+		}
+
+		@Override
+		protected CatLexica clase_exp() {
+			return CatLexica.VAR;
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return tipo.tipo_exp().tam();
+		}
+
+		@Override
+		protected ExpTipo param_exp() {
+			// TODO crear Expresion de tipo
+			return null;
+		}
+
+		private Token iden;
+		private Tipo tipo;
+	}
+
+	public class ParamFormalR1Debug extends ParamFormalR1 {
+		private final static String REGLA = "ParametroFormal ::= Tipo IDEN";
+
+		public ParamFormalR1Debug(Tipo tipo, Token iden) {
+			super(tipo, iden);
+			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().fijaDescripcion(
+					REGLA + " | ParametroFormal.refsAChequear");
+			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ParametroFormal ::= Tipo IDEN
+	 * Construcción de la tabla de símbolos
+	 * ParametroFormal.clase = pvar
+	 * ParametroFormal.tipo = Tipo.tipo
+	 * ParametroFormal.tam = 1
+	 * ParametroFormal.iden = IDEN.lex
+	 * ParametroFormal.param = <tipo: Tipo.tipo, modo: var>
+	 * Propagación de la tabla de símbolos
+	 * Tipo.tsh = ParametroFormal.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ParametroFormal.refsAChequear = Tipo.refsAChequear
+	 * ParametroFormal.error = Tipo.error or tipoRefIncorrecto(ParametroFormal.tsh,Tipo.tipo)
+	 * </code>
+	 */
+	public class ParamFormalR2 extends ParamFormal {
+
+		public ParamFormalR2(Tipo tipo, Token IDEN) {
+			super();
+			this.tipo = tipo;
+			this.iden = IDEN;
+			tipo.registraCtx(new TipoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return ParamFormalR2.this.tsh().val();
+				}
+			});
+
+			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().ponDependencias(tipo.refsAChequear());
+			tipo.tsh().ponDependencias(tsh());
+		}
+
+		public String iden_exp() {
+			return iden.lex();
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipo.tipo_exp();
+		}
+
+		protected final Integer fila_exp() {
+			return new Integer(iden.leeFila());
+		}
+
+		protected final Integer col_exp() {
+			return new Integer(iden.leeCol());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return tipo.refsAChequear().val();
+		}
+
+		@Override
+		protected Error err_exp() {
+			return joinErrors(tipo.err().val(),
+					tipoRefIncorrecto(tsh().val(), tipo.tipo_exp()));
+		}
+
+		@Override
+		protected CatLexica clase_exp() {
+			return CatLexica.PVAR;
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return 1;
+		}
+
+		@Override
+		protected ExpTipo param_exp() {
+			// TODO crear Expresion de tipo
+			return null;
+		}
+
+		private Token iden;
+		private Tipo tipo;
+	}
+
+	public class ParamFormalR2Debug extends ParamFormalR2 {
+		private final static String REGLA = "ParametroFormal ::= Tipo IDEN";
+
+		public ParamFormalR2Debug(Tipo tipo, Token iden) {
+			super(tipo, iden);
+			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().fijaDescripcion(
+					REGLA + " | ParametroFormal.refsAChequear");
+			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Tipo ::= int
+	 * Construcción de la tabla de símbolos
+	 * Tipo.tipo = <t:int,tam:1> 
+	 * Comprobación de las restricciones contextuales 
+	 * Tipo.error = false 
+	 * Tipo.refsAChequear = VACIA
+	 * </code>
 	 */
 	public class TipoR1 extends Tipo {
 
-		public TipoR1(Token tDeInt) {
+		public TipoR1() {
 			super();
-			this.tipo = tDeInt.leeCategoria();
+
 		}
 
-		public CatLexica tipo_exp() {
-			return tipo;
+		@Override
+		public ExpTipo tipo_exp() {
+			// TODO crea expr tipo de int
+			return null;
 		}
 
+		@Override
 		public Error err_exp() {
-			if (this.tipo != CatLexica.INT)
-				return new Error("No es un INT");
-			else
-				return noError();
+			return noError();
 		}
 
-		// private CatLexica tipo;
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return listaExpTipoVacia();
+		}
 	}
 
 	public class TipoR1Debug extends TipoR1 {
-		private final static String REGLA = "Tipo.tipo ::= int";
+		private final static String REGLA = "Tipo ::= int";
 
-		public TipoR1Debug(Token tDeInt) {
-			super(tDeInt);
-			err().fijaDescripcion(REGLA + " | tipo.err");
-			// tipo().fijaDescripcion(REGLA + " | tipo.tipo");
-		}
-	}
-
-	/*
-	 * Tipo := boolean
-	 */
-	public class TipoR2 extends Tipo {
-
-		public TipoR2(Token tDeBol) {
+		public TipoR1Debug() {
 			super();
-			this.tipo = tDeBol.leeCategoria();
-		}
-
-		public Error err_exp() {
-			if (this.tipo != CatLexica.BOOLEAN)
-				return new Error("No es un BOOLEAN");
-			else
-				return noError();
-		}
-
-		public CatLexica tipo_exp() {
-			return tipo;
-		}
-
-		// private CatLexica tipo;
-	}
-
-	public class TipoR2Debug extends TipoR2 {
-		private final static String REGLA = "Tipo.tipo ::= boolean";
-
-		public TipoR2Debug(Token tDeInt) {
-			super(tDeInt);
 			err().fijaDescripcion(REGLA + " | tipo.err");
 			// tipo().fijaDescripcion(REGLA + " | tipo.tipo");
 		}
@@ -2501,15 +3555,548 @@ public class GA {
 
 	/**
 	 * <code>
+	 * Tipo ::= boolean
+	 * Construcción de la tabla de símbolos
+	 * Tipo.tipo = <t:boolean,tam:1> 
+	 * Comprobación de las restricciones contextuales 
+	 * Tipo.error = false 
+	 * Tipo.refsAChequear = VACIA
+	 * </code>
+	 */
+	public class TipoR2 extends Tipo {
+
+		public TipoR2() {
+			super();
+		}
+
+		@Override
+		public ExpTipo tipo_exp() {
+			// TODO crea expr tipo de boolean
+			return null;
+		}
+
+		@Override
+		public Error err_exp() {
+			return noError();
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return listaExpTipoVacia();
+		}
+	}
+
+	public class TipoR2Debug extends TipoR2 {
+		private final static String REGLA = "Tipo ::= boolean";
+
+		public TipoR2Debug() {
+			super();
+			err().fijaDescripcion(REGLA + " | tipo.err");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Tipo ::= tabla [NUM] de Tipo
+	 * Construcción de la tabla de símbolos
+	 * Tipo(0).tipo = <t:array, tbase: Tipo(1).tipo, tam:Tipo(1).tipo.tam*aEntero(NUM.lex)>
+	 * Propagación de la tabla de símbolos
+	 * Tipo(1).tsh = Tipo(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * Tipo(0).error = Tipo(1).error or tipoRefIncorrecto(Tipo(0).tsh,Tipo(1).tipo)
+	 * Tipo(0).refsAChequear = Tipo(1).refsAChequear
+	 * </code>
+	 */
+	public class TipoR3 extends Tipo {
+
+		public TipoR3(Tipo tipo_1) {
+			super();
+			this.tipo_1 = tipo_1;
+			tipo_1.tsh().ponDependencias(tsh());
+			err().ponDependencias(tipo_1.err(), tipo_1.tsh());
+			refsAChequear().ponDependencias(tipo_1.refsAChequear());
+			tipo_1.registraCtx(new TipoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return TipoR3.this.tsh().val();
+				}
+			});
+		}
+
+		@Override
+		public ExpTipo tipo_exp() {
+			// TODO crea expr tipo de array
+			return null;
+		}
+
+		@Override
+		public Error err_exp() {
+			return joinErrors(tipo_1.err().val(),
+					tipoRefIncorrecto(tsh().val(), tipo().val()));
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return tipo_1.refsAChequear().val();
+		}
+
+		private Tipo tipo_1;
+	}
+
+	public class TipoR3Debug extends TipoR3 {
+		private final static String REGLA = "Tipo(0) ::= tabla [NUM] de Tipo(1)";
+
+		public TipoR3Debug(Tipo tipo_1) {
+			super(tipo_1);
+			tipo_1.tsh().fijaDescripcion(REGLA + " | tipo(1).tsh");
+			err().fijaDescripcion(REGLA + " | tipo(0).err");
+			refsAChequear().fijaDescripcion(REGLA + " | tipo(0).refsAChequear");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Tipo ::= registro{ Campos }
+	 * Construcción de la tabla de símbolos
+	 * Tipo.tipo = <t:reg, campos: Campos.campos, tam:Campos.tam>
+	 * Propagación de la tabla de símbolos
+	 * Campos.tsh = Tipo.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Tipo.error = Campos.error
+	 * Tipo.refsAChequear = Campos.refsAChequear
+	 * </code>
+	 */
+	public class TipoR4 extends Tipo {
+
+		public TipoR4(Campos campos) {
+			super();
+			this.campos = campos;
+			campos.tsh().ponDependencias(tsh());
+			err().ponDependencias(campos.err());
+			refsAChequear().ponDependencias(campos.refsAChequear());
+			campos.registraCtx(new CamposCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return TipoR4.this.tsh().val();
+				}
+			});
+		}
+
+		@Override
+		public ExpTipo tipo_exp() {
+			// TODO crea expr tipo de registro
+			return null;
+		}
+
+		@Override
+		public Error err_exp() {
+			return campos.err().val();
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return campos.refsAChequear().val();
+		}
+
+		private Campos campos;
+	}
+
+	public class TipoR4Debug extends TipoR4 {
+		private final static String REGLA = "Tipo ::= registro{ Campos }";
+
+		public TipoR4Debug(Campos campos) {
+			super(campos);
+			campos.tsh().fijaDescripcion(REGLA + " | Campos.tsh");
+			err().fijaDescripcion(REGLA + " | tipo(0).err");
+			refsAChequear().fijaDescripcion(REGLA + " | tipo(0).refsAChequear");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Tipo ::= puntero Tipo
+	 * Construcción de la tabla de símbolos
+	 * Tipo(0).tipo = <t:puntero, tbase: Tipo(1).tipo, tam:1>
+	 * Propagación de la tabla de símbolos
+	 * Tipo(1).tsh = Tipo(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * Tipo(0).error = Tipo(1).error
+	 * Tipo(0).refsAChequear = Tipo(1).refsAChequear U aChequear(Tipo(0).tsh,Tipo(1).tipo)
+	 * </code>
+	 */
+	public class TipoR5 extends Tipo {
+
+		public TipoR5(Tipo tipo_1) {
+			super();
+			this.tipo_1 = tipo_1;
+			tipo_1.tsh().ponDependencias(tsh());
+			err().ponDependencias(tipo_1.err());
+			refsAChequear().ponDependencias(tipo_1.refsAChequear(), tsh());// TODO
+																			// tipo_1.tipo()?
+			tipo_1.registraCtx(new TipoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return TipoR5.this.tsh().val();
+				}
+			});
+		}
+
+		@Override
+		public ExpTipo tipo_exp() {
+			// TODO crea expr tipo puntero a tipo
+			return null;
+		}
+
+		@Override
+		public Error err_exp() {
+			return tipo_1.err().val();
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return union(tipo_1.refsAChequear().val(),
+					aChequear(tsh().val(), tipo_1.tipo()));
+		}
+
+		private Tipo tipo_1;
+	}
+
+	public class TipoR5Debug extends TipoR5 {
+		private final static String REGLA = "Tipo(0) ::= puntero Tipo(1)";
+
+		public TipoR5Debug(Tipo tipo_1) {
+			super(tipo_1);
+			tipo_1.tsh().fijaDescripcion(REGLA + " | Tipo(1).tsh");
+			err().fijaDescripcion(REGLA + " | Tipo(0).err");
+			refsAChequear().fijaDescripcion(REGLA + " | Tipo(0).refsAChequear");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Tipo ::= IDEN
+	 * Construcción de la tabla de símbolos
+	 * Tipo.tipo = <t:ref, iden: IDEN.lex, tam:tamañoDeTipoRef(Tipo.tsh,IDEN.lex)>
+	 * Comprobación de las restricciones contextuales
+	 * Tipo.refsAChequear = vacio
+	 * Tipo.error = false </code>
+	 */
+	public class TipoR6 extends Tipo {
+
+		public TipoR6(Token iden) {
+			super();
+			this.iden = iden.lex();
+
+		}
+
+		@Override
+		public ExpTipo tipo_exp() {
+			// TODO crea expr tipo ref
+			// Usar tamanioDeTipoRef(tsh().val(),iden);
+			return null;
+		}
+
+		@Override
+		public Error err_exp() {
+			return noError();
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return listaExpTipoVacia();
+		}
+
+		private String iden;
+	}
+
+	public class TipoR6Debug extends TipoR6 {
+		private final static String REGLA = "Tipo ::= IDEN";
+
+		public TipoR6Debug(Token iden) {
+			super(iden);
+			// TODO tipo si es atrib k calcular
+		}
+	}
+
+	/**
+	 * <code>
+	 * Campos ::= Campos ; Campo
+	 * Construcción de la tabla de símbolos
+	 * Campos(0).campos = añadeA(Campos(1).campos, Campo.campo)
+	 * Campos(0).tam = Campos(1).tam + Campo.tam
+	 * Campo.desplazamientoh = Campos(1).tam
+	 * Propagación de la tabla de símbolos
+	 * Campos(1).tsh = Campos(0).tsh
+	 * Campo.tsh = Campos(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * Campos(0).error = Campos(1).error or campoDuplicado(Campo.iden,Campos(1).campos)
+	 * Campos(0).refsAChequear = Campos(1).refsAChequear U Campo.refsAChequear </code>
+	 */
+	public class CamposR1 extends Campos {
+
+		public CamposR1(Campos campos_1, Campo campo) {
+			super();
+			this.campos_1 = campos_1;
+			this.campo = campo;
+			campos_1.registraCtx(new CamposCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return CamposR1.this.tsh().val();
+				}
+			});
+			campo.registraCtx(new CampoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return CamposR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer desplazamientoh_exp() {
+					return CamposR1.this.campos_1.tam().val();
+				}
+			});
+			tam().ponDependencias(campos_1.tam(), campo.tam());
+			campos().ponDependencias(campos_1.campos(), campo.campo());
+			err().ponDependencias(campos_1.err(), campo.iden(),
+					campos_1.campos());// TODO?Campos_1.campos?
+			refsAChequear().ponDependencias(campos_1.refsAChequear(),
+					campo.refsAChequear());
+
+			campos_1.tsh().ponDependencias(tsh());
+
+			campo.tsh().ponDependencias(tsh());
+			campo.desplazamientoh().ponDependencias(campos_1.tam());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return union(campos_1.refsAChequear().val(), campo.refsAChequear()
+					.val());
+		}
+
+		@Override
+		protected Error err_exp() {
+			return joinErrors(campos_1.err().val(),
+					campoDuplicado(campo.iden().val(), campos_1.campos().val()));
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return campos_1.tam().val() + campo.tam().val();
+		}
+
+		private Campos campos_1;
+		private Campo campo;
+
+		@Override
+		protected List<ExpTipo> campos_exp() {
+			return aniadeA(campos_1.campos().val(), campo.campo().val());
+		}
+	}
+
+	public class CamposR1Debug extends CamposR1 {
+		private final static String REGLA = "Campos(0) ::= Campos(1) ; Campo";
+
+		public CamposR1Debug(Campos campos_1, Campo campo) {
+			super(campos_1, campo);
+			tam().fijaDescripcion(REGLA + " | Campos(0).tam");
+			campos().fijaDescripcion(REGLA + " | Campos(0).campos");
+			err().fijaDescripcion(REGLA + " | Campos(0).err");
+			refsAChequear().fijaDescripcion(
+					REGLA + " | Campos(0).refsAChequear");
+
+			campos_1.tsh().fijaDescripcion(REGLA + " | Campos(1).tsh");
+
+			campo.tsh().fijaDescripcion(REGLA + " | Campo.tsh");
+			campo.desplazamientoh().fijaDescripcion(
+					REGLA + " | Campo.desplazamientoh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Campos ::= Campo
+	 * Construcción de la tabla de símbolos
+	 * Campos.campos = nuevaLista(Campo.campo)
+	 * Campos.tam = Campo.tam
+	 * Campo.desplazamientoh = 0
+	 * Propagación de la tabla de símbolos
+	 * Campo.tsh = Campos.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Campos.error = Campo.error
+	 * Campos.refsAChequear = Campo.refsAChequear
+	 */
+	public class CamposR2 extends Campos {
+
+		public CamposR2(Campo campo) {
+			super();
+			this.campo = campo;
+			campo.registraCtx(new CampoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return CamposR2.this.tsh().val();
+				}
+
+				@Override
+				public Integer desplazamientoh_exp() {
+					return 0;
+				}
+			});
+			tam().ponDependencias(campo.tam());
+			campos().ponDependencias(campo.campo());
+			err().ponDependencias(campo.err());
+			refsAChequear().ponDependencias(campo.refsAChequear());
+
+			campo.tsh().ponDependencias(tsh());
+		}
+
+		@Override
+		protected List<ExpTipo> refsAChequear_exp() {
+			return campo.refsAChequear().val();
+		}
+
+		@Override
+		protected Error err_exp() {
+			return campo.err().val();
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return campo.tam().val();
+		}
+
+		@Override
+		protected List<ExpTipo> campos_exp() {
+			return nuevaLista(campo.campo().val());
+		}
+
+		private Campo campo;
+	}
+
+	public class CamposR2Debug extends CamposR2 {
+		private final static String REGLA = "Campos ::= Campo";
+
+		public CamposR2Debug(Campo campo) {
+			super(campo);
+			tam().fijaDescripcion(REGLA + " | Campos.tam");
+			campos().fijaDescripcion(REGLA + " | Campos.campos");
+			err().fijaDescripcion(REGLA + " | Campos.err");
+			refsAChequear().fijaDescripcion(REGLA + " | Campos.refsAChequear");
+
+			campo.tsh().fijaDescripcion(REGLA + " | Campo.tsh");
+			campo.desplazamientoh().fijaDescripcion(
+					REGLA + " | Campo.desplazamientoh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Campo ::= Tipo IDEN
+	 * Construcción de la tabla de símbolos
+	 * Campo.campo = <id: IDEN.lex, tipo: Tipo.tipo, desplazamiento: Campo.desplazamientoh>
+	 * Campo.tam = Tipo.tipo.tam
+	 * Propagación de la tabla de símbolos
+	 * Tipo.tsh = Campo.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Campo.iden = IDEN.lex
+	 * Campo.error = Tipo.error or tipoRefIncorrecto(Campo.tsh,Tipo.tipo)
+	 * Campo.refsAChequear = Tipo.refsAChequear
+	 * </code>
+	 */
+	public class CampoR1 extends Campo {
+
+		public CampoR1(Tipo tipo, Token IDEN) {
+			super();
+			this.tipo = tipo;
+			this.iden = IDEN;
+			tipo.registraCtx(new TipoCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return CampoR1.this.tsh().val();
+				}
+			});
+
+			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			// tam().ponDependencias(tipo.tipo());//?¿
+			// ni clase ni tipo ni tam ni iden dependencias creo
+			refsAChequear().ponDependencias(tipo.refsAChequear());
+			tipo.tsh().ponDependencias(tsh());
+		}
+
+		protected final String iden_exp() {
+			return iden.lex();
+		}
+
+		protected final Integer fila_exp() {
+			return new Integer(iden.leeFila());
+		}
+
+		protected final Integer col_exp() {
+			return new Integer(iden.leeCol());
+		}
+
+		@Override
+		protected final List<ExpTipo> refsAChequear_exp() {
+			return tipo.refsAChequear().val();
+		}
+
+		@Override
+		protected final Error err_exp() {
+			return joinErrors(tipo.err().val(),
+					tipoRefIncorrecto(tsh().val(), tipo.tipo_exp()));
+		}
+
+		@Override
+		protected Integer tam_exp() {
+			return tipo.tipo_exp().tam();
+		}
+
+		@Override
+		protected ExpTipo campo_exp() {
+			// TODO como generar exp de tipo
+			return null;
+		}
+
+		private Token iden;
+		private Tipo tipo;
+	}
+
+	public class CampoR1Debug extends CampoR1 {
+		private final static String REGLA = "Campo ::= Tipo IDEN";
+
+		public CampoR1Debug(Tipo tipo, Token iden) {
+			super(tipo, iden);
+			iden().fijaDescripcion(REGLA + " | Campo.iden");
+			campo().fijaDescripcion(REGLA + " | Campo.campo");
+			err().fijaDescripcion(REGLA + " | Campo.err");
+			tam().fijaDescripcion(REGLA + " | Campo.tam");
+			refsAChequear().fijaDescripcion(REGLA + " | Campo.refsAChequear");
+			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
+		}
+	}
+
+	/**
+	 * <code>
 	 * Instrucciones ::= Instrucciones ; Instruccion
-	 * Instrucciones(1).tsh =Instrucciones(0).tsh 
+	 * Propagación de la tabla de símbolos
+	 * Instrucciones(1).tsh = Instrucciones(0).tsh
 	 * Instruccion.tsh = Instrucciones(0).tsh
-	 * Instrucciones(0).error = Instrucciones(1).error || Instruccion.error
-	 * Instrucciones(1).etqh = Instrucciones(0).etqh 
-	 * Instruccion.etqh = Instrucciones(1).etq 
+	 * Comprobación de las restricciones contextuales
+	 * Instrucciones(0).error = Instrucciones(1).error or Instruccion.error
+	 * Generación de código
+	 * Instrucciones(1).etqh = Instrucciones(0).etqh
+	 * Instruccion.etqh = Instrucciones(1).etq
 	 * Instrucciones(0).etq = Instruccion.etq
 	 * Instrucciones(0).cod = Instrucciones(1).cod || Instruccion.cod
-	 * </code>
+	 * Instrucciones(0).llamadasPendientes = Instrucciones(1).llamadasPendientes U
+	 * Instruccion.llamadasPendientes </code>
 	 */
 	public class InstsR1 extends Insts {
 
@@ -2542,6 +4129,8 @@ public class GA {
 			etq().ponDependencias(inst.etq());
 			cod().ponDependencias(insts_1.cod(), inst.cod());
 			err().ponDependencias(insts_1.err(), inst.err());
+			llamadasPendientes().ponDependencias(insts_1.llamadasPendientes(),
+					inst.llamadasPendientes());
 			inst.etqh().ponDependencias(insts_1.etq());
 			inst.tsh().ponDependencias(tsh());
 
@@ -2562,6 +4151,12 @@ public class GA {
 
 		private Insts insts_1;
 		private Inst inst;
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
 	}
 
 	public class InstsR1Debug extends InstsR1 {
@@ -2571,6 +4166,8 @@ public class GA {
 			super(insts_1, inst);
 			insts_1.tsh().fijaDescripcion(REGLA + " | Instrucciones(1).tsh");
 			insts_1.etqh().fijaDescripcion(REGLA + " | Instrucciones(1).etqh");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Instrucciones(0).llamadasPendientes");
 			err().fijaDescripcion(REGLA + " | Instrucciones(0).err");
 			cod().fijaDescripcion(REGLA + " | Instrucciones(0).cod");
 			etqh().fijaDescripcion(REGLA + " | Instrucciones(0).etqh");
@@ -2588,6 +4185,7 @@ public class GA {
 	 * Instruccion.etqh = Instrucciones.etqh 
 	 * Instrucciones.etq = Instruccion.etq 
 	 * Instrucciones.cod = Instruccion.cod
+	 * Instrucciones.llamadasPendientes = Instruccion.llamadasPendientes
 	 * </code>
 	 */
 	public class InstsR2 extends Insts {
@@ -2609,6 +4207,7 @@ public class GA {
 			err().ponDependencias(inst.err());
 			inst.etqh().ponDependencias(etqh());
 			inst.tsh().ponDependencias(tsh());
+			llamadasPendientes().ponDependencias(inst.llamadasPendientes());
 
 		}
 
@@ -2624,7 +4223,13 @@ public class GA {
 			return inst.etq().val();
 		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
 		private Inst inst;
+
 	}
 
 	public class InstsR2Debug extends InstsR2 {
@@ -2635,6 +4240,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | Instrucciones.err");
 			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
 			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Instrucciones.llamadasPendientes");
 			inst.etqh().fijaDescripcion(REGLA + " | Instruccion.etqh");
 			inst.tsh().fijaDescripcion(REGLA + " | Instruccion.tsh");
 		}
@@ -2648,6 +4255,7 @@ public class GA {
 	 * IAsignacion.etqh = Instruccion.etqh
 	 * Instruccion.etq = IAsignacion.etq
 	 * Instruccion.cod = IAsignacion.cod
+	 * Instrucciones.llamadasPendientes = Instruccion.llamadasPendientes
 	 * </code>
 	 */
 	public class InstR1 extends Inst {
@@ -2684,6 +4292,11 @@ public class GA {
 			return iasig.cod().val();
 		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
 		private Inst iasig;
 
 	}
@@ -2699,7 +4312,6 @@ public class GA {
 			iAsig.etqh().fijaDescripcion(REGLA + " | Iasignacion.etqh");
 			iAsig.tsh().fijaDescripcion(REGLA + " | Iasignacion.tsh");
 		}
-
 	}
 
 	/**
@@ -2710,6 +4322,7 @@ public class GA {
 	 * IIF.etqh = Instruccion.etqh 
 	 * Instruccion.etq = IIF.etq
 	 * Instruccion.cod = IIF.cod
+	 * Instruccion.llamadasPendientes = IIF.llamadasPendientes
 	 * </code>
 	 */
 	public class InstR2 extends Inst {
@@ -2732,6 +4345,7 @@ public class GA {
 			cod().ponDependencias(iIF.cod());
 			iIF.tsh().ponDependencias(tsh());
 			iIF.etqh().ponDependencias(etqh());
+			llamadasPendientes().ponDependencias(iIF.llamadasPendientes());
 		}
 
 		public Integer etq_exp() {
@@ -2748,6 +4362,11 @@ public class GA {
 			return iIF.cod().val();
 		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return iIF.llamadasPendientes().val();
+		}
+
 		private Inst iIF;
 	}
 
@@ -2759,6 +4378,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | Instruccion.err");
 			etq().fijaDescripcion(REGLA + " | Instruccion.etq");
 			cod().fijaDescripcion(REGLA + " | Instruccion.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Instruccion.llamadasPendientes");
 			iIF.tsh().fijaDescripcion(REGLA + " | IIF.tsh");
 			iIF.etqh().fijaDescripcion(REGLA + " | IIF.etqh");
 		}
@@ -2772,6 +4393,7 @@ public class GA {
 	 * IDO.etqh = Instruccion.etqh 
 	 * Instruccion.etq = IDO.etq
 	 * Instruccion.cod = IDO.cod
+	 * Instruccion.llamadasPendientes = IDO.llamadasPendientes
 	 * </code>
 	 */
 	public class InstR3 extends Inst {
@@ -2794,6 +4416,7 @@ public class GA {
 			cod().ponDependencias(iDO.cod());
 			iDO.tsh().ponDependencias(tsh());
 			iDO.etqh().ponDependencias(etqh());
+			llamadasPendientes().ponDependencias(iDO.llamadasPendientes());
 		}
 
 		public Integer etq_exp() {
@@ -2808,6 +4431,11 @@ public class GA {
 			return iDO.cod().val();
 		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return iDO.llamadasPendientes().val();
+		}
+
 		private Inst iDO;
 	}
 
@@ -2819,6 +4447,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | Instruccion.err");
 			etq().fijaDescripcion(REGLA + " | Instruccion.etq");
 			cod().fijaDescripcion(REGLA + " | Instruccion.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Instruccion.llamadasPendientes");
 			iDO.tsh().fijaDescripcion(REGLA + " | IDO.tsh");
 			iDO.etqh().fijaDescripcion(REGLA + " | IDO.etqh");
 		}
@@ -2826,19 +4456,797 @@ public class GA {
 
 	/**
 	 * <code>
-	 * IAsignacion ::= IDEN := Exp0 
-	 * Exp0.tsh = IAsignacion.tsh 
-	 * IAsignacion.error = not asignacionCorrecta(IDEN.lex,IAsignacion.tsh,Exp0.tipo)
-	 * Exp0.etqh = IAsignacion.etqh 
-	 * IAsignacion.etq = Exp0.etq + 1 
-	 * IAsignacion.cod = Exp0.cod || desapila_dir(dirDe(IDEN.lex,IAsignacion.tsh))
+	 * Instruccion ::= INew
+	 * INew.tsh = Instruccion.tsh
+	 * Instruccion.error = INew.error
+	 * INew.etqh = Instruccion.etqh
+	 * Instruccion.etq = INew.etq
+	 * Instruccion.cod = INew.cod
+	 * Instrucciones.llamadasPendientes = vacio
 	 * </code>
+	 */
+	public class InstR4 extends Inst {
+
+		public InstR4(Inst iNew) {
+			super();
+			this.iNew = iNew;
+			iNew.registraCtx(new InstCtx() {
+				public TS tsh_exp() {
+					return InstR4.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return InstR4.this.etqh().val();
+				}
+			});
+			etq().ponDependencias(iNew.etq());
+			cod().ponDependencias(iNew.cod());
+			err().ponDependencias(iNew.err());
+			iNew.etqh().ponDependencias(etqh());
+			iNew.tsh().ponDependencias(tsh());
+		}
+
+		public Integer etq_exp() {
+			return iNew.etq().val();
+
+		}
+
+		public Error err_exp() {
+			return iNew.err().val();
+		}
+
+		public List<Instruccion> cod_exp() {
+			return iNew.cod().val();
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
+		private Inst iNew;
+
+	}
+
+	public class InstR4Debug extends InstR4 {
+		private final static String REGLA = "Instruccion ::= INew";
+
+		public InstR4Debug(Inst iNew) {
+			super(iNew);
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			iNew.etqh().fijaDescripcion(REGLA + " | INew.etqh");
+			iNew.tsh().fijaDescripcion(REGLA + " | INew.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Instruccion ::= IDispose
+	 * IDispose.tsh = Instruccion.tsh
+	 * Instruccion.error = IDispose.error
+	 * IDispose.etqh = Instruccion.etqh
+	 * Instruccion.etq = IDispose.etq
+	 * Instruccion.cod = IDispose.cod
+	 * Instrucciones.llamadasPendientes = vacio
+	 * </code>
+	 */
+	public class InstR6 extends Inst {
+
+		public InstR6(Inst iDispose) {
+			super();
+			this.iDispose = iDispose;
+			iDispose.registraCtx(new InstCtx() {
+				public TS tsh_exp() {
+					return InstR6.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return InstR6.this.etqh().val();
+				}
+			});
+			etq().ponDependencias(iDispose.etq());
+			cod().ponDependencias(iDispose.cod());
+			err().ponDependencias(iDispose.err());
+			iDispose.etqh().ponDependencias(etqh());
+			iDispose.tsh().ponDependencias(tsh());
+		}
+
+		public Integer etq_exp() {
+			return iDispose.etq().val();
+
+		}
+
+		public Error err_exp() {
+			return iDispose.err().val();
+		}
+
+		public List<Instruccion> cod_exp() {
+			return iDispose.cod().val();
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
+		private Inst iDispose;
+	}
+
+	public class InstR6Debug extends InstR6 {
+		private final static String REGLA = "Instruccion ::= IDispose";
+
+		public InstR6Debug(Inst iDispose) {
+			super(iDispose);
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			iDispose.etqh().fijaDescripcion(REGLA + " | IDispose.etqh");
+			iDispose.tsh().fijaDescripcion(REGLA + " | IDispose.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Instruccion ::= ILectura
+	 * ILectura.tsh = Instruccion.tsh
+	 * Instruccion.error = ILectura.error
+	 * ILectura.etqh = Instruccion.etqh
+	 * Instruccion.etq = ILectura.etq
+	 * Instruccion.cod = ILectura.cod
+	 * Instrucciones.llamadasPendientes = vacio
+	 * </code>
+	 */
+	public class InstR7 extends Inst {
+
+		public InstR7(Inst iLectura) {
+			super();
+			this.iDispose = iLectura;
+			iLectura.registraCtx(new InstCtx() {
+				public TS tsh_exp() {
+					return InstR7.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return InstR7.this.etqh().val();
+				}
+			});
+			etq().ponDependencias(iLectura.etq());
+			cod().ponDependencias(iLectura.cod());
+			err().ponDependencias(iLectura.err());
+			iLectura.etqh().ponDependencias(etqh());
+			iLectura.tsh().ponDependencias(tsh());
+		}
+
+		public Integer etq_exp() {
+			return iDispose.etq().val();
+
+		}
+
+		public Error err_exp() {
+			return iDispose.err().val();
+		}
+
+		public List<Instruccion> cod_exp() {
+			return iDispose.cod().val();
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
+		private Inst iDispose;
+
+	}
+
+	public class InstR7Debug extends InstR7 {
+		private final static String REGLA = "Instruccion ::= ILectura";
+
+		public InstR7Debug(Inst iLectura) {
+			super(iLectura);
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			iLectura.etqh().fijaDescripcion(REGLA + " | ILectura.etqh");
+			iLectura.tsh().fijaDescripcion(REGLA + " | ILectura.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Instruccion ::= ILectura
+	 * ILectura.tsh = Instruccion.tsh
+	 * Instruccion.error = ILectura.error
+	 * ILectura.etqh = Instruccion.etqh
+	 * Instruccion.etq = ILectura.etq
+	 * Instruccion.cod = ILectura.cod
+	 * Instrucciones.llamadasPendientes = vacio
+	 * </code>
+	 */
+	public class InstR8 extends Inst {
+
+		public InstR8(Inst iEscritura) {
+			super();
+			this.iEscritura = iEscritura;
+			iEscritura.registraCtx(new InstCtx() {
+				public TS tsh_exp() {
+					return InstR8.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return InstR8.this.etqh().val();
+				}
+			});
+			etq().ponDependencias(iEscritura.etq());
+			cod().ponDependencias(iEscritura.cod());
+			err().ponDependencias(iEscritura.err());
+			iEscritura.etqh().ponDependencias(etqh());
+			iEscritura.tsh().ponDependencias(tsh());
+		}
+
+		public Integer etq_exp() {
+			return iEscritura.etq().val();
+
+		}
+
+		public Error err_exp() {
+			return iEscritura.err().val();
+		}
+
+		public List<Instruccion> cod_exp() {
+			return iEscritura.cod().val();
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return listaIntegerVacia();
+		}
+
+		private Inst iEscritura;
+
+	}
+
+	public class InstR8Debug extends InstR8 {
+		private final static String REGLA = "Instruccion ::= IEscritura";
+
+		public InstR8Debug(Inst iEscritura) {
+			super(iEscritura);
+			err().fijaDescripcion(REGLA + " | Instrucciones.err");
+			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
+			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			iEscritura.etqh().fijaDescripcion(REGLA + " | IEscritura.etqh");
+			iEscritura.tsh().fijaDescripcion(REGLA + " | IEscritura.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Instruccion ::= ILlamada 
+	 * ILlamada.tsh = Instruccion.tsh 
+	 * Instruccion.error = ILlamada.error 
+	 * ILlamada.etqh = Instruccion.etqh 
+	 * Instruccion.etq = ILlamada.etq
+	 * Instruccion.cod = ILlamada.cod
+	 * Instruccion.llamadasPendientes = ILlamada.llamadasPendientes
+	 * </code>
+	 */
+	public class InstR9 extends Inst {
+
+		public InstR9(Inst iLlamada) {
+			super();
+			this.iLlamada = iLlamada;
+			iLlamada.registraCtx(new InstCtx() {
+				public TS tsh_exp() {
+					return InstR9.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return InstR9.this.etqh().val();
+				}
+
+			});
+			err().ponDependencias(iLlamada.err());
+			etq().ponDependencias(iLlamada.etq());
+			cod().ponDependencias(iLlamada.cod());
+			iLlamada.tsh().ponDependencias(tsh());
+			iLlamada.etqh().ponDependencias(etqh());
+			llamadasPendientes().ponDependencias(iLlamada.llamadasPendientes());
+		}
+
+		public Integer etq_exp() {
+			return iLlamada.etq().val();
+		}
+
+		public Error err_exp() {
+			return iLlamada.err().val();
+		}
+
+		public List<Instruccion> cod_exp() {
+			return iLlamada.cod().val();
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return iLlamada.llamadasPendientes().val();
+		}
+
+		private Inst iLlamada;
+	}
+
+	public class InstR9Debug extends InstR9 {
+		private final static String REGLA = "Instruccion ::= ILlamada";
+
+		public InstR9Debug(Inst iLlamada) {
+			super(iLlamada);
+			err().fijaDescripcion(REGLA + " | Instruccion.err");
+			etq().fijaDescripcion(REGLA + " | Instruccion.etq");
+			cod().fijaDescripcion(REGLA + " | Instruccion.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Instruccion.llamadasPendientes");
+			iLlamada.tsh().fijaDescripcion(REGLA + " | ILlamada.tsh");
+			iLlamada.etqh().fijaDescripcion(REGLA + " | ILlamada.etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ILlamada ::= IDEN ( ParametrosReales )
+	 * Propagación de la tabla de símbolos
+	 * ParametrosReales.tsh = ILlamada.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ILlamada.error = not llamadaCorrecta(ILlamada.tsh,IDEN.lex,ParametrosReales.nparams)
+	 * ParametrosReales.subprogramah = IDEN.lex
+	 * Generación de código
+	 * ParametrosReales.etqh = ILlamada.etqh
+	 * ILlamada.etq = ParametrosReales.etq + numeroInstruccionesFinLLamada()
+	 * ILlamada.cod = ParametrosReales.cod ||
+	 * codigoFinLlamada(IDEN.lex,ILlamada.tsh,
+	 * ParametrosReales.etq + numeroInstruccionesFinLLamada())
+	 * ILlamada.llamadasPendientes = direccionSiSaltoIndefinido(IDEN.lex,ILlamada.tsh,
+	 * ParametrosReales.etq) </code>
+	 */
+	public class ILlamadaR1 extends Inst {
+
+		public ILlamadaR1(Token iden, ParamsReales paramsReales) {
+			super();
+			this.iden = iden;
+			this.paramsReales = paramsReales;
+			paramsReales.registraCtx(new ParamsRealesCtx() {
+				public TS tsh_exp() {
+					return ILlamadaR1.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return ILlamadaR1.this.etqh().val();
+				}
+
+				@Override
+				public String subprogramah_exp() {
+					return ILlamadaR1.this.iden.lex();
+				}
+
+			});
+			err().ponDependencias(tsh(), paramsReales.nparams());
+			etq().ponDependencias(paramsReales.etq());
+			cod().ponDependencias(paramsReales.cod(), tsh(), paramsReales.etq());
+			llamadasPendientes().ponDependencias(tsh(), paramsReales.etq());
+			paramsReales.tsh().ponDependencias(tsh());
+		}
+
+		public Integer etq_exp() {
+			return paramsReales.etq().val() + numeroInstruccionesFinLlamada();
+		}
+
+		public Error err_exp() {
+			if (llamadaCorrecta(tsh().val(), iden.lex(), paramsReales.nparams()
+					.val()))
+				return noError();
+			else
+				return new Error("Error de llamada a " + iden.lex()
+						+ " con nparams: " + paramsReales.nparams().val());
+		}
+
+		public List<Instruccion> cod_exp() {
+			return concat(
+					paramsReales.cod().val(),
+					codigoFinLlamada(iden.lex(), tsh().val(), paramsReales
+							.etq().val() + numeroInstruccionesFinLlamada()));
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return direccionSiSaltoIndefinido(iden.lex(), tsh().val(),
+					paramsReales.etq().val());
+		}
+
+		private Token iden;
+		private ParamsReales paramsReales;
+	}
+
+	public class ILlamadaR1Debug extends ILlamadaR1 {
+		private final static String REGLA = "ILlamada ::= IDEN ( ParametrosReales )";
+
+		public ILlamadaR1Debug(Token iden, ParamsReales paramsReales) {
+			super(iden, paramsReales);
+			err().fijaDescripcion(REGLA + " | ILlamada.err");
+			etq().fijaDescripcion(REGLA + " | ILlamada.etq");
+			cod().fijaDescripcion(REGLA + " | ILlamada.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | ILlamada.llamadasPendientes");
+			paramsReales.tsh().fijaDescripcion(
+					REGLA + " | ParametrosReales.tsh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ParametrosReales ::= ListaParametrosReales
+	 * Propagación de la tabla de símbolos
+	 * ListaParametrosReales.tsh = ParametrosReales.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ParametrosReales.error = ListaParametrosReales.error
+	 * ListaParametrosReales.subprogramah = ParametrosReales.subprogramah
+	 * ParametrosReales.nparams = ListaParametrosReales.nparams
+	 * Generación de código
+	 * ListaParametrosReales.etqh = ParametrosReales.etqh + numeroInstruccionesInicioLlamada()
+	 * ParametrosReales.etq = ListaParametrosReales.etq + 1
+	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,
+	 * ParametrosReales.tsh)) ||
+	 * ListaParametrosReales.cod || desapila() </code>
+	 */
+	public class ParamsRealesR1 extends ParamsReales {
+
+		public ParamsRealesR1(ListaParamsReales listaParamsReales) {
+			super();
+			this.listaParamsReales = listaParamsReales;
+			listaParamsReales.registraCtx(new ListaParamsRealesCtx() {
+				public TS tsh_exp() {
+					return ParamsRealesR1.this.tsh().val();
+				}
+
+				public int etqh_exp() {
+					return ParamsRealesR1.this.etqh().val()
+							+ numeroInstruccionesInicioLlamada();
+				}
+
+				@Override
+				public String subprogramah_exp() {
+					return ParamsRealesR1.this.subProgramah().val();
+				}
+
+			});
+			err().ponDependencias(listaParamsReales.err());
+			etq().ponDependencias(listaParamsReales.etq());
+			cod().ponDependencias(subProgramah(), tsh(),
+					listaParamsReales.cod());
+			listaParamsReales.tsh().ponDependencias(tsh());
+			listaParamsReales.etqh().ponDependencias(etqh());
+			listaParamsReales.subProgramah().ponDependencias(subProgramah());
+		}
+
+		public Integer etq_exp() {
+			return listaParamsReales.etq().val() + 1;
+		}
+
+		public Error err_exp() {
+			return listaParamsReales.err().val();
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> c = concat(
+					codigoInicioLlamada(nivelDe(subProgramah().val(), tsh()
+							.val())), listaParamsReales.cod().val());
+			return concat(c, desapila());
+		}
+
+		@Override
+		protected Integer nparams_exp() {
+			return listaParamsReales.nparams().val();
+		}
+
+		private ListaParamsReales listaParamsReales;
+
+	}
+
+	public class ParamsRealesR1Debug extends ParamsRealesR1 {
+		private final static String REGLA = "ParametrosReales ::= ListaParametrosReales";
+
+		public ParamsRealesR1Debug(ListaParamsReales listaParamsReales) {
+			super(listaParamsReales);
+			err().fijaDescripcion(REGLA + " | ParametrosReales.err");
+			etq().fijaDescripcion(REGLA + " | ParametrosReales.etq");
+			cod().fijaDescripcion(REGLA + " | ParametrosReales.cod");
+			listaParamsReales.tsh().fijaDescripcion(
+					REGLA + " | ListaParametrosReales.tsh");
+			listaParamsReales.etqh().fijaDescripcion(
+					REGLA + " | ParametrosReales.etqh");
+			listaParamsReales.subProgramah().fijaDescripcion(
+					REGLA + " | ParametrosReales.subProgramah");
+		}
+	}
+
+	/**
+	 * <code>
+	 * 	ParametrosReales ::= ListaParametrosReales
+	 * Propagación de la tabla de símbolos
+	 * ListaParametrosReales.tsh = ParametrosReales.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ParametrosReales.error = ListaParametrosReales.error
+	 * ListaParametrosReales.subprogramah = ParametrosReales.subprogramah
+	 * ParametrosReales.nparams = ListaParametrosReales.nparams
+	 * Generación de código
+	 * ListaParametrosReales.etqh = ParametrosReales.etqh + numeroInstruccionesInicioLlamada()
+	 * ParametrosReales.etq = ListaParametrosReales.etq + 1
+	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,
+	 * ParametrosReales.tsh)) ||
+	 * ListaParametrosReales.cod || desapila() </code>
+	 */
+	public class ParamsRealesR2 extends ParamsReales {
+
+		public ParamsRealesR2() {
+			super();
+			etq().ponDependencias(etqh());
+		}
+
+		public Integer etq_exp() {
+			return etqh().val();
+		}
+
+		public Error err_exp() {
+			return noError();
+		}
+
+		public List<Instruccion> cod_exp() {
+			return programaVacio();
+		}
+
+		@Override
+		protected Integer nparams_exp() {
+			return 0;
+		}
+
+	}
+
+	public class ParamsRealesR2Debug extends ParamsRealesR2 {
+		private final static String REGLA = "ParametrosReales ::= lambda";
+
+		public ParamsRealesR2Debug() {
+			super();
+			etq().fijaDescripcion(REGLA + " | ParametrosReales.etq");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ListaParametrosReales ::= ListaParametrosReales , Exp0
+	 * Propagación de la tabla de símbolos
+	 * ListaParametrosReales(1).tsh = ListaParametrosReales(0).tsh
+	 * Exp0.tsh = ListaParametrosReales(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * ListaParametrosReales(0).error = ListaParametrosReales(1).error or
+	 * tipoError(Exp0.tipo) or
+	 * not parametroCorrecto(ListaParametrosReales(0).subprogramah,
+	 * ListaParametrosReales(1).nparams + 1,
+	 * Exp0.tipo, Exp0.esDesignador,
+	 * ListaParametrosReales(0).tsh)
+	 * ListaParametrosReales(1).subprogramah = ListaParametrosReales(0).subprogramah
+	 * ListaParametrosReales(0).nparams = ListaParametrosReales(1).nparams+1
+	 */
+	public class ListaParamsRealesR1 extends ListaParamsReales {
+
+		public ListaParamsRealesR1(ListaParamsReales listaParamsReales_1,
+				Exp0 exp0) {
+			super();
+			this.listaParamsReales_1 = listaParamsReales_1;
+			this.exp0 = exp0;
+			listaParamsReales_1.registraCtx(new ListaParamsRealesCtx() {
+				public TS tsh_exp() {
+					return ListaParamsRealesR1.this.tsh().val();
+				}
+
+				@Override
+				public String subprogramah_exp() {
+					return ListaParamsRealesR1.this.subProgramah().val();
+				}
+
+				@Override
+				public int etqh_exp() {
+					return ListaParamsRealesR1.this.etq().val();
+				}
+			});
+			exp0.registraCtx(new ExpCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return ListaParamsRealesR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return ListaParamsRealesR1.this.listaParamsReales_1.etq()
+							.val();
+				}
+			});
+			// TODO añadir?exp0.tipo(),exp0.esDesignador() en estas 2
+			err().ponDependencias(listaParamsReales_1.err(), exp0.tipo(),
+					subProgramah(), listaParamsReales_1.nparams(), tsh());
+			cod().ponDependencias(subProgramah(), tsh(),
+					listaParamsReales_1.cod(), exp0.cod(), subProgramah(),
+					listaParamsReales_1.nparams(), tsh());
+			nparams().ponDependencias(listaParamsReales_1.nparams());
+			etq().ponDependencias(exp0.etq());
+
+			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(listaParamsReales_1.etq());
+
+			listaParamsReales_1.tsh().ponDependencias(tsh());
+			listaParamsReales_1.etqh().ponDependencias(etq());
+			listaParamsReales_1.subProgramah().ponDependencias(subProgramah());
+		}
+
+		public Integer etq_exp() {
+			return exp0.etq().val() + numeroInstruccionesCodigoPaso();
+		}
+
+		public Error err_exp() {
+			Error e = joinErrors(listaParamsReales_1.err().val(),
+					tipoError(exp0.tipo().val()));
+			if (parametroCorrecto(subProgramah().val(), listaParamsReales_1
+					.nparams().val() + 1, exp0.tipo().val(), exp0
+					.esDesignador().val(), tsh().val()))
+				return e;
+			else
+				return joinErrors(e, new Error("Parametro incorrecto en: "
+						+ subProgramah()));
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> o = concat(listaParamsReales_1.cod().val(),
+					copia());
+			o = concat(o, exp0.cod().val());
+			return concat(
+					o,
+					codigoPaso(subProgramah().val(), listaParamsReales_1
+							.nparams().val(), exp0.tipo().val(), exp0
+							.esDesignador().val(), tsh().val()));
+		}
+
+		@Override
+		protected Integer nparams_exp() {
+			return listaParamsReales_1.nparams().val() + 1;
+		}
+
+		private ListaParamsReales listaParamsReales_1;
+		private Exp0 exp0;
+	}
+
+	public class ListaParamsRealesR1Debug extends ListaParamsRealesR1 {
+		private final static String REGLA = "ListaParametrosReales(0) ::= ListaParametrosReales(1) , Exp0";
+
+		public ListaParamsRealesR1Debug(ListaParamsReales listaParamsReales_1,
+				Exp0 exp0) {
+			super(listaParamsReales_1, exp0);
+			err().fijaDescripcion(REGLA + " | ParametrosReales.err");
+			etq().fijaDescripcion(REGLA + " | ParametrosReales.etq");
+			cod().fijaDescripcion(REGLA + " | ParametrosReales.cod");
+			listaParamsReales_1.tsh().fijaDescripcion(
+					REGLA + " | ListaParametrosReales.tsh");
+			listaParamsReales_1.etqh().fijaDescripcion(
+					REGLA + " | ParametrosReales.etqh");
+			listaParamsReales_1.subProgramah().fijaDescripcion(
+					REGLA + " | ParametrosReales.subProgramah");
+		}
+	}
+
+	/**
+	 * <code>
+	 * ListaParametrosReales ::= Exp0
+	 * Propagación de la tabla de símbolos
+	 * Exp0.tsh = ListaParametrosReales.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ListaParametrosReales.error = tipoError(Exp0.tipo) or
+	 * not parametroCorrecto(ListaParametrosReales.subprogramah
+	 * ListaParametrosReales(0).nparams = 1
+	 * Generación de código
+	 * Exp0.etqh = ListaParametrosReales.etqh + 1
+	 * ListaParametrosReales.etq = Exp0.etq + numeroInstruccionesCodigoPaso()
+	 * ListaParametrosReales.cod = copia() || Exp0.cod ||
+	 * codigoPaso(ListaParametrosReales.subprogramah,
+	 * 1,Exp0.tipo, Exp0.esDesignador,
+	 * ListaParametrosReales.tsh)
+	 */
+	public class ListaParamsRealesR2 extends ListaParamsReales {
+
+		public ListaParamsRealesR2(Exp0 exp0) {
+			super();
+			this.exp0 = exp0;
+			exp0.registraCtx(new ExpCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return ListaParamsRealesR2.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return ListaParamsRealesR2.this.etqh().val() + 1;
+				}
+			});
+			// TODO añadir?exp0.tipo(),exp0.esDesignador() en estas 2
+			err().ponDependencias(exp0.tipo(), exp0.esDesignador(),
+					subProgramah(), tsh());
+			cod().ponDependencias(subProgramah(), tsh(), exp0.tipo(),
+					exp0.cod(), subProgramah());
+			etq().ponDependencias(exp0.etq());
+
+			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(etqh());
+		}
+
+		public Integer etq_exp() {
+			return exp0.etq().val() + numeroInstruccionesCodigoPaso();
+		}
+
+		public Error err_exp() {
+			Error e = tipoError(exp0.tipo().val());
+			if (parametroCorrecto(subProgramah().val(), 1, exp0.tipo().val(),
+					exp0.esDesignador().val(), tsh().val()))
+				return e;
+			else
+				return joinErrors(e, new Error("Parametro incorrecto en: "
+						+ subProgramah()));
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> o = concat(copia(), exp0.cod().val());
+			return concat(
+					o,
+					codigoPaso(subProgramah().val(), 1, exp0.tipo().val(), exp0
+							.esDesignador().val(), tsh().val()));
+		}
+
+		@Override
+		protected Integer nparams_exp() {
+			return 1;
+		}
+
+		private Exp0 exp0;
+	}
+
+	public class ListaParamsRealesR2Debug extends ListaParamsRealesR2 {
+		private final static String REGLA = "ListaParametrosReales(0) ::= ListaParametrosReales(1) , Exp0";
+
+		public ListaParamsRealesR2Debug(Exp0 exp0) {
+			super(exp0);
+			err().fijaDescripcion(REGLA + " | ListaParametrosReales.err");
+			etq().fijaDescripcion(REGLA + " | ListaParametrosReales.etq");
+			cod().fijaDescripcion(REGLA + " | ListaParametrosReales.cod");
+			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
+			exp0.etqh().fijaDescripcion(REGLA + " | exp0.etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * IAsignacion ::= Mem := Exp0 
+	 * Propagación de la tabla de símbolos
+	 * Mem.tsh = IAsignacion.tsh
+	 * Exp0.tsh = IAsignacion.tsh
+	 * Comprobación de las restricciones contextuales
+	 * IAsignacion.error = not asignacionCorrecta(Mem.tipo,Exp0.tipo)
+	 * Generación de código
+	 * Mem.etqh = IAsignacion.etqh
+	 * Exp0.etqh = Mem.etq + 1
+	 * IAsignacion.etq = Exp0.etq + 1
+	 * IAsignacion.cod = codigoAsignacion(Mem.cod,Exp0.cod,Exp0.esDesignador)* </code>
 	 */
 	public class IAsigR1 extends Inst {
 
-		public IAsigR1(Token iden, Exp0 exp0) {
+		public IAsigR1(Mem mem, Exp0 exp0) {
 			super();
-			this.iden = iden;
+			this.mem = mem;
 			this.exp0 = exp0;
 			exp0.registraCtx(new ExpCtx() {
 				public TS tsh_exp() {
@@ -2846,15 +5254,30 @@ public class GA {
 				}
 
 				public Integer etqh_exp() {
+					return IAsigR1.this.mem.etq().val();
+				}
+			});
+			mem.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return IAsigR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
 					return IAsigR1.this.etqh().val();
 				}
 			});
-			err().ponDependencias(tsh(), exp0.tipo());
+			err().ponDependencias(mem.tipo(), exp0.tipo());
 			etq().ponDependencias(exp0.etq());
 			cod().ponDependencias(exp0.cod(), tsh());
-			exp0.tsh().ponDependencias(tsh());
-			exp0.etqh().ponDependencias(etqh());
 
+			mem.tsh().ponDependencias(tsh());
+			mem.etqh().ponDependencias(etqh());
+
+			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(mem.etq());
 		}
 
 		public Integer etq_exp() {
@@ -2862,34 +5285,355 @@ public class GA {
 		}
 
 		public Error err_exp() {
-			if (!asignacionCorrecta(iden.leeLexema(), tsh().val(), exp0.tipo()
-					.val())) {
+			if (!asignacionCorrecta(mem.tipo().val(), exp0.tipo().val())) {
 				return new Error("La asignación no ha sido correcta");
 			} else
 				return new Error();
 		}
 
 		public List<Instruccion> cod_exp() {
-			return concat(exp0.cod().val(), desapila(String.valueOf(dirDe(
-					iden.leeLexema(), tsh().val()))));
-
+			return codigoAsignacion(mem.cod().val(), exp0.cod().val(), exp0
+					.esDesignador().val());
 		}
 
-		private Token iden;
+		private Mem mem;
 		private Exp0 exp0;
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			// TODO NO USADO
+			return null;
+		}
 
 	}
 
 	public class IAsigR1Debug extends IAsigR1 {
-		private final static String REGLA = "IAsignacion ::= IDEN := Exp0";
+		private final static String REGLA = "IAsignacion ::= Mem := Exp0";
 
-		public IAsigR1Debug(Token iden, Exp0 exp0) {
-			super(iden, exp0);
+		public IAsigR1Debug(Mem mem, Exp0 exp0) {
+			super(mem, exp0);
 			err().fijaDescripcion(REGLA + " | IAsignacion.err");
 			etq().fijaDescripcion(REGLA + " | IAsignacion.etq");
 			cod().fijaDescripcion(REGLA + " | IAsignacion.cod");
 			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.tsh");
 			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.etqh");
+			mem.tsh().fijaDescripcion(REGLA + " | Mem.tsh");
+			mem.etqh().fijaDescripcion(REGLA + " | Mem.etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * INew ::= new Mem
+	 * Propagación de la tabla de símbolos
+	 * Mem.tsh = INew.tsh
+	 * Comprobación de las restricciones contextuales
+	 * INew.error = not reservaMemoriaCorrecta(Mem.tipo)
+	 * Generación de código
+	 * Mem.etqh = INew.etqh
+	 * INew.etq = Mem.etq + 2
+	 * INew.cod = Mem.cod || reserva(tamañoObjetoApuntado(Mem.tipo,INew.tsh)) || desapila_ind()
+	 */
+	public class INewR1 extends Inst {
+
+		public INewR1(Mem mem) {
+			super();
+			this.mem = mem;
+			mem.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return INewR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return INewR1.this.etqh().val();
+				}
+			});
+			err().ponDependencias(mem.tipo());
+			etq().ponDependencias(mem.etq());
+			cod().ponDependencias(mem.cod(), mem.tipo(), tsh());
+
+			mem.tsh().ponDependencias(tsh());
+			mem.etqh().ponDependencias(etqh());
+		}
+
+		public Integer etq_exp() {
+			return mem.etq().val() + 2;
+		}
+
+		public Error err_exp() {
+			if (!reservaMemoriaCorrecta(mem.tipo().val())) {
+				return new Error("La reserva de memoria no ha sido correcta");
+			} else
+				return new Error();
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> o = concat(
+					mem.cod().val(),
+					reserva(tamañoObjetoApuntado(mem.tipo().val(), tsh().val())));
+			return concat(o, desapila_ind());
+
+		}
+
+		private Mem mem;
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			// TODO NO USADO
+			return null;
+		}
+
+	}
+
+	public class INewR1Debug extends INewR1 {
+		private final static String REGLA = "INew ::= new Mem";
+
+		public INewR1Debug(Mem mem) {
+			super(mem);
+			err().fijaDescripcion(REGLA + " | INew.err");
+			etq().fijaDescripcion(REGLA + " | INew.etq");
+			cod().fijaDescripcion(REGLA + " | INew.cod");
+
+			mem.tsh().fijaDescripcion(REGLA + " | Mem.tsh");
+			mem.etqh().fijaDescripcion(REGLA + " | Mem.etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * 	IDispose ::= delete Mem
+	 * Propagación de la tabla de símbolos
+	 * Mem.tsh = IDispose.tsh
+	 * Comprobación de las restricciones contextuales
+	 * IDispose.error = not liberacionMemoriaCorrecta(Mem.tipo)
+	 * Generación de código
+	 * Mem.etqh = IDispose.etqh
+	 * IDispose.etq = Mem.etq + 1
+	 * IDispose.cod = Mem.cod || libera(tamañoObjetoApuntado(Mem.tipo,IDispose.tsh))
+	 */
+	public class IDisposeR1 extends Inst {
+
+		public IDisposeR1(Mem mem) {
+			super();
+			this.mem = mem;
+			mem.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return IDisposeR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return IDisposeR1.this.etqh().val();
+				}
+			});
+			err().ponDependencias(mem.tipo());
+			etq().ponDependencias(mem.etq());
+			cod().ponDependencias(mem.cod(), mem.tipo(), tsh());
+
+			mem.tsh().ponDependencias(tsh());
+			mem.etqh().ponDependencias(etqh());
+		}
+
+		public Integer etq_exp() {
+			return mem.etq().val() + 2;
+		}
+
+		public Error err_exp() {
+			if (!liberaMemoriaCorrecta(mem.tipo().val())) {
+				return new Error("La liberacion de memoria no ha sido correcta");
+			} else
+				return new Error();
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> o = concat(mem.cod().val(),
+					libera(tamañoObjetoApuntado(mem.tipo().val(), tsh().val())));
+			return concat(o, desapila_ind());
+
+		}
+
+		private Mem mem;
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			// TODO NO USADO
+			return null;
+		}
+
+	}
+
+	public class IDisposeR1Debug extends IDisposeR1 {
+		private final static String REGLA = "IDispose ::= delete Mem";
+
+		public IDisposeR1Debug(Mem mem) {
+			super(mem);
+			err().fijaDescripcion(REGLA + " | IDisposeR1Debug.err");
+			etq().fijaDescripcion(REGLA + " | IDisposeR1Debug.etq");
+			cod().fijaDescripcion(REGLA + " | IDisposeR1Debug.cod");
+
+			mem.tsh().fijaDescripcion(REGLA + " | Mem.tsh");
+			mem.etqh().fijaDescripcion(REGLA + " | Mem.etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * 	ILectura ::= leer Mem
+	 * Propagación de la tabla de símbolos
+	 * Mem.tsh = IDispose.tsh
+	 * Comprobación de las restricciones contextuales
+	 * ILectura.error = not lecturaCorrecta(Mem.tipo)
+	 * Generación de código
+	 * Mem.etqh = ILectura.etqh
+	 * ILectura.etq = Mem.etq + 2
+	 * ILectura.cod = Mem.cod || codigoLectura(Mem.tipo) || desapila_ind()
+	 */
+	public class ILecturaR1 extends Inst {
+
+		public ILecturaR1(Mem mem) {
+			super();
+			this.mem = mem;
+			mem.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return ILecturaR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return ILecturaR1.this.etqh().val();
+				}
+			});
+			err().ponDependencias(mem.tipo());
+			etq().ponDependencias(mem.etq());
+			cod().ponDependencias(mem.cod(), mem.tipo());
+
+			mem.tsh().ponDependencias(tsh());
+			mem.etqh().ponDependencias(etqh());
+		}
+
+		public Integer etq_exp() {
+			return mem.etq().val() + 2;
+		}
+
+		public Error err_exp() {
+			if (!lecturaCorrecta(mem.tipo().val())) {
+				return new Error("La lectura no ha sido correcta");
+			} else
+				return new Error();
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> o = concat(mem.cod().val(), codigoLectura(mem
+					.tipo().val()));
+			return concat(o, desapila_ind());
+
+		}
+
+		private Mem mem;
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			// TODO NO USADO
+			return null;
+		}
+
+	}
+
+	public class ILecturaR1Debug extends ILecturaR1 {
+		private final static String REGLA = "ILectura ::= leer Mem";
+
+		public ILecturaR1Debug(Mem mem) {
+			super(mem);
+			err().fijaDescripcion(REGLA + " | ILectura.err");
+			etq().fijaDescripcion(REGLA + " | ILectura.etq");
+			cod().fijaDescripcion(REGLA + " | ILectura.cod");
+
+			mem.tsh().fijaDescripcion(REGLA + " | Mem.tsh");
+			mem.etqh().fijaDescripcion(REGLA + " | Mem.etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * IEscritura ::= escribir Exp0
+	 * Propagación de la tabla de símbolos
+	 * Exp0.tsh = IEscritura.tsh
+	 * Comprobación de las restricciones contextuales
+	 * IEscritura.error = not escrituraCorrecta(Exp0.tipo)
+	 * Generación de código
+	 * Exp0.etqh = IEscritura.etqh
+	 * IEscritura.etq = Exp0.etq + 1
+	 * IEscritura.cod = Exp0.cod || codigoEscritura(Exp0.tipo)
+	 */
+	public class IEscrituraR1 extends Inst {
+
+		public IEscrituraR1(Exp0 exp0) {
+			super();
+			this.exp0 = exp0;
+			exp0.registraCtx(new ExpCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return IEscrituraR1.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return IEscrituraR1.this.etqh().val();
+				}
+			});
+			err().ponDependencias(exp0.tipo());
+			etq().ponDependencias(exp0.etq());
+			cod().ponDependencias(exp0.cod(), exp0.tipo());
+
+			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(etqh());
+		}
+
+		public Integer etq_exp() {
+			return exp0.etq().val() + 1;// TODO
+		}
+
+		public Error err_exp() {
+			if (!escrituraCorrecta(exp0.tipo().val())) {
+				return new Error("La escritura no ha sido correcta");
+			} else
+				return new Error();
+		}
+
+		public List<Instruccion> cod_exp() {
+
+			return concat(exp0.cod().val(), codigoEscritura(exp0.tipo().val()));
+
+		}
+
+		private Exp0 exp0;
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			// TODO NO USADO
+			return null;
+		}
+
+	}
+
+	public class IEscrituraR1Debug extends IEscrituraR1 {
+		private final static String REGLA = "IEscritura ::= escribir Mem";
+
+		public IEscrituraR1Debug(Exp0 exp0) {
+			super(exp0);
+			err().fijaDescripcion(REGLA + " | IEscrituraR1.err");
+			etq().fijaDescripcion(REGLA + " | IEscrituraR1.etq");
+			cod().fijaDescripcion(REGLA + " | IEscrituraR1.cod");
+			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
+			exp0.etqh().fijaDescripcion(REGLA + " | exp0.etqh");
 		}
 	}
 
@@ -2902,6 +5646,7 @@ public class GA {
 	 * Casos.irh = Casos.etq 
 	 * IIF.etq = Casos.etq 
 	 * IIF.cod =Casos.cod
+	 * IIF.llamadasPendientes = Casos.llamadasPendientes
 	 * </code>
 	 */
 	public class IIFR1 extends Inst {
@@ -2925,6 +5670,7 @@ public class GA {
 			err().ponDependencias(casos.err());
 			etq().ponDependencias(casos.etq());
 			cod().ponDependencias(casos.cod());
+			llamadasPendientes().ponDependencias(casos.llamadasPendientes());
 			casos.tsh().ponDependencias(tsh());
 			casos.etqh().ponDependencias(etqh());
 			casos.irh().ponDependencias(casos.etq());
@@ -2935,16 +5681,20 @@ public class GA {
 		}
 
 		public Error err_exp() {
-
 			return casos.err().val();
-
 		}
 
 		public List<Instruccion> cod_exp() {
 			return casos.cod().val();
 		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return casos.llamadasPendientes().val();
+		}
+
 		private Casos casos;
+
 	}
 
 	public class IIFR1Debug extends IIFR1 {
@@ -2955,6 +5705,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | IIF.err");
 			etq().fijaDescripcion(REGLA + " | IIF.etq");
 			cod().fijaDescripcion(REGLA + " | IIF.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Casos.llamadasPendientes");
 			casos.tsh().fijaDescripcion(REGLA + " | Casos.tsh");
 			casos.etqh().fijaDescripcion(REGLA + " | Casos.etqh");
 			casos.irh().fijaDescripcion(REGLA + " | Casos.irh");
@@ -2971,6 +5723,7 @@ public class GA {
 	 * Casos.irh = IDO.etqh 
 	 * IDO.etq = Casos.etq 
 	 * IDO.cod = Casos.cod
+	 * IDO.llamadasPendientes = Casos.llamadasPendientes
 	 * </code>
 	 */
 	public class IDOR1 extends Inst {
@@ -2995,6 +5748,7 @@ public class GA {
 			err().ponDependencias(casos.err());
 			etq().ponDependencias(casos.etq());
 			cod().ponDependencias(casos.cod());
+			llamadasPendientes().ponDependencias(casos.llamadasPendientes());
 			casos.tsh().ponDependencias(tsh());
 			casos.etqh().ponDependencias(etqh());
 			casos.irh().ponDependencias(etqh());
@@ -3011,9 +5765,12 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return casos.cod().val();
+		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return casos.llamadasPendientes().val();
 		}
 
 		private Casos casos;
@@ -3027,6 +5784,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | IDO.err");
 			etq().fijaDescripcion(REGLA + " | IDO.etq");
 			cod().fijaDescripcion(REGLA + " | IDO.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Casos.llamadasPendientes");
 			casos.tsh().fijaDescripcion(REGLA + " | Casos.tsh");
 			casos.etqh().fijaDescripcion(REGLA + " | Casos.etqh");
 			casos.irh().fijaDescripcion(REGLA + " | Casos.irh");
@@ -3045,6 +5804,7 @@ public class GA {
 	 * Casos(1).irh = Casos(0).irh 
 	 * Caso.irh = Casos(0).irh 
 	 * Casos(0).cod =Casos(1).cod || Caso.cod
+	 * Casos(0).llamadasPendientes = Casos(1).llamadasPendientes U Caso.llamadasPendientes
 	 * </code>
 	 */
 	public class CasosR1 extends Casos {
@@ -3090,11 +5850,12 @@ public class GA {
 			err().ponDependencias(casos1.err(), caso.err());
 			cod().ponDependencias(casos1.cod(), caso.cod());
 			etq().ponDependencias(caso.etq());
+			llamadasPendientes().ponDependencias(casos1.llamadasPendientes(),
+					caso.llamadasPendientes());
 		}
 
 		public Integer etq_exp() {
 			return caso.etq().val();
-
 		}
 
 		public Error err_exp() {
@@ -3103,7 +5864,12 @@ public class GA {
 
 		public List<Instruccion> cod_exp() {
 			return concat(casos1.cod().val(), caso.cod().val());
+		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return unionInt(casos1.llamadasPendientes().val(), caso
+					.llamadasPendientes().val());
 		}
 
 		private Casos casos1;
@@ -3124,6 +5890,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | Casos0.err");
 			cod().fijaDescripcion(REGLA + " | Casos0.cod");
 			etq().fijaDescripcion(REGLA + " | Casos0.etq");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Casos0.llamadasPendientes");
 		}
 	}
 
@@ -3140,6 +5908,7 @@ public class GA {
 	 * Casos.etq = Caso.etq 
 	 * Caso.irh = Casos.irh
 	 * Casos.cod = Caso.cod
+	 * Casos.llamadasPendientes = Caso.llamadasPendientes
 	 * </code>
 	 */
 	public class CasosR2 extends Casos {
@@ -3167,6 +5936,7 @@ public class GA {
 			err().ponDependencias(caso.err());
 			cod().ponDependencias(caso.cod());
 			etq().ponDependencias(caso.etq());
+			llamadasPendientes().ponDependencias(caso.llamadasPendientes());
 		}
 
 		public Integer etq_exp() {
@@ -3179,7 +5949,11 @@ public class GA {
 
 		public List<Instruccion> cod_exp() {
 			return caso.cod().val();
+		}
 
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return caso.llamadasPendientes().val();
 		}
 
 		private Caso caso;
@@ -3197,6 +5971,8 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | Casos.err");
 			cod().fijaDescripcion(REGLA + " | Casos.cod");
 			etq().fijaDescripcion(REGLA + " | Casos.etq");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Casos.llamadasPendientes");
 		}
 	}
 
@@ -3214,6 +5990,7 @@ public class GA {
 	 * Instrucciones.etqh =Exp0.etq + 1 
 	 * Caso.etq = Instrucciones.etq + 1 
 	 * Caso.cod = Exp0.cod || ir_f(Instrucciones.etq + 1) || Instrucciones.cod || ir_a(Caso.irh)
+	 * Caso.llamadasPendientes = Instrucciones.llamadasPendientes
 	 * </code>
 	 */
 	public class CasoR1 extends Caso {
@@ -3249,6 +6026,7 @@ public class GA {
 			etq().ponDependencias(insts.etq());
 			err().ponDependencias(insts.err(), exp0.tipo());
 			cod().ponDependencias(exp0.cod(), insts.etq(), insts.cod(), irh());
+			llamadasPendientes().ponDependencias(insts.llamadasPendientes());
 
 		}
 
@@ -3257,7 +6035,7 @@ public class GA {
 		}
 
 		public Error err_exp() {
-			if (exp0.tipo().val() != CatLexica.BOOLEAN) {
+			if (noEsbooleano(exp0.tipo().val())) {
 				Error errExp0 = new Error("Exp0 no es un booleano");
 				return joinErrors(insts.err().val(), errExp0);
 			} else {
@@ -3271,6 +6049,11 @@ public class GA {
 			c = concat(c, insts.cod().val());
 			c = concat(c, ir_a(irh().val()));
 			return c;
+		}
+
+		@Override
+		protected List<Integer> llamadasPendientes_exp() {
+			return insts.llamadasPendientes().val();
 		}
 
 		private Exp0 exp0;
@@ -3289,6 +6072,8 @@ public class GA {
 			etq().fijaDescripcion(REGLA + " | insts.etq");
 			err().fijaDescripcion(REGLA + " | insts.err");
 			cod().fijaDescripcion(REGLA + " | insts.cod");
+			llamadasPendientes().fijaDescripcion(
+					REGLA + " | Caso.llamadasPendientes");
 		}
 
 	}
@@ -3300,11 +6085,13 @@ public class GA {
 	 * 
 	 * Exp1(0).tsh = Exp0.tsh 
 	 * Exp1(1).tsh = Exp0.tsh 
-	 * Exp0.tipo =tipoOpBin(OpComparacion.op,Exp1(0).tipo,Exp1(1).tipo) 
-	 * Exp1(0).etqh =Exp0.etqh 
-	 * Exp1(1).etqh = Exp1(0).etq 
-	 * Exp0.etq = Exp1(1).etq + 1 
-	 * Exp0.cod= Exp1(0).cod || Exp1(1).cod || OpComparacion.cod
+	 * Exp0.tipo =tipoOpBin(OpComparacion.op,Exp1(0).tipo,Exp1(1).tipo)
+	 * Exp0(0).esDesignador = false 
+	 * Exp1(0).etqh = Exp0.etqh
+	 * Exp1(1).etqh = Exp1(0).etq + unoSiCierto(Exp1(0).esDesignador)
+	 * Exp0.etq = Exp1(1).etq + unoSiCierto(Exp1(1).esDesignador) + 1
+	 * Exp0.cod = codigoOpComparacion(Exp1(0).cod, Exp1(1).cod, OpComparacion.cod,
+	 * Exp1(0).esDesignador,Exp1(1).esDesignador)
 	 * </code>
 	 */
 	public class Exp0R1 extends Exp0 {
@@ -3344,19 +6131,23 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-			return concat(exp1_0.cod().val(),
-					concat(exp1_1.cod().val(), opc.cod().val()));
-
+			return codigoOpComparacion(cod().val(), exp1_1.cod().val(), opc
+					.cod().val(), esDesignador().val(), exp1_1.esDesignador()
+					.val());
 		}
 
 		public Integer etq_exp() {
-			return exp1_1.etq().val() + 1;
-
+			return exp1_1.etq().val() + unoSiCierto(esDesignador().val());
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return tipoOpBin(opc.op().val(), exp1_0.tipo().val(), exp1_1.tipo()
 					.val());
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 		private Exp1 exp1_0;
@@ -3388,6 +6179,7 @@ public class GA {
 	 * Exp1.tsh = Exp0.tsh 
 	 * Comprobaci—n de las restricciones contextuales
 	 * Exp0.tipo = Exp1.tipo 
+	 * Exp0.esDesignador = Exp1.esDesignador
 	 * Generaci—n de c—digo
 	 * Exp1.etqh = Exp0.etqh 
 	 * Exp0.etq = Exp1.etq 
@@ -3414,6 +6206,7 @@ public class GA {
 			cod().ponDependencias(exp1.cod());
 			etq().ponDependencias(exp1.etq());
 			tipo().ponDependencias(exp1.tipo());
+			esDesignador().ponDependencias(exp1.esDesignador());
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -3424,11 +6217,17 @@ public class GA {
 			return exp1.etq().val();
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return exp1.tipo().val();
 		}
 
+		@Override
+		protected Boolean esDesignador_exp() {
+			return exp1.esDesignador().val();
+		}
+
 		private Exp1 exp1;
+
 	}
 
 	public class Exp0R2Debug extends Exp0R2 {
@@ -3441,6 +6240,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp0.cod");
 			etq().fijaDescripcion(REGLA + " | exp0.etq");
 			tipo().fijaDescripcion(REGLA + " | exp0.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp0.esDesignador");
 		}
 
 	}
@@ -3481,7 +6281,8 @@ public class GA {
 				}
 
 				public Integer etqh_exp() {
-					return Exp1R1.this.exp1.etq().val();
+					return Exp1R1.this.exp1.etq().val()
+							+ unoSiCierto(Exp1R1.this.esDesignador().val());
 				}
 			});
 			exp1.tsh().ponDependencias(tsh());
@@ -3495,24 +6296,29 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-			return concat(exp1.cod().val(),
-					concat(exp2.cod().val(), opa.cod().val()));
-
+			return codigoOpAditivo(exp1.cod().val(), exp2.cod().val(), opa
+					.cod().val(), exp1.esDesignador().val(), exp2
+					.esDesignador().val());
 		}
 
 		public Integer etq_exp() {
-			return exp2.etq().val() + 1;
+			return exp2.etq().val() + 1
+					+ unoSiCierto(exp2.esDesignador().val());
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return tipoOpBin(opa.op().val(), exp1.tipo().val(), exp2.tipo()
 					.val());
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 		private Exp1 exp1;
 		private Exp2 exp2;
 		private OpAditivo opa;
-
 	}
 
 	public class Exp1R1Debug extends Exp1R1 {
@@ -3527,6 +6333,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp1_0.cod");
 			etq().fijaDescripcion(REGLA + " | exp1_0.etq");
 			tipo().fijaDescripcion(REGLA + " | exp1_0.tipo");
+
 		}
 
 	}
@@ -3536,7 +6343,8 @@ public class GA {
 	 * Exp1 ::= Exp2
 	 * 
 	 * Exp2.tsh = Exp1.tsh 
-	 * Exp1.tipo = Exp2.tipo 
+	 * Exp1.tipo = Exp2.tipo
+	 * Exp1.esDesignador = Exp2.esDesignador 
 	 * Exp2.etqh = Exp1.etqh 
 	 * Exp1.etq = Exp2.etq 
 	 * Exp1.cod = Exp2.cod
@@ -3570,13 +6378,16 @@ public class GA {
 		}
 
 		public Integer etq_exp() {
-
 			return exp2.etq().val();
-
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return exp2.tipo().val();
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return exp2.esDesignador().val();
 		}
 
 		private Exp2 exp2;
@@ -3592,6 +6403,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp1.cod");
 			etq().fijaDescripcion(REGLA + " | exp1.etq");
 			tipo().fijaDescripcion(REGLA + " | exp1.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp1.esDesignador");
 		}
 	}
 
@@ -3602,9 +6414,10 @@ public class GA {
 	 * Exp3.tsh = Exp2(0).tsh 
 	 * Exp2(0).tipo = tipoOpBin(OpMultiplicativo.op,Exp2(1).tipo,Exp3.tipo)
 	 * Exp2(1).etqh = Exp2(0).etqh 
-	 * Exp3.etqh = Exp2(1).etq 
-	 * Exp2(0).etq = Exp3.etq + 1
-	 * Exp2(0).cod = Exp2(1).cod || Exp3.cod || OpMultiplicativo.cod
+	 * Exp3.etqh = Exp2(1).etq + unoSiCierto(Exp2(1).esDesignador) 
+	 * Exp2(0).etq = Exp3.etq + unoSiCierto(Exp3.esDesignador) + 1
+	 * Exp2(0).cod = codigoOpMultiplicativo(Exp2(1).cod, Exp3.cod, OpMultiplicativo.cod,
+	 * Exp2(1).esDesignador,Exp3.esDesignador)
 	 * </code>
 	 */
 	public class Exp2R1 extends Exp2 {
@@ -3638,27 +6451,31 @@ public class GA {
 				}
 
 				public Integer etqh_exp() {
-					return Exp2R1.this.exp2.etq().val();
+					return Exp2R1.this.exp2.etq().val()
+							+ unoSiCierto(Exp2R1.this.exp2.esDesignador().val());
 				}
-
 			});
 		}
 
 		public List<Instruccion> cod_exp() {
-
-			return concat(exp2.cod().val(),
-					concat(exp3.cod().val(), opm.cod().val()));
-
+			return codigoOpMultiplicativo(exp2.cod().val(), exp3.cod().val(),
+					opm.cod().val(), exp2.esDesignador().val(), exp3
+							.esDesignador().val());
 		}
 
 		public Integer etq_exp() {
-			return exp3.etq().val() + 1;
-
+			return exp3.etq().val() + 1
+					+ unoSiCierto(exp3.esDesignador().val());
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return tipoOpBin(opm.op().val(), exp2.tipo().val(), exp3.tipo()
 					.val());
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 		private Exp2 exp2;
@@ -3689,6 +6506,7 @@ public class GA {
 	 * Exp3.tsh = Exp2.tsh 
 	 * Comprobaci—n de las restricciones contextuales 
 	 * Exp2.tipo = Exp3.tipo
+	 * Exp2.esDesignador = Exp3.esDesignador
 	 * Generación de código
 	 * Exp3.etqh = Exp2.etqh
 	 * Exp2.etq = Exp3.etq
@@ -3716,6 +6534,7 @@ public class GA {
 			cod().ponDependencias(exp3.cod());
 			etq().ponDependencias(exp3.etq());
 			tipo().ponDependencias(exp3.tipo());
+			esDesignador().ponDependencias(exp3.esDesignador());
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -3726,11 +6545,16 @@ public class GA {
 			return exp3.etq().val();
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return exp3.tipo().val();
 		}
 
 		private Exp3 exp3;
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return exp3.esDesignador().val();
+		}
 
 	}
 
@@ -3744,6 +6568,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp2.cod");
 			etq().fijaDescripcion(REGLA + " | exp2.etq");
 			tipo().fijaDescripcion(REGLA + " | exp2.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp2.esDesignador");
 		}
 	}
 
@@ -3753,9 +6578,10 @@ public class GA {
 	 * 
 	 * Exp3(1).tsh = Exp3(0).tsh 
 	 * Exp3(0).tipo = tipoOpUn(OpUnario.op,Exp3(1).tipo)
+	 * Exp3(0).esDesignador = false
 	 * Exp3(1).etqh = Exp3(0).etqh
-	 * Exp3(0).etq = Exp3(1).etq + 1 
-	 * Exp3(0).cod = Exp3(1).cod || OpUnario.cod
+	 * Exp3(0).etq = Exp3(1).etq + numeroInstruccionesOpUnario(Exp3(1).esDesignador)
+	 * Exp3(0).cod = codigoOpUnario(Exp3(1).cod, OpUnario.cod, Exp3(1).esDesignador)
 	 * </code>
 	 */
 	public class Exp3R1 extends Exp3 {
@@ -3782,22 +6608,26 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
-			return concat(exp3_1.cod().val(), opu.cod().val());
-
+			return codigoOpUnario(exp3_1.cod().val(), opu.cod().val(), exp3_1
+					.esDesignador().val());
 		}
 
 		public Integer etq_exp() {
-			return exp3_1.etq().val() + 1;
+			return exp3_1.etq().val()
+					+ numeroInstruccionesOpUnario(exp3_1.esDesignador().val());
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return tipoOpUnario(opu.op().val(), exp3_1.tipo().val());
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 		private Exp3 exp3_1;
 		private OpUnario opu;
-
 	}
 
 	public class Exp3R1Debug extends Exp3R1 {
@@ -3819,9 +6649,11 @@ public class GA {
 	 * 
 	 * Exp4.tsh = Exp3.tsh 
 	 * Exp3.tipo = Exp4.tipo 
+	 * Exp3.esDesignador = Exp4.esDesignador
 	 * Exp4.etqh = Exp3.etqh 
 	 * Exp3.etq = Exp4.etq 
 	 * Exp3.cod = Exp4.cod
+	 * 
 	 * </code>
 	 */
 	public class Exp3R2 extends Exp3 {
@@ -3844,22 +6676,28 @@ public class GA {
 			cod().ponDependencias(exp4.cod());
 			etq().ponDependencias(exp4.etq());
 			tipo().ponDependencias(exp4.tipo());
+			esDesignador().ponDependencias(exp4.esDesignador());
 		}
 
 		public List<Instruccion> cod_exp() {
 			return exp4.cod().val();
-
 		}
 
 		public Integer etq_exp() {
 			return exp4.etq().val();
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return exp4.tipo().val();
 		}
 
+		@Override
+		protected Boolean esDesignador_exp() {
+			return exp4.esDesignador().val();
+		}
+
 		private Exp4 exp4;
+
 	}
 
 	public class Exp3R2Debug extends Exp3R2 {
@@ -3872,6 +6710,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp3.cod");
 			etq().fijaDescripcion(REGLA + " | exp3.etq");
 			tipo().fijaDescripcion(REGLA + " | exp3.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp3.esDesignador");
 		}
 
 	}
@@ -3883,6 +6722,7 @@ public class GA {
 	 * Exp4.tipo = boolean 
 	 * Exp4.etq = Exp4.etqh + 1 
 	 * Exp4.cod = apila_true()
+	 * Exp4.esDesignador = false
 	 * </code>
 	 */
 	public class Exp4R1 extends Exp4 {
@@ -3902,8 +6742,14 @@ public class GA {
 
 		}
 
-		public CatLexica tipo_exp() {
-			return CatLexica.BOOLEAN;
+		public ExpTipo tipo_exp() {
+			// TODO exp de tipo false
+			return null;
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 	}
@@ -3943,8 +6789,14 @@ public class GA {
 			return this.etqh().val() + 1;
 		}
 
-		public CatLexica tipo_exp() {
-			return CatLexica.BOOLEAN;
+		public ExpTipo tipo_exp() {
+			// TODO exptipo boolean
+			return null;
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 	}
@@ -3977,15 +6829,21 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(apila_int(num.leeLexema()));
+			return single(apila_int(num.lex()));
 		}
 
 		public Integer etq_exp() {
 			return etqh().val() + 1;
 		}
 
-		public CatLexica tipo_exp() {
-			return CatLexica.INT;
+		public ExpTipo tipo_exp() {
+			// TODO exptipo int
+			return null;
+		}
+
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
 		}
 
 		private Token num;
@@ -4000,52 +6858,74 @@ public class GA {
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 		}
-
 	}
 
 	/**
 	 * <code>
-	 * Exp4 ::= IDEN 
-	 * Exp4.tipo = tipoDe(IDEN.lex,Exp4.tsh) 
-	 * Exp4.etq = Exp4.etqh+ 1 
-	 * Exp4.cod = apila_dir(dirDe(IDEN.lex,Exp4.tsh))
-	 * </code>
+	 * Exp4 ::= Mem
+	 * Propagación de la tabla de símbolos
+	 * Mem.tsh = Exp4.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Exp4.tipo = Mem.tipo
+	 * Exp4.esDesignador = true
+	 * Generación de código
+	 * Mem.etqh = Exp4.etqh
+	 * Exp4.etq = Mem.etq
+	 * Exp4.cod = Mem.cod </code>
 	 */
 	public class Exp4R4 extends Exp4 {
 
-		public Exp4R4(Token iden) {
-			this.iden = iden;
-			tipo().ponDependencias(tsh());
+		public Exp4R4(Mem mem) {
+			super();
+			this.mem = mem;
 			etq().ponDependencias(etqh());
-			cod().ponDependencias(tsh());
+			mem.tsh().ponDependencias(tsh());
+			tipo().ponDependencias(mem.tipo());
+			etq().ponDependencias(mem.etq());
+			cod().ponDependencias(mem.cod());
+			mem.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return Exp4R4.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return Exp4R4.this.etqh().val();
+				}
+			});
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(apila_dir(String.valueOf(dirDe(iden.leeLexema(), this
-					.tsh().val()))));
+			return mem.cod().val();
 		}
 
 		public Integer etq_exp() {
-			return etqh().val() + 1;
-
+			return mem.etq().val();
 		}
 
-		public CatLexica tipo_exp() {
-			return tipoDe(iden.leeLexema(), tsh().val());
+		public ExpTipo tipo_exp() {
+			return mem.tipo().val();
 		}
 
-		private Token iden;
+		@Override
+		protected Boolean esDesignador_exp() {
+			return true;
+		}
 
+		private Mem mem;
 	}
 
 	public class Exp4R4Debug extends Exp4R4 {
-		private final static String REGLA = "Exp4 ::= IDEN";
+		private final static String REGLA = "Exp4 ::= Mem";
 
-		public Exp4R4Debug(Token iden) {
-			super(iden);
+		public Exp4R4Debug(Mem mem) {
+			super(mem);
 			cod().fijaDescripcion(REGLA + " | exp4.cod");
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
+			mem.tsh().fijaDescripcion(REGLA + " | mem.tsh");
 		}
 	}
 
@@ -4055,6 +6935,7 @@ public class GA {
 	 * 
 	 * Exp0.tsh = Exp4.tsh
 	 * Exp4.tipo = Exp0.tipo 
+	 * Exp4.esDesignador = Exp0.esDesignador
 	 * Exp0.etqh = Exp4.etqh 
 	 * Exp4.etq = Exp0.etq 
 	 * Exp4.cod = Exp0.cod
@@ -4091,11 +6972,17 @@ public class GA {
 			return exp0.etq().val();
 		}
 
-		public CatLexica tipo_exp() {
+		public ExpTipo tipo_exp() {
 			return exp0.tipo().val();
 		}
 
+		@Override
+		protected Boolean esDesignador_exp() {
+			return false;
+		}
+
 		private Exp0 exp0;
+
 	}
 
 	public class Exp4R5Debug extends Exp4R5 {
@@ -4108,6 +6995,185 @@ public class GA {
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			cod().fijaDescripcion(REGLA + " | exp4.cod");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Mem ::= IDEN
+	 * Comprobación de las restricciones contextuales
+	 * Mem.tipo = tipoDe(IDEN.lex,Mem.tsh)
+	 * Generación de código
+	 * Mem.etq = Mem.etqh + numeroInstruccionesAccesoVar(IDEN.lex,Mem.tsh)
+	 * Mem.cod = codigoAccesoVar(IDEN.lex,Mem.tsh) </code>
+	 */
+	public class MemR1 extends Mem {
+
+		public MemR1(Token iden) {
+			this.iden = iden;
+			tipo().ponDependencias(tsh());
+			etq().ponDependencias(etqh());
+			cod().ponDependencias(tsh());
+		}
+
+		public List<Instruccion> cod_exp() {
+			return codigoAccesoVar(iden.lex(), tsh().val());
+		}
+
+		public Integer etq_exp() {
+			return etqh().val() + 1;
+
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipoDe(iden.lex(), tsh().val());
+		}
+
+		private Token iden;
+
+	}
+
+	public class MemR1Debug extends MemR1 {
+		private final static String REGLA = "Mem ::= IDEN";
+
+		public MemR1Debug(Token iden) {
+			super(iden);
+			cod().fijaDescripcion(REGLA + " | mem.cod");
+			etq().fijaDescripcion(REGLA + " | mem.etq");
+			tipo().fijaDescripcion(REGLA + " | mem.tipo");
+		}
+	}
+
+	/**
+	 * <code>
+	 * 	Mem ::= Mem.IDEN
+	 * Propagación de la tabla de símbolos
+	 * Mem(1).tsh = Mem(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * Mem(0).tipo = tipoDeSelectorCampo(Mem(1).tipo,IDEN.lex)
+	 * Generación de código
+	 * Mem(1).etqh = Mem(0).etqh
+	 * Mem(0).etq = Mem(1).etq + 2
+	 * Mem(0).cod = Mem(1).cod || apila(desplazamientoDeCampo(Mem(1).tipo,IDEN.lex)) || suma</code>
+	 */
+	public class MemR2 extends Mem {
+
+		public MemR2(Mem mem1, Token iden) {
+			this.mem1 = mem1;
+			this.iden = iden;
+			mem1.tsh().ponDependencias(tsh());
+			mem1.etqh().ponDependencias(etqh());
+			tipo().ponDependencias(mem1.tipo());
+			etq().ponDependencias(mem1.etq());
+			cod().ponDependencias(mem1.cod(), mem1.tipo());
+			mem1.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return MemR2.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return MemR2.this.etqh().val();
+				}
+			});
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> o = concat(mem1.cod().val(),
+					apila(desplazamientoDeCampo(mem1.tipo().val(), iden.lex())));
+			return concat(o, suma());
+		}
+
+		public Integer etq_exp() {
+			return mem1.etq().val() + 2;
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipoDeSelectorCampo(mem1.tipo().val(), iden.lex());
+		}
+
+		private Token iden;
+		private Mem mem1;
+
+	}
+
+	public class MemR2Debug extends MemR2 {
+		private final static String REGLA = "Mem(0) ::= Mem(1).IDEN";
+
+		public MemR2Debug(Mem mem1, Token iden) {
+			super(mem1, iden);
+			cod().fijaDescripcion(REGLA + " | mem(0).cod");
+			etq().fijaDescripcion(REGLA + " | mem(0).etq");
+			tipo().fijaDescripcion(REGLA + " | mem(0).tipo");
+			mem1.tsh().fijaDescripcion(REGLA + " | mem(1).tsh");
+			mem1.etqh().fijaDescripcion(REGLA + " | mem(1).etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Mem ::= Mem^
+	 * Propagación de la tabla de símbolos
+	 * Mem(1).tsh = Mem(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * Mem(0).tipo = tipoDeIndireccion(Mem(1).tipo)
+	 * Generación de código
+	 * Mem(1).etqh = Mem(0).etqh
+	 * Mem(0).etq = Mem(1).etq+1
+	 * Mem(0).cod = Mem(1).cod || apila_ind
+	 */
+	public class MemR3 extends Mem {
+
+		public MemR3(Mem mem1) {
+			this.mem1 = mem1;
+
+			mem1.tsh().ponDependencias(tsh());
+			mem1.etqh().ponDependencias(etqh());
+			tipo().ponDependencias(mem1.tipo());
+			etq().ponDependencias(mem1.etq());
+			cod().ponDependencias(mem1.cod());
+			mem1.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return MemR3.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return MemR3.this.etqh().val();
+				}
+			});
+		}
+
+		public List<Instruccion> cod_exp() {
+			return concat(mem1.cod().val(), apila_ind());
+		}
+
+		public Integer etq_exp() {
+			return mem1.etq().val() + 1;
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipoDeIndireccion(mem1.tipo().val());
+		}
+
+		private Mem mem1;
+
+	}
+
+	public class MemR3Debug extends MemR3 {
+		private final static String REGLA = "Mem(0) ::= Mem(1)^";
+
+		public MemR3Debug(Mem mem1) {
+			super(mem1);
+			cod().fijaDescripcion(REGLA + " | mem(0).cod");
+			etq().fijaDescripcion(REGLA + " | mem(0).etq");
+			tipo().fijaDescripcion(REGLA + " | mem(0).tipo");
+			mem1.tsh().fijaDescripcion(REGLA + " | mem(1).tsh");
+			mem1.etqh().fijaDescripcion(REGLA + " | mem(1).etqh");
 		}
 	}
 
@@ -4501,8 +7567,8 @@ public class GA {
 		return ts.estaEn(cte);
 	}
 
-	public CatLexica tipoDe(String cte, TS ts) {
-		return (CatLexica) ts.valDe(cte).get(0);
+	public ExpTipo tipoDe(String cte, TS ts) {
+		return (ExpTipo) ts.valDe(cte).get(0);
 	}
 
 	public int dirDe(String lex, TS ts) {
@@ -4531,28 +7597,30 @@ public class GA {
 		return result;
 	}
 
-	public CatLexica tipoOpBin(CatLexica op, CatLexica tipo2, CatLexica tipo3) {
-		if (tipo2.equals(tipo3)) {
+	public ExpTipo tipoOpBin(CatLexica op, ExpTipo expTipo, ExpTipo expTipo2) {
+		// TODO valor devuelto como ExpTipo
+		if (expTipo.equals(expTipo2)) {
 			if (op.equals(CatLexica.GT) || op.equals(CatLexica.EQ)
 					|| op.equals(CatLexica.NEQ) || op.equals(CatLexica.GE)
 					|| op.equals(CatLexica.LT) || op.equals(CatLexica.LE))
-				return CatLexica.BOOLEAN;
+				return null;
 			else if (op.equals(CatLexica.MAS) || op.equals(CatLexica.MENOS)
 					|| op.equals(CatLexica.ASTERISCO)
 					|| op.equals(CatLexica.BARRA))
-				return CatLexica.INT;
+				return null;
 
 		}
-		return CatLexica.ERROR;
+		return null;
 	}
 
-	public CatLexica tipoOpUnario(CatLexica op, CatLexica tipo) {
-		if (op.equals(CatLexica.MENOS) && tipo.equals(CatLexica.INT))
-			return tipo;
-		else if (op.equals(CatLexica.NOT) && tipo.equals(CatLexica.BOOLEAN))
-			return tipo;
+	// TODO HACER
+	public ExpTipo tipoOpUnario(CatLexica op, ExpTipo expTipo) {
+		if (op.equals(CatLexica.MENOS) && expTipo.equals(CatLexica.INT))
+			return null;
+		else if (op.equals(CatLexica.NOT) && expTipo.equals(CatLexica.BOOLEAN))
+			return null;
 		else
-			return CatLexica.ERROR;
+			return null;
 	}
 
 	public Instruccion suma() {
@@ -4623,6 +7691,10 @@ public class GA {
 		return Instruccion.nuevaIDesapilaDir(val);
 	}
 
+	public static Instruccion desapila() {
+		return Instruccion.nuevaIDesapila();
+	}
+
 	public Instruccion apila_int(String arg) {
 		return Instruccion.nuevaIApila(arg);
 	}
@@ -4641,6 +7713,10 @@ public class GA {
 
 	public Instruccion ir_a(int ir) {
 		return Instruccion.nuevaIIr_a(ir);
+	}
+	//TODO
+	private List<Instruccion> apila_ind() {	
+		return null;
 	}
 
 	public Error noError() {
@@ -4663,11 +7739,21 @@ public class GA {
 		return ts2.estaEn(iden);
 	}
 
-	private boolean asignacionCorrecta(String leeLexema, TS tsh, CatLexica tipo) {
-		return (tipoDe(leeLexema, tsh).compareTo(tipo) == 0);
+	private boolean asignacionCorrecta(ExpTipo memTipo, ExpTipo expTipo) {
+		// TODO return (tipoDe(leeLexema, tsh).compareTo(tipo) == 0);
+		return false;
 	}
 
 	// TODO NUEVOS METODOS AUXILIARES
+
+	private List<Instruccion> copia() {
+		// instruccioncopia
+		return null;
+	}
+
+	private List<Instruccion> desapila_ind() {
+		return null;
+	}
 
 	private int numeroInstruccionesActivacionProgramaPrincipal() {
 		return 0;
@@ -4709,6 +7795,226 @@ public class GA {
 	}
 
 	private List<ExpTipo> union(List<ExpTipo> val, List<ExpTipo> val2) {
+		// Hace union de conjuntos
+		for (ExpTipo expTipo : val2)
+			if (!val.contains(expTipo))
+				val.add(expTipo);
+
+		return val;
+	}
+
+	private List<Integer> unionInt(List<Integer> val, List<Integer> val2) {
+		// Hace union de conjuntos
+		for (Integer expTipo : val2)
+			if (!val.contains(expTipo))
+				val.add(expTipo);
+
+		return val;
+	}
+
+	private List<Instruccion> programaVacio() {
+		return new LinkedList<Instruccion>();
+	}
+
+	private Error tipoRefIncorrecto(TS ts, ExpTipo tipo) {
+		return null;
+	}
+
+	private List<Instruccion> fijaLlamadasPendientes(
+			List<Instruccion> bloqueCod, List<Integer> list, Integer bloqDirIni) {
+		return null;
+	}
+
+	private TS creaNivel(Atributo<TS> tsh) {
+		return null;
+	}
+
+	private List<ExpTipo> listaExpTipoVacia() {
+		return new LinkedList<ExpTipo>();
+	}
+
+	private List<ExpTipo> aniadeA(List<ExpTipo> params, ExpTipo param) {
+		List<ExpTipo> result = new LinkedList<ExpTipo>(params);
+		result.add(param);
+		return result;
+	}
+
+	private List<ExpTipo> nuevaLista(ExpTipo param) {
+		List<ExpTipo> result = new LinkedList<ExpTipo>();
+		result.add(param);
+		return result;
+	}
+
+	private List<ExpTipo> aChequear(TS val, Atributo<ExpTipo> tipo) {
+		return null;
+	}
+
+	private int tamanioDeTipoRef(TS tsh, String lex) {
+		return tsh.getTamRef(lex);
+	}
+
+	private Error campoDuplicado(String iden, List<ExpTipo> val2) {
+
+		return null;
+	}
+
+	private List<Integer> listaIntegerVacia() {
+		return new LinkedList<Integer>();
+	}
+
+	private Integer numeroInstruccionesFinLlamada() {
+		return null;
+	}
+
+	private boolean llamadaCorrecta(TS ts, String lex, Integer nparams) {
+		return false;
+	}
+
+	private List<Instruccion> codigoFinLlamada(String lex, TS ts, int nInsts) {
+		return null;
+	}
+
+	private List<Integer> direccionSiSaltoIndefinido(String lex, TS ts,
+			Integer paramsEtq) {
+
+		return null;
+	}
+
+	private List<Instruccion> nivelDe(String subProgh, TS ts) {
+
+		return null;
+	}
+
+	private int numeroInstruccionesInicioLlamada() {
+		return 0;
+	}
+
+	private List<Instruccion> codigoInicioLlamada(List<Instruccion> nivelDe) {
+		return null;
+	}
+
+	private int numeroInstruccionesCodigoPaso() {
+		return 0;
+	}
+
+	private Error tipoError(ExpTipo exp) {
+		return null;
+	}
+
+	private boolean parametroCorrecto(String subProg, int nParams,
+			ExpTipo tipo, Boolean designador, TS tsh) {
+		return false;
+	}
+
+	private List<Instruccion> codigoPaso(String val, Integer val2,
+			ExpTipo val3, Boolean val4, TS val5) {
+		return null;
+	}
+
+	private List<Instruccion> codigoAsignacion(List<Instruccion> val,
+			List<Instruccion> val2, Boolean val3) {
+
+		return null;
+	}
+
+	private boolean reservaMemoriaCorrecta(ExpTipo val) {
+		return false;
+	}
+
+	private int tamañoObjetoApuntado(ExpTipo tipo, TS ts) {
+		return 0;
+	}
+
+	private List<Instruccion> reserva(int tamañoObjetoApuntado) {
+
+		return null;
+	}
+
+	private boolean liberaMemoriaCorrecta(ExpTipo val) {
+
+		return false;
+	}
+
+	private List<Instruccion> libera(int tamañoObjetoApuntado) {
+
+		return null;
+	}
+
+	private List<Instruccion> codigoLectura(ExpTipo val) {
+
+		return null;
+	}
+
+	private boolean lecturaCorrecta(ExpTipo val) {
+		return false;
+	}
+
+	private boolean escrituraCorrecta(ExpTipo val) {
+
+		return false;
+	}
+
+	private List<Instruccion> codigoEscritura(ExpTipo val) {
+
+		return null;
+	}
+
+	private boolean noEsbooleano(ExpTipo val) {
+
+		return false;
+	}
+
+	private Integer unoSiCierto(Boolean val) {
+		return val ? 1 : 0;
+	}
+
+	private List<Instruccion> codigoOpComparacion(List<Instruccion> exp1cod,
+			List<Instruccion> exp1_1cod, List<Instruccion> opcod,
+			Boolean exp1EsDesig, Boolean exp1_1EsDesig) {
+		return null;
+	}
+
+	private List<Instruccion> codigoOpAditivo(List<Instruccion> exp1cod,
+			List<Instruccion> exp2cod, List<Instruccion> opcod,
+			Boolean exp1Desig, Boolean exp2Desig) {
+
+		return null;
+	}
+
+	private List<Instruccion> codigoOpMultiplicativo(List<Instruccion> val,
+			List<Instruccion> val2, List<Instruccion> val3, Boolean val4,
+			Boolean val5) {
+		return null;
+	}
+
+	private Integer numeroInstruccionesOpUnario(Boolean val) {
+
+		return null;
+	}
+
+	private List<Instruccion> codigoOpUnario(List<Instruccion> val,
+			List<Instruccion> val2, Boolean val3) {
+
+		return null;
+	}
+
+	private List<Instruccion> codigoAccesoVar(String lex, TS val) {
+
+		return null;
+	}
+
+	private String desplazamientoDeCampo(ExpTipo val, String lex) {
+
+		return null;
+	}
+
+	private ExpTipo tipoDeSelectorCampo(ExpTipo val, String lex) {
+
+		return null;
+	}
+	
+	private ExpTipo tipoDeIndireccion(ExpTipo val) {
+		
 		return null;
 	}
 

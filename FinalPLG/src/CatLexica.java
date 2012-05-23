@@ -190,6 +190,16 @@ public enum CatLexica {
 			return "var";
 		}
 	},
+	PVAR {
+		public String toString() {
+			return "pvar";// PASO DE PARAMETRO POR VARIABLE
+		}
+	},
+	REF {
+		public String toString() {
+			return "ref";// Referencia a un tipo
+		}
+	},
 	ARRAY {
 		public String toString() {
 			return "array";
@@ -219,5 +229,5 @@ public enum CatLexica {
 		public String toString() {
 			return "escribir";
 		}
-	},
+	}
 };

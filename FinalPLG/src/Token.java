@@ -20,7 +20,7 @@ public class Token {
 	      this(-1,-1,categoria,lexema);
 	  }
 
-	public String leeLexema() {
+	public String lex() {
 		return lexema;
 	}
 

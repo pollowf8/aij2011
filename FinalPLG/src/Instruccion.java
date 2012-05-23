@@ -2,7 +2,7 @@ import java.io.Serializable;
 
 abstract public class Instruccion implements Serializable {
 	public enum ICOD {
-		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL
+		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA
 	};
 
 	private static ISuma iSuma = null;
@@ -423,6 +423,26 @@ abstract public class Instruccion implements Serializable {
 			vm.incCP();
 		}
 	}
+	
+	public static class IDesapila extends Instruccion {
+
+		private IDesapila() {
+		
+		}
+
+		public void ejecuta(VM vm) {
+			vm.pop();
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.DESAPILA;
+		}
+
+		public String toString() {
+			return "DESAPILA()";
+		}
+	}
 
 	public static class IDesapilaDir extends Instruccion {
 
@@ -797,6 +817,10 @@ abstract public class Instruccion implements Serializable {
 
 	public static Instruccion nuevaIDesapilaDir(String dir) {
 		return new IDesapilaDir(dir);
+	}
+	
+	public static Instruccion nuevaIDesapila() {
+		return new IDesapila();
 	}
 
 	public static Instruccion nuevaIApilaTrue() {

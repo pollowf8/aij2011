@@ -13,23 +13,25 @@ import java.util.List;
  * 
  * @version 1.0 22/05/2012
  */
-public abstract class ExpTipo  {
-protected abstract CatLexica t();	
+public abstract class ExpTipo {
 	
-	protected abstract Integer tam();
-	
-	//procedimientos
-	protected abstract List<ExpTipo> params();
-	
-	//parametros
-	protected abstract CatLexica modo();
-	
-	//arrays
-	protected abstract ExpTipo tbase();
-	//Para campo
-	protected abstract String id();
-	
-	protected abstract ExpTipo tipo();
-	
-	protected abstract Integer desp();
+	public CatLexica t(){throw new UnsupportedOperationException("t");};
+
+	public abstract Integer tam();
+
+	// procedimientos
+	public abstract List<ExpTipo> params();
+
+	// parametros
+	public abstract CatLexica modo();
+
+	// arrays
+	public abstract ExpTipo tbase();
+
+	// Para campo
+	public abstract String id();
+
+	public abstract ExpTipo tipo();
+
+	public abstract Integer desp();
 }

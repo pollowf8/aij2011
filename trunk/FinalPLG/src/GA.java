@@ -2836,7 +2836,10 @@ public class GA {
 				public TS tsh_exp() {
 					// TODO crear ExpTipo para proc
 					return aniadeSimb(creaNivel(tsh()), DecR3.this.iden.lex(),
-							CatLexica.PROC, null, -1, nivelh().val() + 1);
+							CatLexica.PROC, ExpTipo.nuevaExpTipoProc(
+									CatLexica.PROC, DecR3.this.paramsForms
+											.params().val()), -1, nivelh()
+									.val() + 1);
 				}
 
 				@Override
@@ -2889,7 +2892,8 @@ public class GA {
 
 		protected ExpTipo tipo_exp() {
 			// TODO como implementar ExpTipo
-			return null;
+			return ExpTipo.nuevaExpTipoProc(CatLexica.PROC, paramsForms
+					.params().val());
 		}
 
 		protected final Integer fila_exp() {
@@ -3393,7 +3397,8 @@ public class GA {
 		@Override
 		protected ExpTipo param_exp() {
 			// TODO crear Expresion de tipo
-			return null;
+			return ExpTipo
+					.nuevaExpTipoParam(tipo.tipo().val(), CatLexica.VALOR);
 		}
 
 		private Token iden;
@@ -3489,7 +3494,7 @@ public class GA {
 		@Override
 		protected ExpTipo param_exp() {
 			// TODO crear Expresion de tipo
-			return null;
+			return ExpTipo.nuevaExpTipoParam(tipo.tipo().val(), CatLexica.VAR);
 		}
 
 		private Token iden;
@@ -3529,7 +3534,7 @@ public class GA {
 		@Override
 		public ExpTipo tipo_exp() {
 			// TODO crea expr tipo de int
-			return null;
+			return ExpTipo.nuevaExpTipoInt();
 		}
 
 		@Override
@@ -3572,7 +3577,7 @@ public class GA {
 		@Override
 		public ExpTipo tipo_exp() {
 			// TODO crea expr tipo de boolean
-			return null;
+			return ExpTipo.nuevaExpTipoBoolean();
 		}
 
 		@Override
@@ -3609,8 +3614,9 @@ public class GA {
 	 */
 	public class TipoR3 extends Tipo {
 
-		public TipoR3(Tipo tipo_1) {
+		public TipoR3(Token num, Tipo tipo_1) {
 			super();
+			this.NUM = num;
 			this.tipo_1 = tipo_1;
 			tipo_1.tsh().ponDependencias(tsh());
 			err().ponDependencias(tipo_1.err(), tipo_1.tsh());
@@ -3627,7 +3633,8 @@ public class GA {
 		@Override
 		public ExpTipo tipo_exp() {
 			// TODO crea expr tipo de array
-			return null;
+			return ExpTipo.nuevaExpTipoArray(CatLexica.ARRAY, tipo_1.tipo()
+					.val(), tipo_1.tipo().val().tam() * aEntero(NUM.lex()));
 		}
 
 		@Override
@@ -3642,13 +3649,14 @@ public class GA {
 		}
 
 		private Tipo tipo_1;
+		private Token NUM;
 	}
 
 	public class TipoR3Debug extends TipoR3 {
 		private final static String REGLA = "Tipo(0) ::= tabla [NUM] de Tipo(1)";
 
-		public TipoR3Debug(Tipo tipo_1) {
-			super(tipo_1);
+		public TipoR3Debug(Token NUM, Tipo tipo_1) {
+			super(NUM, tipo_1);
 			tipo_1.tsh().fijaDescripcion(REGLA + " | tipo(1).tsh");
 			err().fijaDescripcion(REGLA + " | tipo(0).err");
 			refsAChequear().fijaDescripcion(REGLA + " | tipo(0).refsAChequear");
@@ -3687,7 +3695,8 @@ public class GA {
 		@Override
 		public ExpTipo tipo_exp() {
 			// TODO crea expr tipo de registro
-			return null;
+			return ExpTipo.nuevaExpTipoRegistro(CatLexica.REG, campos.campos()
+					.val(), campos.tam().val());
 		}
 
 		@Override
@@ -3789,14 +3798,14 @@ public class GA {
 		public TipoR6(Token iden) {
 			super();
 			this.iden = iden.lex();
-
 		}
 
 		@Override
 		public ExpTipo tipo_exp() {
 			// TODO crea expr tipo ref
 			// Usar tamanioDeTipoRef(tsh().val(),iden);
-			return null;
+			return ExpTipo.nuevaExpTipoRef(CatLexica.REF, iden,
+					tamanioDeTipoRef(tsh().val(), iden));
 		}
 
 		@Override
@@ -3863,7 +3872,7 @@ public class GA {
 			tam().ponDependencias(campos_1.tam(), campo.tam());
 			campos().ponDependencias(campos_1.campos(), campo.campo());
 			err().ponDependencias(campos_1.err(), campo.iden(),
-					campos_1.campos());// TODO?Campos_1.campos?
+					campos_1.campos());
 			refsAChequear().ponDependencias(campos_1.refsAChequear(),
 					campo.refsAChequear());
 
@@ -4061,7 +4070,8 @@ public class GA {
 		@Override
 		protected ExpTipo campo_exp() {
 			// TODO como generar exp de tipo
-			return null;
+			return ExpTipo.nuevaExpTipoCampo(iden.lex(), tipo.tipo().val(),
+					desplazamientoh().val());
 		}
 
 		private Token iden;
@@ -6743,8 +6753,8 @@ public class GA {
 		}
 
 		public ExpTipo tipo_exp() {
-			// TODO exp de tipo false
-			return null;
+			// TODO exp de tipo true
+			return ExpTipo.nuevaExpTipoBoolean();
 		}
 
 		@Override
@@ -6791,7 +6801,7 @@ public class GA {
 
 		public ExpTipo tipo_exp() {
 			// TODO exptipo boolean
-			return null;
+			return ExpTipo.nuevaExpTipoBoolean();
 		}
 
 		@Override
@@ -6838,7 +6848,7 @@ public class GA {
 
 		public ExpTipo tipo_exp() {
 			// TODO exptipo int
-			return null;
+			return ExpTipo.nuevaExpTipoInt();
 		}
 
 		@Override
@@ -7012,7 +7022,7 @@ public class GA {
 		public MemR1(Token iden) {
 			this.iden = iden;
 			tipo().ponDependencias(tsh());
-			etq().ponDependencias(etqh());
+			etq().ponDependencias(etqh(), tsh());
 			cod().ponDependencias(tsh());
 		}
 
@@ -7714,8 +7724,9 @@ public class GA {
 	public Instruccion ir_a(int ir) {
 		return Instruccion.nuevaIIr_a(ir);
 	}
-	//TODO
-	private List<Instruccion> apila_ind() {	
+
+	// TODO
+	private List<Instruccion> apila_ind() {
 		return null;
 	}
 
@@ -8012,10 +8023,14 @@ public class GA {
 
 		return null;
 	}
-	
+
 	private ExpTipo tipoDeIndireccion(ExpTipo val) {
-		
+
 		return null;
+	}
+
+	private Integer aEntero(String lex) {
+		return Integer.parseInt(lex);
 	}
 
 }

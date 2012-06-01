@@ -1,5 +1,15 @@
-Como implementar ExpTipo en si, la clase y como tratarlo cuando es atributo
-Como el resto, que haya que calcularlo, y añadirlo a dependencias en todos laos
-O como esta ahora que se calcula automaticamente
+Como tratar ExpTipo cuando es atributo
+Como el resto, que haya que calcularlo, y añadirlo a dependencias en todos laos <--creo que asi
+O como la anterior que se calcula automaticamente
 
 refsAChequear sera una lista de ExpTipo?¿
+
+funciones semanticas hechas con dudas
+parametroCorrecto()
+creaNivel()
+tipoRefIncorrecto()
+tiposNoDeclarados()
+aChequear()
+nivelDe()
+tamañoObjetoApuntado()
+codigoAsignacion()

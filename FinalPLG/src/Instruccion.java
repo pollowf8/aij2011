@@ -2,7 +2,7 @@ import java.io.Serializable;
 
 abstract public class Instruccion implements Serializable {
 	public enum ICOD {
-		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA
+		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA,IESCRITURA, ILECTURA
 	};
 
 	private static ISuma iSuma = null;
@@ -423,11 +423,11 @@ abstract public class Instruccion implements Serializable {
 			vm.incCP();
 		}
 	}
-	
+
 	public static class IDesapila extends Instruccion {
 
 		private IDesapila() {
-		
+
 		}
 
 		public void ejecuta(VM vm) {
@@ -507,7 +507,8 @@ abstract public class Instruccion implements Serializable {
 		private int dir;
 
 	}
-	
+
+	//la cima le dice el origen, la subcima el destino, y moviendo tamMover posiciones
 	public static class IMueve extends Instruccion {
 
 		private IMueve(String dir) {
@@ -521,9 +522,9 @@ abstract public class Instruccion implements Serializable {
 		public void ejecuta(VM vm) {
 			VM.PValue origen = vm.pop();
 			VM.PValue destino = vm.pop();
-			for (int i = 0; i < tamMover-1; i++) {
-				Integer a=vm.getValMem(origen.asInt()+i);
-				vm.addValMem(destino.asInt()+i, a);	
+			for (int i = 0; i < tamMover - 1; i++) {
+				Integer a = vm.getValMem(origen.asInt() + i);
+				vm.addValMem(destino.asInt() + i, a);
 			}
 			vm.incCP();
 		}
@@ -543,20 +544,23 @@ abstract public class Instruccion implements Serializable {
 		private int tamMover;
 
 	}
-	
+
+	// Interpreta la cima de la pila como una direccion, la subcima como un
+	// valor, y se lleva el valor a la direccion de memoria indicada
 	public static class IDesapilaInd extends Instruccion {
 
-		private IDesapilaInd(String dir) {
-			try {
-				this.dir = Integer.valueOf(dir).intValue();
-			} catch (NumberFormatException e) {
-				this.dir = 0;
-			}
+		private IDesapilaInd() {
+//			try {
+//				this.dir = Integer.valueOf(dir).intValue();
+//			} catch (NumberFormatException e) {
+//				this.dir = 0;
+//			}
 		}
 
 		public void ejecuta(VM vm) {
+			VM.PValue dir = vm.pop();
 			VM.PValue op1 = vm.pop();
-			vm.addValMem(dir, op1.asInt());
+			vm.addValMem(dir.asInt(), op1.asInt());
 			vm.incCP();
 		}
 
@@ -564,30 +568,34 @@ abstract public class Instruccion implements Serializable {
 			return ICOD.DESAPILA_IND;
 		}
 
-		public int arg1() {
-			return dir;
-		}
+//		public int arg1() {
+//			return dir;
+//		}
 
 		public String toString() {
-			return "DESAPILA_IND(" + dir + ")";
+			//return "DESAPILA_IND(" + dir + ")";
+			return "DESAPILA_IND()";
 		}
 
-		private int dir;
+		//private int dir;
 
 	}
-	
+
+	// Interpreta la cima de la pila como una direccion, la desapila y se trae
+	// de memoria el valor referenciado por ella
 	public static class IApilaInd extends Instruccion {
 
-		private IApilaInd(String dir) {
-			try {
-				this.dir = Integer.valueOf(dir).intValue();
-			} catch (NumberFormatException e) {
-				this.dir = 0;
-			}
+		private IApilaInd() {
+//			try {
+//				this.dir = Integer.valueOf(dir).intValue();
+//			} catch (NumberFormatException e) {
+//				this.dir = 0;
+//			}
 		}
 
 		public void ejecuta(VM vm) {
-			Integer a = vm.getValMem(dir);
+			VM.PValue dir = vm.pop();
+			Integer a = vm.getValMem(dir.asInt());
 			vm.push(new VM.IntPValue(a));
 			vm.incCP();
 		}
@@ -596,15 +604,16 @@ abstract public class Instruccion implements Serializable {
 			return ICOD.APILA_IND;
 		}
 
-		public int arg1() {
-			return dir;
-		}
+//		public int arg1() {
+//			return dir;
+//		}
 
 		public String toString() {
-			return "APILA_IND(" + dir + ")";
+		//	return "APILA_IND(" + dir + ")";
+			return "APILA_IND()";
 		}
 
-		private int dir;
+		//private int dir;
 
 	}
 
@@ -649,7 +658,7 @@ abstract public class Instruccion implements Serializable {
 
 		public void ejecuta(VM vm) {
 			Integer poslibre = vm.getPrimeraPosLibre();
-			//TODO RESERVA?¿
+			// TODO RESERVA?¿
 			vm.push(new VM.IntPValue(poslibre));
 			vm.incCP();
 		}
@@ -669,6 +678,7 @@ abstract public class Instruccion implements Serializable {
 		private int tamReserva;
 
 	}
+
 	public static class IDel extends Instruccion {
 
 		private IDel(String tamReserva) {
@@ -681,7 +691,7 @@ abstract public class Instruccion implements Serializable {
 
 		public void ejecuta(VM vm) {
 			VM.PValue posinicio = vm.pop();
-			//TODO LIBREA?¿
+			// TODO LIBERA?¿
 			vm.incCP();
 		}
 
@@ -700,7 +710,68 @@ abstract public class Instruccion implements Serializable {
 		private int tamReserva;
 
 	}
+	//TODO por hacer estas instruccion
+	public static class ILectura extends Instruccion {
+
+		private ILectura(String tamReserva) {
+			try {
+				this.tamReserva = Integer.valueOf(tamReserva).intValue();
+			} catch (NumberFormatException e) {
+				this.tamReserva = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			VM.PValue posinicio = vm.pop();
+			// TODO LIBERA?¿
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.ILECTURA;
+		}
+
+		public int arg1() {
+			return tamReserva;
+		}
+
+		public String toString() {
+			return "ILECTURA(" + tamReserva + ")";
+		}
+
+		private int tamReserva;
+	}
 	
+	//TODO por hacer esta instruccion
+	public static class IEscritura extends Instruccion {
+
+		private IEscritura(String tamReserva) {
+			try {
+				this.tamReserva = Integer.valueOf(tamReserva).intValue();
+			} catch (NumberFormatException e) {
+				this.tamReserva = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			
+		}
+
+		public ICOD ci() {
+			return ICOD.IESCRITURA;
+		}
+
+		public int arg1() {
+			return tamReserva;
+		}
+
+		public String toString() {
+			return "IESCRITURA(" + tamReserva + ")";
+		}
+
+		private int tamReserva;
+	}
+
 	public static Instruccion nuevaIOr() {
 		if (iOr == null) {
 			iOr = new IOr();
@@ -818,7 +889,7 @@ abstract public class Instruccion implements Serializable {
 	public static Instruccion nuevaIDesapilaDir(String dir) {
 		return new IDesapilaDir(dir);
 	}
-	
+
 	public static Instruccion nuevaIDesapila() {
 		return new IDesapila();
 	}
@@ -833,5 +904,21 @@ abstract public class Instruccion implements Serializable {
 
 	public static Instruccion nuevaIApilaInt(String val) {
 		return new IApilaInt(val);
+	}
+	
+	public static Instruccion nuevaIApilaInd() {
+		return new IApilaInd();
+	}
+	public static Instruccion nuevaIDesApilaInd() {
+		return new IDesapilaInd();
+	}
+	public static Instruccion nuevaIMueve(String tamMover) {
+		return new IMueve(tamMover);
+	}
+	public static Instruccion nuevaINew(String tamReserva) {
+		return new INew(tamReserva);
+	}
+	public static Instruccion nuevaIDel(String tamReserva) {
+		return new IDel(tamReserva);
 	}
 }

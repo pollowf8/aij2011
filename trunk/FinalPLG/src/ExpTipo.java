@@ -22,6 +22,10 @@ public abstract class ExpTipo {
 		throw new UnsupportedOperationException("tam");
 	};
 
+	public ExpTipo tipo() {
+		throw new UnsupportedOperationException("tipo");
+	};
+	
 	// procedimientos
 	public List<ExpTipo> params() {
 		throw new UnsupportedOperationException("params");
@@ -37,19 +41,31 @@ public abstract class ExpTipo {
 		throw new UnsupportedOperationException("tbase");
 	};
 
-	// Para campo
+	//Para registros
+	public List<ExpTipo> campos() {
+		throw new UnsupportedOperationException("campos");
+	};
+	// Para campo de registros
 	public String id() {
 		throw new UnsupportedOperationException("id");
 	};
-
-	public ExpTipo tipo() {
-		throw new UnsupportedOperationException("tipo");
-	};
-
 	public Integer desp() {
 		throw new UnsupportedOperationException("desp");
 	};
 
+	public static class ExpTipoError extends ExpTipo {
+		private ExpTipoError() {
+		}
+
+		public CatLexica t() {
+			return CatLexica.ERROR;
+		}
+
+		public String toString() {
+			return "<t:ERROR>";
+		}
+	}
+	
 	public static class ExpTipoInt extends ExpTipo {
 		private ExpTipoInt() {
 		}
@@ -178,11 +194,11 @@ public abstract class ExpTipo {
 		public CatLexica t() {
 			return reg;
 		}
-
+		@Override
 		public Integer tam() {
 			return tam;
 		}
-
+		@Override
 		public List<ExpTipo> campos() {
 			return campos;
 		}
@@ -247,7 +263,37 @@ public abstract class ExpTipo {
 		private CatLexica proc;
 		private List<ExpTipo> params;
 	}
+	public static class ExpTipoPuntero extends ExpTipo {
+		private ExpTipoPuntero(CatLexica puntero, ExpTipo tbase) {
+			this.puntero = puntero;
+			this.tbase = tbase;
+		}
 
+		@Override
+		public CatLexica t() {
+			return puntero;
+		}
+
+		public Integer tam() {
+			return 1;
+		}
+
+		public ExpTipo tbase() {
+			return tbase;
+		}
+
+		public String toString() {
+			return "<t:" + puntero + ", tbase:" + tbase + ",tam:" + 1 + ">";
+		}
+
+		private CatLexica puntero;
+		private ExpTipo tbase;
+	}
+
+	public static ExpTipo nuevaExpTipoError() {
+		return new ExpTipoError();
+	}
+	
 	public static ExpTipo nuevaExpTipoInt() {
 		return new ExpTipoInt();
 	}
@@ -276,6 +322,9 @@ public abstract class ExpTipo {
 	public static ExpTipo nuevaExpTipoArray(CatLexica array, ExpTipo tbase,
 			int tam) {
 		return new ExpTipoArray(array, tbase, tam);
+	}
+	public static ExpTipo nuevaExpTipoPuntero(CatLexica puntero, ExpTipo tbase) {
+		return new ExpTipoPuntero(puntero, tbase);
 	}
 
 	public static ExpTipo nuevaExpTipoProc(CatLexica proc, List<ExpTipo> params) {

@@ -1,6 +1,8 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Union;
 
@@ -2891,7 +2893,6 @@ public class GA {
 		}
 
 		protected ExpTipo tipo_exp() {
-			// TODO como implementar ExpTipo
 			return ExpTipo.nuevaExpTipoProc(CatLexica.PROC, paramsForms
 					.params().val());
 		}
@@ -3350,8 +3351,10 @@ public class GA {
 					return ParamFormalR1.this.tsh().val();
 				}
 			});
-
-			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			tam().ponDependencias(tipo.tipo());
+			param().ponDependencias(tipo.tipo());
+			tipo().ponDependencias(tipo.tipo());
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?tipo.tipo()
 			// ni clase ni tipo ni tam ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
@@ -3396,7 +3399,6 @@ public class GA {
 
 		@Override
 		protected ExpTipo param_exp() {
-			// TODO crear Expresion de tipo
 			return ExpTipo
 					.nuevaExpTipoParam(tipo.tipo().val(), CatLexica.VALOR);
 		}
@@ -3410,6 +3412,9 @@ public class GA {
 
 		public ParamFormalR1Debug(Tipo tipo, Token iden) {
 			super(tipo, iden);
+			tam().fijaDescripcion(REGLA + " | ParametroFormal.tam");
+			param().fijaDescripcion(REGLA + " | ParametroFormal.param");
+			tipo().fijaDescripcion(REGLA + " | ParametroFormal.tipo");
 			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
 			// ni clase ni tipo ni tam ni iden dependencias creo
 			refsAChequear().fijaDescripcion(
@@ -3448,8 +3453,10 @@ public class GA {
 				}
 			});
 
-			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
-			// ni clase ni tipo ni tam ni iden dependencias creo
+			param().ponDependencias(tipo.tipo());
+			tipo().ponDependencias(tipo.tipo());
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?tipo.tipo()
+			// ni clase ni tam ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -3493,7 +3500,6 @@ public class GA {
 
 		@Override
 		protected ExpTipo param_exp() {
-			// TODO crear Expresion de tipo
 			return ExpTipo.nuevaExpTipoParam(tipo.tipo().val(), CatLexica.VAR);
 		}
 
@@ -3506,8 +3512,10 @@ public class GA {
 
 		public ParamFormalR2Debug(Tipo tipo, Token iden) {
 			super(tipo, iden);
+			param().fijaDescripcion(REGLA + " | ParametroFormal.param");
+			tipo().fijaDescripcion(REGLA + " | ParametroFormal.tipo");
 			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
-			// ni clase ni tipo ni tam ni iden dependencias creo
+			// ni clase ni tam ni iden dependencias creo
 			refsAChequear().fijaDescripcion(
 					REGLA + " | ParametroFormal.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
@@ -3533,7 +3541,6 @@ public class GA {
 
 		@Override
 		public ExpTipo tipo_exp() {
-			// TODO crea expr tipo de int
 			return ExpTipo.nuevaExpTipoInt();
 		}
 
@@ -3576,7 +3583,6 @@ public class GA {
 
 		@Override
 		public ExpTipo tipo_exp() {
-			// TODO crea expr tipo de boolean
 			return ExpTipo.nuevaExpTipoBoolean();
 		}
 
@@ -3618,9 +3624,11 @@ public class GA {
 			super();
 			this.NUM = num;
 			this.tipo_1 = tipo_1;
-			tipo_1.tsh().ponDependencias(tsh());
-			err().ponDependencias(tipo_1.err(), tipo_1.tsh());
+			tipo().ponDependencias(tipo_1.tipo());
+			err().ponDependencias(tipo_1.err(), tsh(), tipo_1.tipo());// TODO
+																		// tipo.tipo?
 			refsAChequear().ponDependencias(tipo_1.refsAChequear());
+			tipo_1.tsh().ponDependencias(tsh());
 			tipo_1.registraCtx(new TipoCtx() {
 
 				@Override
@@ -3632,7 +3640,6 @@ public class GA {
 
 		@Override
 		public ExpTipo tipo_exp() {
-			// TODO crea expr tipo de array
 			return ExpTipo.nuevaExpTipoArray(CatLexica.ARRAY, tipo_1.tipo()
 					.val(), tipo_1.tipo().val().tam() * aEntero(NUM.lex()));
 		}
@@ -3657,9 +3664,10 @@ public class GA {
 
 		public TipoR3Debug(Token NUM, Tipo tipo_1) {
 			super(NUM, tipo_1);
-			tipo_1.tsh().fijaDescripcion(REGLA + " | tipo(1).tsh");
-			err().fijaDescripcion(REGLA + " | tipo(0).err");
-			refsAChequear().fijaDescripcion(REGLA + " | tipo(0).refsAChequear");
+			tipo().fijaDescripcion(REGLA + " | Tipo(0).tipo");
+			tipo_1.tsh().fijaDescripcion(REGLA + " | Tipo(1).tsh");
+			err().fijaDescripcion(REGLA + " | Tipo(0).err");
+			refsAChequear().fijaDescripcion(REGLA + " | Tipo(0).refsAChequear");
 		}
 	}
 
@@ -3680,9 +3688,6 @@ public class GA {
 		public TipoR4(Campos campos) {
 			super();
 			this.campos = campos;
-			campos.tsh().ponDependencias(tsh());
-			err().ponDependencias(campos.err());
-			refsAChequear().ponDependencias(campos.refsAChequear());
 			campos.registraCtx(new CamposCtx() {
 
 				@Override
@@ -3690,11 +3695,15 @@ public class GA {
 					return TipoR4.this.tsh().val();
 				}
 			});
+			tipo().ponDependencias(campos.campos(), campos.tam());// TODO
+																	// necesario?
+			campos.tsh().ponDependencias(tsh());
+			err().ponDependencias(campos.err());
+			refsAChequear().ponDependencias(campos.refsAChequear());
 		}
 
 		@Override
 		public ExpTipo tipo_exp() {
-			// TODO crea expr tipo de registro
 			return ExpTipo.nuevaExpTipoRegistro(CatLexica.REG, campos.campos()
 					.val(), campos.tam().val());
 		}
@@ -3718,8 +3727,9 @@ public class GA {
 		public TipoR4Debug(Campos campos) {
 			super(campos);
 			campos.tsh().fijaDescripcion(REGLA + " | Campos.tsh");
-			err().fijaDescripcion(REGLA + " | tipo(0).err");
+			err().fijaDescripcion(REGLA + " | Tipo.err");
 			refsAChequear().fijaDescripcion(REGLA + " | tipo(0).refsAChequear");
+			tipo().fijaDescripcion(REGLA + " | Tipo.tipo");
 		}
 	}
 
@@ -3740,10 +3750,12 @@ public class GA {
 		public TipoR5(Tipo tipo_1) {
 			super();
 			this.tipo_1 = tipo_1;
+			tipo().ponDependencias(tipo_1.tipo());// TODO tipo o no
 			tipo_1.tsh().ponDependencias(tsh());
 			err().ponDependencias(tipo_1.err());
-			refsAChequear().ponDependencias(tipo_1.refsAChequear(), tsh());// TODO
-																			// tipo_1.tipo()?
+			refsAChequear().ponDependencias(tipo_1.refsAChequear(), tsh(),
+					tipo_1.tipo());// TODO
+			// tipo_1.tipo()?
 			tipo_1.registraCtx(new TipoCtx() {
 
 				@Override
@@ -3755,8 +3767,8 @@ public class GA {
 
 		@Override
 		public ExpTipo tipo_exp() {
-			// TODO crea expr tipo puntero a tipo
-			return null;
+			return ExpTipo.nuevaExpTipoPuntero(CatLexica.PUNTERO, tipo_1.tipo()
+					.val());
 		}
 
 		@Override
@@ -3767,7 +3779,7 @@ public class GA {
 		@Override
 		protected List<ExpTipo> refsAChequear_exp() {
 			return union(tipo_1.refsAChequear().val(),
-					aChequear(tsh().val(), tipo_1.tipo()));
+					aChequear(tsh().val(), tipo_1.tipo().val()));
 		}
 
 		private Tipo tipo_1;
@@ -3778,6 +3790,7 @@ public class GA {
 
 		public TipoR5Debug(Tipo tipo_1) {
 			super(tipo_1);
+			tipo().fijaDescripcion(REGLA + " | Tipo(0).tipo");
 			tipo_1.tsh().fijaDescripcion(REGLA + " | Tipo(1).tsh");
 			err().fijaDescripcion(REGLA + " | Tipo(0).err");
 			refsAChequear().fijaDescripcion(REGLA + " | Tipo(0).refsAChequear");
@@ -3798,12 +3811,11 @@ public class GA {
 		public TipoR6(Token iden) {
 			super();
 			this.iden = iden.lex();
+			tipo().ponDependencias(tsh());
 		}
 
 		@Override
 		public ExpTipo tipo_exp() {
-			// TODO crea expr tipo ref
-			// Usar tamanioDeTipoRef(tsh().val(),iden);
 			return ExpTipo.nuevaExpTipoRef(CatLexica.REF, iden,
 					tamanioDeTipoRef(tsh().val(), iden));
 		}
@@ -3827,6 +3839,7 @@ public class GA {
 		public TipoR6Debug(Token iden) {
 			super(iden);
 			// TODO tipo si es atrib k calcular
+			tipo().fijaDescripcion(REGLA + " | Tipo.tipo");
 		}
 	}
 
@@ -4031,9 +4044,9 @@ public class GA {
 					return CampoR1.this.tsh().val();
 				}
 			});
-
-			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
-			// tam().ponDependencias(tipo.tipo());//?¿
+			campo().ponDependencias(desplazamientoh(), tipo.tipo());// TODO?tipo.tipo()
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// ?tipo.tipo()
+			tam().ponDependencias(tipo.tipo());// ?¿
 			// ni clase ni tipo ni tam ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
@@ -4069,7 +4082,6 @@ public class GA {
 
 		@Override
 		protected ExpTipo campo_exp() {
-			// TODO como generar exp de tipo
 			return ExpTipo.nuevaExpTipoCampo(iden.lex(), tipo.tipo().val(),
 					desplazamientoh().val());
 		}
@@ -4903,8 +4915,7 @@ public class GA {
 	 * ListaParametrosReales.etqh = ParametrosReales.etqh + numeroInstruccionesInicioLlamada()
 	 * ParametrosReales.etq = ListaParametrosReales.etq + 1
 	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,
-	 * ParametrosReales.tsh)) ||
-	 * ListaParametrosReales.cod || desapila() </code>
+	 * ParametrosReales.tsh)) || ListaParametrosReales.cod || desapila() </code>
 	 */
 	public class ParamsRealesR1 extends ParamsReales {
 
@@ -5035,14 +5046,14 @@ public class GA {
 	 * ListaParametrosReales(1).tsh = ListaParametrosReales(0).tsh
 	 * Exp0.tsh = ListaParametrosReales(0).tsh
 	 * Comprobación de las restricciones contextuales
-	 * ListaParametrosReales(0).error = ListaParametrosReales(1).error or
-	 * tipoError(Exp0.tipo) or
-	 * not parametroCorrecto(ListaParametrosReales(0).subprogramah,
-	 * ListaParametrosReales(1).nparams + 1,
-	 * Exp0.tipo, Exp0.esDesignador,
-	 * ListaParametrosReales(0).tsh)
+	 * ListaParametrosReales(0).error = ListaParametrosReales(1).error or tipoError(Exp0.tipo) 
+	 * or not parametroCorrecto(ListaParametrosReales(0).subprogramah,ListaParametrosReales(1).nparams + 1,
+	 * Exp0.tipo, Exp0.esDesignador,ListaParametrosReales(0).tsh)
 	 * ListaParametrosReales(1).subprogramah = ListaParametrosReales(0).subprogramah
 	 * ListaParametrosReales(0).nparams = ListaParametrosReales(1).nparams+1
+	 * ListaParametrosReales(0).cod = ListaParametrosReales(1).cod || copia() || Exp0.cod ||
+	 * codigoPaso(ListaParametrosReales(0).subprogramah, ListaParametrosReales(1).nparams, Exp0.tipo, Exp0.esDesignador,
+	 * ListaParametrosReales(0).tsh)
 	 */
 	public class ListaParamsRealesR1 extends ListaParamsReales {
 
@@ -5082,7 +5093,7 @@ public class GA {
 			// TODO añadir?exp0.tipo(),exp0.esDesignador() en estas 2
 			err().ponDependencias(listaParamsReales_1.err(), exp0.tipo(),
 					subProgramah(), listaParamsReales_1.nparams(), tsh());
-			cod().ponDependencias(subProgramah(), tsh(),
+			cod().ponDependencias(subProgramah(), tsh(), exp0.tipo(),
 					listaParamsReales_1.cod(), exp0.cod(), subProgramah(),
 					listaParamsReales_1.nparams(), tsh());
 			nparams().ponDependencias(listaParamsReales_1.nparams());
@@ -5311,7 +5322,8 @@ public class GA {
 
 		@Override
 		protected List<Integer> llamadasPendientes_exp() {
-			// TODO NO USADO
+			// TODO NO USADO ni aqui ni en ninguna produccion que viene de inst,
+			// pero se hace asi para no crear una nueva clase para cada una
 			return null;
 		}
 
@@ -5392,7 +5404,6 @@ public class GA {
 
 		@Override
 		protected List<Integer> llamadasPendientes_exp() {
-			// TODO NO USADO
 			return null;
 		}
 
@@ -5471,7 +5482,6 @@ public class GA {
 
 		@Override
 		protected List<Integer> llamadasPendientes_exp() {
-			// TODO NO USADO
 			return null;
 		}
 
@@ -5550,7 +5560,6 @@ public class GA {
 
 		@Override
 		protected List<Integer> llamadasPendientes_exp() {
-			// TODO NO USADO
 			return null;
 		}
 
@@ -5608,7 +5617,7 @@ public class GA {
 		}
 
 		public Integer etq_exp() {
-			return exp0.etq().val() + 1;// TODO
+			return exp0.etq().val() + 1;
 		}
 
 		public Error err_exp() {
@@ -5628,7 +5637,6 @@ public class GA {
 
 		@Override
 		protected List<Integer> llamadasPendientes_exp() {
-			// TODO NO USADO
 			return null;
 		}
 
@@ -6753,7 +6761,6 @@ public class GA {
 		}
 
 		public ExpTipo tipo_exp() {
-			// TODO exp de tipo true
 			return ExpTipo.nuevaExpTipoBoolean();
 		}
 
@@ -6800,7 +6807,6 @@ public class GA {
 		}
 
 		public ExpTipo tipo_exp() {
-			// TODO exptipo boolean
 			return ExpTipo.nuevaExpTipoBoolean();
 		}
 
@@ -6847,7 +6853,6 @@ public class GA {
 		}
 
 		public ExpTipo tipo_exp() {
-			// TODO exptipo int
 			return ExpTipo.nuevaExpTipoInt();
 		}
 
@@ -7031,8 +7036,8 @@ public class GA {
 		}
 
 		public Integer etq_exp() {
-			return etqh().val() + 1;
-
+			return etqh().val()
+					+ numeroInstruccionesAccesoVar(iden.lex(), tsh().val());
 		}
 
 		public ExpTipo tipo_exp() {
@@ -7040,7 +7045,6 @@ public class GA {
 		}
 
 		private Token iden;
-
 	}
 
 	public class MemR1Debug extends MemR1 {
@@ -7570,6 +7574,7 @@ public class GA {
 		a.add(expTipo);
 		a.add(String.valueOf(dir));
 		a.add(clase);
+		a.add(nivelh);
 		return ts.aniade(iden, a);
 	}
 
@@ -7595,6 +7600,13 @@ public class GA {
 		return result;
 	}
 
+	public List<Instruccion> concat(Instruccion c1, List<Instruccion> c2) {
+		List<Instruccion> result = new LinkedList<Instruccion>();
+		result.add(c1);
+		result.addAll(c2);
+		return result;
+	}
+
 	public List<Instruccion> single(Instruccion i) {
 		List<Instruccion> is = new LinkedList<Instruccion>();
 		is.add(i);
@@ -7608,29 +7620,27 @@ public class GA {
 	}
 
 	public ExpTipo tipoOpBin(CatLexica op, ExpTipo expTipo, ExpTipo expTipo2) {
-		// TODO valor devuelto como ExpTipo
-		if (expTipo.equals(expTipo2)) {
+		if (expTipo.t().equals(expTipo2.t())) {
 			if (op.equals(CatLexica.GT) || op.equals(CatLexica.EQ)
 					|| op.equals(CatLexica.NEQ) || op.equals(CatLexica.GE)
 					|| op.equals(CatLexica.LT) || op.equals(CatLexica.LE))
-				return null;
+				return ExpTipo.nuevaExpTipoBoolean();
 			else if (op.equals(CatLexica.MAS) || op.equals(CatLexica.MENOS)
 					|| op.equals(CatLexica.ASTERISCO)
 					|| op.equals(CatLexica.BARRA))
-				return null;
+				return ExpTipo.nuevaExpTipoInt();
 
 		}
 		return null;
 	}
 
-	// TODO HACER
 	public ExpTipo tipoOpUnario(CatLexica op, ExpTipo expTipo) {
 		if (op.equals(CatLexica.MENOS) && expTipo.equals(CatLexica.INT))
-			return null;
+			return ExpTipo.nuevaExpTipoBoolean();
 		else if (op.equals(CatLexica.NOT) && expTipo.equals(CatLexica.BOOLEAN))
-			return null;
+			return ExpTipo.nuevaExpTipoInt();
 		else
-			return null;
+			return ExpTipo.nuevaExpTipoError();
 	}
 
 	public Instruccion suma() {
@@ -7725,9 +7735,17 @@ public class GA {
 		return Instruccion.nuevaIIr_a(ir);
 	}
 
-	// TODO
-	private List<Instruccion> apila_ind() {
+	private Instruccion apila_ind() {
+		return Instruccion.nuevaIApilaInd();
+	}
+
+	private List<Instruccion> copia() {
+		// TODO instruccioncopia
 		return null;
+	}
+
+	private Instruccion desapila_ind() {
+		return Instruccion.nuevaIDesApilaInd();
 	}
 
 	public Error noError() {
@@ -7751,27 +7769,316 @@ public class GA {
 	}
 
 	private boolean asignacionCorrecta(ExpTipo memTipo, ExpTipo expTipo) {
-		// TODO return (tipoDe(leeLexema, tsh).compareTo(tipo) == 0);
-		return false;
+		return memTipo.t().equals(expTipo.t());
 	}
 
 	// TODO NUEVOS METODOS AUXILIARES
 
-	private List<Instruccion> copia() {
-		// instruccioncopia
+	private Error tiposNoDeclarados(List<ExpTipo> refsAcheck, TS tsDecs) {
+		String nodeclarados = "";// acumulador
+		boolean declarado = false;// bandera
+		// obtener tiposdeclarados
+		List<String> tiposDeclarados = tsDecs.getTiposDeclarados();
+		Iterator<String> itdeclarados = tiposDeclarados.iterator();
+
+		// calculo de declarados
+		Iterator<ExpTipo> itacheck = refsAcheck.iterator();
+		while (itacheck.hasNext()) {
+			ExpTipo acheck = itacheck.next();
+			while (itdeclarados.hasNext()) {
+				String declarada = itdeclarados.next();
+				if (declarada.equals(acheck.id())) {
+					declarado = true;
+				}
+			}
+			// mirarSi declarados o no
+			if (declarado) {
+				declarado = false;
+			} else {
+				nodeclarados += acheck.id() + ", ";
+			}
+			itdeclarados = tiposDeclarados.iterator();// reseteo iterador
+		}
+		return nodeclarados.equals("") ? noError() : new Error(nodeclarados);
+	}
+
+	private List<ExpTipo> union(List<ExpTipo> val, List<ExpTipo> val2) {
+		// Hace union de conjuntos
+		for (ExpTipo expTipo : val2)
+			if (!val.contains(expTipo))
+				val.add(expTipo);
+
+		return val;
+	}
+
+	private List<Integer> unionInt(List<Integer> val, List<Integer> val2) {
+		// Hace union de conjuntos de tipo Integer
+		for (Integer expTipo : val2)
+			if (!val.contains(expTipo))
+				val.add(expTipo);
+
+		return val;
+	}
+
+	private List<Instruccion> programaVacio() {
+		return new LinkedList<Instruccion>();
+	}
+
+	private Error tipoRefIncorrecto(TS ts, ExpTipo tipo) {
+		// si tipo es ref y el tipo al que hace referencia no existe en la tabla
+		// de simbolos
+		boolean declarado = false;
+		if (tipo.t() == CatLexica.REF) {
+			Iterator<String> it = ts.getTiposDeclarados().iterator();
+			while (it.hasNext()) {
+				if (it.next().equals(tipo.id()))
+					declarado = true;
+			}
+			return declarado ? noError() : new Error(
+					"Tipo referenciado no declarado: " + tipo.id());
+		} else {
+			return noError();
+		}
+	}
+
+	// TODO crea una nueva tabla de simbolos con padre la actual
+	private TS creaNivel(Atributo<TS> tsh) {
+		return new TS(tsh.val());
+	}
+
+	private List<ExpTipo> listaExpTipoVacia() {
+		return new LinkedList<ExpTipo>();
+	}
+
+	private List<ExpTipo> aniadeA(List<ExpTipo> params, ExpTipo param) {
+		List<ExpTipo> result = new LinkedList<ExpTipo>(params);
+		result.add(param);
+		return result;
+	}
+
+	private List<ExpTipo> nuevaLista(ExpTipo param) {
+		List<ExpTipo> result = new LinkedList<ExpTipo>();
+		result.add(param);
+		return result;
+	}
+
+	// TODO dudas si tipo no existe en ts,añadirlo a check
+	private List<ExpTipo> aChequear(TS ts, ExpTipo tipo) {
+		LinkedList<ExpTipo> a = new LinkedList<ExpTipo>();
+		boolean declarado = false;
+		Iterator<String> it = ts.getTiposDeclarados().iterator();
+		while (it.hasNext()) {
+			if (it.next().equals(tipo.id()))
+				declarado = true;
+		}
+		a.push(tipo);
+		return declarado ? listaExpTipoVacia() : a;
+
+	}
+
+	private int tamanioDeTipoRef(TS tsh, String lex) {
+		return tsh.getTamRef(lex);
+	}
+
+	private Error campoDuplicado(String idCampo, List<ExpTipo> campos) {
+		Iterator<ExpTipo> itcampos = campos.iterator();
+		boolean duplicado = false;
+		while (itcampos.hasNext()) {
+			if (idCampo.equals(itcampos.next().id()))
+				duplicado = true;
+		}
+		return duplicado ? new Error("Campo duplicado: " + idCampo) : noError();
+	}
+
+	private List<Integer> listaIntegerVacia() {
+		return new LinkedList<Integer>();
+	}
+
+	private boolean llamadaCorrecta(TS ts, String lex, Integer nparams) {
+		ExpTipo metodo = ts.getExpTipo(lex);
+		return metodo.params().size() == nparams ? true : false;
+	}
+
+	private Integer nivelDe(String subProgh, TS ts) {
+		ArrayList<Object> o = ts.valDe(subProgh);
+		return (Integer) o.get(3);
+	}
+
+	// TODO
+	// que coincida el tipo del parametro nparams con la definicion del metodo
+	// en caso de que sea designador(puntero), se mira el tipo del dato al que
+	// apunta
+	private boolean parametroCorrecto(String subProg, int nParams,
+			ExpTipo tipo, Boolean designador, TS tsh) {
+		boolean correcto;
+		ExpTipo metodo = tsh.getExpTipo(subProg);
+		ExpTipo param = metodo.params().get(nParams);
+		if (!designador) {
+			if (tipo.t() == param.t())
+				correcto = true;
+			else
+				correcto = false;
+		} else {
+			ExpTipo referenciada = tsh.getExpTipo(tipo.id());
+			if (referenciada.t() == param.t()) {
+				correcto = true;
+			} else
+				correcto = false;
+		}
+		return correcto;
+	}
+
+	private List<Instruccion> codigoPaso(String val, Integer val2,
+			ExpTipo val3, Boolean val4, TS val5) {
 		return null;
 	}
 
-	private List<Instruccion> desapila_ind() {
+	private List<Instruccion> codigoAsignacion(List<Instruccion> memcod,
+			List<Instruccion> exp0cod, Boolean exp0EsDesig) {
+		List<Instruccion> cod;
+		if (exp0EsDesig) {
+			cod = concat(exp0cod, concat(desapila_ind(), memcod));
+		} else {
+			cod = concat(exp0cod, memcod);
+		}
+		return cod;
+	}
+
+	// TODO asi directamente :?
+	private int tamañoObjetoApuntado(ExpTipo tipo, TS ts) {
+		return ts.getTamRef(tipo.id());
+
+	}
+
+	private Instruccion reserva(int tamañoObjetoApuntado) {
+		return Instruccion.nuevaINew(String.valueOf(tamañoObjetoApuntado));
+	}
+
+	private Instruccion libera(int tamañoObjetoApuntado) {
+		return Instruccion.nuevaIDel(String.valueOf(tamañoObjetoApuntado));
+	}
+
+	private boolean noEsbooleano(ExpTipo val) {
+		return val.t() != CatLexica.BOOLEAN;
+	}
+
+	private Integer unoSiCierto(Boolean val) {
+		return val ? 1 : 0;
+	}
+
+	// desapila_ind para traerme el dato
+	// Exp1(0).cod || Exp1(1).cod || OpComparacion.cod
+	private List<Instruccion> codigoOpComparacion(List<Instruccion> exp1cod,
+			List<Instruccion> exp1_1cod, List<Instruccion> opccod,
+			Boolean exp1EsDesig, Boolean exp1_1EsDesig) {
+		List<Instruccion> cod;
+		// compruebo si exp1esDesig
+		if (exp1EsDesig)
+			cod = concat(exp1cod, concat(desapila_ind(), exp1_1cod));
+		else
+			cod = concat(exp1cod, exp1_1cod);
+		// compruebo exp11
+		if (exp1_1EsDesig)
+			cod = concat(cod, desapila_ind());
+		// concateno finalmente el operador de comparacion
+		return concat(cod, opccod);
+	}
+
+	private List<Instruccion> codigoOpAditivo(List<Instruccion> exp1cod,
+			List<Instruccion> exp2cod, List<Instruccion> opacod,
+			Boolean exp1Desig, Boolean exp2Desig) {
+		// es el mismo proceso, reutilizamos para ahorrar codigo
+		return codigoOpComparacion(exp1cod, exp2cod, opacod, exp1Desig,
+				exp2Desig);
+	}
+
+	private List<Instruccion> codigoOpMultiplicativo(List<Instruccion> exp2cod,
+			List<Instruccion> exp3cod, List<Instruccion> opmcod,
+			Boolean exp2Desig, Boolean exp3Desig) {
+		return codigoOpComparacion(exp2cod, exp3cod, opmcod, exp2Desig,
+				exp3Desig);
+	}
+
+	// si es desighay que meterle el desapilaind,luego 1 ins mas
+	private Integer numeroInstruccionesOpUnario(Boolean designador) {
+		return designador ? 1 : 0;
+	}
+
+	private List<Instruccion> codigoOpUnario(List<Instruccion> exp3cod,
+			List<Instruccion> opucod, Boolean exp3EsDesig) {
+
+		List<Instruccion> cod;
+		if (exp3EsDesig)
+			cod = concat(exp3cod, concat(desapila_ind(), opucod));
+		else
+			cod = concat(exp3cod, opucod);
+		return cod;
+	}
+
+	private String desplazamientoDeCampo(ExpTipo campos, String lex) {
+		Iterator<ExpTipo> it = campos.campos().iterator();
+		while (it.hasNext()) {
+			ExpTipo campo = it.next();
+			if (campo.id().equals(lex))
+				return String.valueOf(campo.desp());
+
+		}
+		return null;// no debe entrar aki nunca :O
+	}
+
+	private ExpTipo tipoDeSelectorCampo(ExpTipo campos, String lex) {
+		Iterator<ExpTipo> it = campos.campos().iterator();
+		while (it.hasNext()) {
+			ExpTipo campo = it.next();
+			if (campo.id().equals(lex))
+				return campo.tipo();
+		}
+		return null;// no debe entrar aki nunca :O
+	}
+
+	private ExpTipo tipoDeIndireccion(ExpTipo punt) {
+		return punt.tbase();
+	}
+
+	private Integer aEntero(String lex) {
+		return Integer.parseInt(lex);
+	}
+
+	// TODO NUEVOS METODOS AUXILIARES
+
+	// TODO wat
+	private Error tipoError(ExpTipo exp) {
 		return null;
+	}
+
+	// TODO mas casos?, si es puntero o si es registro :O
+	private List<Instruccion> codigoAccesoVar(String lex, TS ts) {
+		ExpTipo e = ts.getExpTipo(lex);
+		List<Instruccion> cod;
+		if (e.t() == CatLexica.REF) {
+			cod = single(desapila_ind());
+		} else {
+			cod = single(apila_dir(String.valueOf(dirDe(lex, ts))));
+		}
+	
+		return cod;
+	}
+
+	private Integer numeroInstruccionesAccesoVar(String lex, TS ts) {
+		ExpTipo e = ts.getExpTipo(lex);
+		if (e.t() == CatLexica.REF) {
+			return 2;
+		} else {
+			return 1;
+		}
 	}
 
 	private int numeroInstruccionesActivacionProgramaPrincipal() {
 		return 0;
 	}
 
-	private List<Instruccion> codigoActivacionProgramaPrincipal(Integer val,
-			Integer val2) {
+	private List<Instruccion> codigoActivacionProgramaPrincipal(
+			Integer dirInicio, Integer anidamiento) {
 		return null;
 	}
 
@@ -7781,11 +8088,6 @@ public class GA {
 	}
 
 	private Integer numeroInstruccionesEpilogo() {
-
-		return null;
-	}
-
-	private Error tiposNoDeclarados(List<ExpTipo> list, TS tsDecs) {
 
 		return null;
 	}
@@ -7805,80 +8107,13 @@ public class GA {
 		return null;
 	}
 
-	private List<ExpTipo> union(List<ExpTipo> val, List<ExpTipo> val2) {
-		// Hace union de conjuntos
-		for (ExpTipo expTipo : val2)
-			if (!val.contains(expTipo))
-				val.add(expTipo);
-
-		return val;
-	}
-
-	private List<Integer> unionInt(List<Integer> val, List<Integer> val2) {
-		// Hace union de conjuntos
-		for (Integer expTipo : val2)
-			if (!val.contains(expTipo))
-				val.add(expTipo);
-
-		return val;
-	}
-
-	private List<Instruccion> programaVacio() {
-		return new LinkedList<Instruccion>();
-	}
-
-	private Error tipoRefIncorrecto(TS ts, ExpTipo tipo) {
-		return null;
-	}
-
 	private List<Instruccion> fijaLlamadasPendientes(
 			List<Instruccion> bloqueCod, List<Integer> list, Integer bloqDirIni) {
 		return null;
 	}
 
-	private TS creaNivel(Atributo<TS> tsh) {
-		return null;
-	}
-
-	private List<ExpTipo> listaExpTipoVacia() {
-		return new LinkedList<ExpTipo>();
-	}
-
-	private List<ExpTipo> aniadeA(List<ExpTipo> params, ExpTipo param) {
-		List<ExpTipo> result = new LinkedList<ExpTipo>(params);
-		result.add(param);
-		return result;
-	}
-
-	private List<ExpTipo> nuevaLista(ExpTipo param) {
-		List<ExpTipo> result = new LinkedList<ExpTipo>();
-		result.add(param);
-		return result;
-	}
-
-	private List<ExpTipo> aChequear(TS val, Atributo<ExpTipo> tipo) {
-		return null;
-	}
-
-	private int tamanioDeTipoRef(TS tsh, String lex) {
-		return tsh.getTamRef(lex);
-	}
-
-	private Error campoDuplicado(String iden, List<ExpTipo> val2) {
-
-		return null;
-	}
-
-	private List<Integer> listaIntegerVacia() {
-		return new LinkedList<Integer>();
-	}
-
 	private Integer numeroInstruccionesFinLlamada() {
 		return null;
-	}
-
-	private boolean llamadaCorrecta(TS ts, String lex, Integer nparams) {
-		return false;
 	}
 
 	private List<Instruccion> codigoFinLlamada(String lex, TS ts, int nInsts) {
@@ -7891,16 +8126,11 @@ public class GA {
 		return null;
 	}
 
-	private List<Instruccion> nivelDe(String subProgh, TS ts) {
-
-		return null;
-	}
-
 	private int numeroInstruccionesInicioLlamada() {
 		return 0;
 	}
 
-	private List<Instruccion> codigoInicioLlamada(List<Instruccion> nivelDe) {
+	private List<Instruccion> codigoInicioLlamada(Integer nivelDe) {
 		return null;
 	}
 
@@ -7908,47 +8138,13 @@ public class GA {
 		return 0;
 	}
 
-	private Error tipoError(ExpTipo exp) {
-		return null;
-	}
-
-	private boolean parametroCorrecto(String subProg, int nParams,
-			ExpTipo tipo, Boolean designador, TS tsh) {
-		return false;
-	}
-
-	private List<Instruccion> codigoPaso(String val, Integer val2,
-			ExpTipo val3, Boolean val4, TS val5) {
-		return null;
-	}
-
-	private List<Instruccion> codigoAsignacion(List<Instruccion> val,
-			List<Instruccion> val2, Boolean val3) {
-
-		return null;
-	}
-
 	private boolean reservaMemoriaCorrecta(ExpTipo val) {
 		return false;
-	}
-
-	private int tamañoObjetoApuntado(ExpTipo tipo, TS ts) {
-		return 0;
-	}
-
-	private List<Instruccion> reserva(int tamañoObjetoApuntado) {
-
-		return null;
 	}
 
 	private boolean liberaMemoriaCorrecta(ExpTipo val) {
 
 		return false;
-	}
-
-	private List<Instruccion> libera(int tamañoObjetoApuntado) {
-
-		return null;
 	}
 
 	private List<Instruccion> codigoLectura(ExpTipo val) {
@@ -7966,71 +8162,7 @@ public class GA {
 	}
 
 	private List<Instruccion> codigoEscritura(ExpTipo val) {
-
 		return null;
-	}
-
-	private boolean noEsbooleano(ExpTipo val) {
-
-		return false;
-	}
-
-	private Integer unoSiCierto(Boolean val) {
-		return val ? 1 : 0;
-	}
-
-	private List<Instruccion> codigoOpComparacion(List<Instruccion> exp1cod,
-			List<Instruccion> exp1_1cod, List<Instruccion> opcod,
-			Boolean exp1EsDesig, Boolean exp1_1EsDesig) {
-		return null;
-	}
-
-	private List<Instruccion> codigoOpAditivo(List<Instruccion> exp1cod,
-			List<Instruccion> exp2cod, List<Instruccion> opcod,
-			Boolean exp1Desig, Boolean exp2Desig) {
-
-		return null;
-	}
-
-	private List<Instruccion> codigoOpMultiplicativo(List<Instruccion> val,
-			List<Instruccion> val2, List<Instruccion> val3, Boolean val4,
-			Boolean val5) {
-		return null;
-	}
-
-	private Integer numeroInstruccionesOpUnario(Boolean val) {
-
-		return null;
-	}
-
-	private List<Instruccion> codigoOpUnario(List<Instruccion> val,
-			List<Instruccion> val2, Boolean val3) {
-
-		return null;
-	}
-
-	private List<Instruccion> codigoAccesoVar(String lex, TS val) {
-
-		return null;
-	}
-
-	private String desplazamientoDeCampo(ExpTipo val, String lex) {
-
-		return null;
-	}
-
-	private ExpTipo tipoDeSelectorCampo(ExpTipo val, String lex) {
-
-		return null;
-	}
-
-	private ExpTipo tipoDeIndireccion(ExpTipo val) {
-
-		return null;
-	}
-
-	private Integer aEntero(String lex) {
-		return Integer.parseInt(lex);
 	}
 
 }

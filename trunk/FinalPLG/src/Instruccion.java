@@ -1,8 +1,9 @@
 import java.io.Serializable;
+import java.util.Scanner;
 
 abstract public class Instruccion implements Serializable {
 	public enum ICOD {
-		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA,IESCRITURA, ILECTURA
+		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA, IESCRITURA, ILECTURA, ICOPIA, IR_IND
 	};
 
 	private static ISuma iSuma = null;
@@ -359,6 +360,25 @@ abstract public class Instruccion implements Serializable {
 		}
 	}
 
+	public static class IIr_ind extends Instruccion {
+
+		private IIr_ind() {
+		}
+
+		public void ejecuta(VM vm) {
+			VM.PValue op1 = vm.pop();
+			vm.setCP(op1.asInt());
+		}
+
+		public ICOD ci() {
+			return ICOD.IR_IND;
+		}
+
+		public String toString() {
+			return "IR_IND()";
+		}
+	}
+
 	public static class IApila extends Instruccion {
 		private int val;
 
@@ -508,7 +528,8 @@ abstract public class Instruccion implements Serializable {
 
 	}
 
-	//la cima le dice el origen, la subcima el destino, y moviendo tamMover posiciones
+	// la cima le dice el origen, la subcima el destino, y moviendo tamMover
+	// posiciones
 	public static class IMueve extends Instruccion {
 
 		private IMueve(String dir) {
@@ -550,11 +571,11 @@ abstract public class Instruccion implements Serializable {
 	public static class IDesapilaInd extends Instruccion {
 
 		private IDesapilaInd() {
-//			try {
-//				this.dir = Integer.valueOf(dir).intValue();
-//			} catch (NumberFormatException e) {
-//				this.dir = 0;
-//			}
+			// try {
+			// this.dir = Integer.valueOf(dir).intValue();
+			// } catch (NumberFormatException e) {
+			// this.dir = 0;
+			// }
 		}
 
 		public void ejecuta(VM vm) {
@@ -568,16 +589,16 @@ abstract public class Instruccion implements Serializable {
 			return ICOD.DESAPILA_IND;
 		}
 
-//		public int arg1() {
-//			return dir;
-//		}
+		// public int arg1() {
+		// return dir;
+		// }
 
 		public String toString() {
-			//return "DESAPILA_IND(" + dir + ")";
+			// return "DESAPILA_IND(" + dir + ")";
 			return "DESAPILA_IND()";
 		}
 
-		//private int dir;
+		// private int dir;
 
 	}
 
@@ -586,11 +607,11 @@ abstract public class Instruccion implements Serializable {
 	public static class IApilaInd extends Instruccion {
 
 		private IApilaInd() {
-//			try {
-//				this.dir = Integer.valueOf(dir).intValue();
-//			} catch (NumberFormatException e) {
-//				this.dir = 0;
-//			}
+			// try {
+			// this.dir = Integer.valueOf(dir).intValue();
+			// } catch (NumberFormatException e) {
+			// this.dir = 0;
+			// }
 		}
 
 		public void ejecuta(VM vm) {
@@ -604,16 +625,16 @@ abstract public class Instruccion implements Serializable {
 			return ICOD.APILA_IND;
 		}
 
-//		public int arg1() {
-//			return dir;
-//		}
+		// public int arg1() {
+		// return dir;
+		// }
 
 		public String toString() {
-		//	return "APILA_IND(" + dir + ")";
+			// return "APILA_IND(" + dir + ")";
 			return "APILA_IND()";
 		}
 
-		//private int dir;
+		// private int dir;
 
 	}
 
@@ -710,20 +731,21 @@ abstract public class Instruccion implements Serializable {
 		private int tamReserva;
 
 	}
-	//TODO por hacer estas instruccion
+
 	public static class ILectura extends Instruccion {
 
-		private ILectura(String tamReserva) {
-			try {
-				this.tamReserva = Integer.valueOf(tamReserva).intValue();
-			} catch (NumberFormatException e) {
-				this.tamReserva = 0;
-			}
+		private ILectura(CatLexica tipo) {
+			this.tipo = tipo;
 		}
 
 		public void ejecuta(VM vm) {
-			VM.PValue posinicio = vm.pop();
-			// TODO LIBERA?¿
+			if (sc == null)
+				sc = new Scanner(System.in);
+			if (tipo == CatLexica.INT) {
+				vm.push(new VM.IntPValue(sc.nextInt()));
+			} else if(tipo == CatLexica.BOOLEAN){
+				vm.push(new VM.BooleanPValue(sc.nextBoolean()));
+			}
 			vm.incCP();
 		}
 
@@ -732,29 +754,26 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public int arg1() {
-			return tamReserva;
+			return tipo.ordinal();
 		}
 
 		public String toString() {
-			return "ILECTURA(" + tamReserva + ")";
+			return "ILECTURA(" + tipo + ")";
 		}
-
-		private int tamReserva;
+		
+		Scanner sc;
+		private CatLexica tipo;
 	}
-	
-	//TODO por hacer esta instruccion
+
 	public static class IEscritura extends Instruccion {
 
-		private IEscritura(String tamReserva) {
-			try {
-				this.tamReserva = Integer.valueOf(tamReserva).intValue();
-			} catch (NumberFormatException e) {
-				this.tamReserva = 0;
-			}
+		private IEscritura(CatLexica tipo) {
+			this.tipo=tipo;
 		}
 
 		public void ejecuta(VM vm) {
-			
+			VM.PValue p=vm.pop();
+			System.out.print(p);
 		}
 
 		public ICOD ci() {
@@ -762,14 +781,36 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public int arg1() {
-			return tamReserva;
+			return tipo.ordinal();
 		}
 
 		public String toString() {
-			return "IESCRITURA(" + tamReserva + ")";
+			return "IESCRITURA(" + tipo + ")";
 		}
 
-		private int tamReserva;
+		private CatLexica tipo;
+	}
+
+	public static class ICopia extends Instruccion {
+
+		private ICopia() {
+
+		}
+
+		public void ejecuta(VM vm) {
+			VM.PValue op1 = vm.pop();
+			vm.push(op1);
+			vm.push(op1);
+			vm.incCP();
+		}
+
+		public ICOD ci() {
+			return ICOD.ICOPIA;
+		}
+
+		public String toString() {
+			return "ICOPIA()";
+		}
 	}
 
 	public static Instruccion nuevaIOr() {
@@ -878,6 +919,10 @@ abstract public class Instruccion implements Serializable {
 		return new IIr_a(etq);
 	}
 
+	public static Instruccion nuevaIIr_ind() {
+		return new IIr_ind();
+	}
+
 	public static Instruccion nuevaIApila(String val) {
 		return new IApila(val);
 	}
@@ -905,20 +950,35 @@ abstract public class Instruccion implements Serializable {
 	public static Instruccion nuevaIApilaInt(String val) {
 		return new IApilaInt(val);
 	}
-	
+
 	public static Instruccion nuevaIApilaInd() {
 		return new IApilaInd();
 	}
+
 	public static Instruccion nuevaIDesApilaInd() {
 		return new IDesapilaInd();
 	}
+
 	public static Instruccion nuevaIMueve(String tamMover) {
 		return new IMueve(tamMover);
 	}
+
 	public static Instruccion nuevaINew(String tamReserva) {
 		return new INew(tamReserva);
 	}
+
 	public static Instruccion nuevaIDel(String tamReserva) {
 		return new IDel(tamReserva);
+	}
+
+	public static Instruccion nuevaICopia() {
+		return new ICopia();
+	}
+	public static Instruccion nuevaILectura(CatLexica tipo) {
+		return new ILectura(tipo);
+	}
+
+	public static Instruccion nuevaIEscritura(CatLexica tipo) {
+		return new IEscritura(tipo);
 	}
 }

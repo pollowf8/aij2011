@@ -44,6 +44,12 @@ public class TS {
 	public ExpTipo getExpTipo(String cte){
 		return (ExpTipo) tabla.get(cte).get(0);
 	}
+	public Integer getNivel(String cte){
+		return (Integer) tabla.get(cte).get(3);
+	}
+	public CatLexica getClase(String cte){
+		return (CatLexica) tabla.get(cte).get(2);
+	}
 	public String toString() {
 		return tabla.toString();
 	}

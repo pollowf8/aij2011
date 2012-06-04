@@ -2338,7 +2338,7 @@ public class GA {
 		Declaracion.tsh = Declaraciones(1).ts
 		Comprobación de las restricciones contextuales
 		Declaraciones(0).error = Declaraciones(1).error or Declaracion.error or
-		existeSimbEnUltimoNivel(Declaraciones(1).ts,Declaracion.iden)
+		existeSimbEnUltimoNivel(Declaraciones(1).ts,Declaracion.iden,Declaraciones(0).nivelh)
 		Declaraciones(0).refsAChequear = Declaraciones(1).refsAChequear  Declaracion.refsAChequear
 		Generación de código
 		Declaraciones(1).etqh = Declaraciones(0).etqh
@@ -2424,7 +2424,8 @@ public class GA {
 			Error e = joinErrors(decs_1.err().val(), dec.err().val());
 			return joinErrors(
 					e,
-					existeSimbEnUltimoNivel(decs_1.ts().val(), dec.iden().val()));
+					existeSimbEnUltimoNivel(decs_1.ts().val(),
+							dec.iden().val(), nivelh().val()));
 		}
 
 		public Integer dir_exp() {
@@ -2483,10 +2484,21 @@ public class GA {
 	/**
 	 * <code>
 	 * Declaraciones ::= Declaracion
-	 * Decs ::= Dec 
-	 * Declaraciones.ts = aniadeSimb(creaTS(),Declaracion.iden,Declaracion.tipo,0) 
-	 * Declaraciones.dir = 1 
-	 * Declaraciones.error = false
+	 * Construcción de la tabla de símbolos
+	 * Declaraciones.ts = aniadeSimb(Declaraciones.tsh,Declaracion.iden, Declaracion.clase,
+	 * Declaracion.tipo,Declaraciones.dirh,Declaraciones.nivelh)
+	 * Declaracion.nivelh = Declaraciones.nivelh
+	 * Declaraciones.dir = Declaraciones.dirh + Declaracion.tam
+	 * Propagación de la tabla de símbolos
+	 * Declaracion.tsh = Declaraciones.tsh
+	 * Comprobación de las restricciones contextuales
+	 * Declaraciones.error = Declaracion.error or existeSimbEnUltimoNivel(Declaraciones.tsh,Declaracion.iden,Declaraciones.nivelh)
+	 * Declaraciones.refsAChequear = Declaracion.refsAChequear
+	 * Generación de código
+	 * Declaracion.etqh = Declaraciones.etqh
+	 * Declaraciones.etq = Declaracion.etq
+	 * Declaraciones.cod = Declaracion.cod
+	 * Declaraciones.anidamiento = Declaracion.anidamiento
 	 * </code>
 	 */
 	public class DecsR2 extends Decs {
@@ -2531,15 +2543,15 @@ public class GA {
 		}
 
 		public Error err_exp() {
-			return joinErrors(dec.err().val(),
-					existeSimbEnUltimoNivel(tsh().val(), dec.iden().val()));
+			return joinErrors(
+					dec.err().val(),
+					existeSimbEnUltimoNivel(tsh().val(), dec.iden().val(),
+							nivelh().val()));
 		}
 
 		public Integer dir_exp() {
 			return 1;
 		}
-
-		private Dec dec;
 
 		@Override
 		protected List<Instruccion> cod_exp() {
@@ -2560,6 +2572,8 @@ public class GA {
 		protected List<ExpTipo> refsAChequear_exp() {
 			return dec.refsAChequear().val();
 		}
+
+		private Dec dec;
 	}
 
 	public class DecsR2Debug extends DecsR2 {
@@ -2809,10 +2823,8 @@ public class GA {
 	 * Declaracion.iden = IDEN.lex
 	 * ParametrosFormales.nivelh = Declaracion.nivelh + 1
 	 * Bloque.nivelh = Declaracion.nivelh + 1
-	 * ParametrosFormales.tsh = añadeSimb(creaNivel(Declaracion.tsh),IDEN.lex,
-	 * proc,
-	 * <t:proc, params: ParametrosFormales.params>,
-	 * ?, Declaracion.nivelh+1)
+	 * ParametrosFormales.tsh = añadeSimb(creaNivel(Declaracion.tsh),IDEN.lex,proc,
+	 * <t:proc, params: ParametrosFormales.params>,?, Declaracion.nivelh+1)
 	 * Bloque.tsh = ParametrosFormales.ts
 	 * Bloque.dirh = ParametrosFormales.dir
 	 * Comprobación de las restricciones contextuales
@@ -3130,7 +3142,7 @@ public class GA {
 	 * ParametroFormal.tsh = ListaParametrosFormales(1).ts
 	 * Comprobación de las restricciones contextuales
 	 * ListaParametrosFormales(0).error =ListaParametrosFormales(1).error orParametroFormal.error or
-	 * existeSimbEnUltimoNivel(ListaParametrosFormales(1).ts,ParametroFormal.iden)
+	 * existeSimbEnUltimoNivel(ListaParametrosFormales(1).ts,ParametroFormal.iden,ListaParametrosFormales(0).nivelh)
 	 * ListaParametrosFormales(0).refsAChequear = ListaParametrosFormales(1).refsAChequear U
 	 * ParametroFormal.refsAChequear </code>
 	 */
@@ -3181,7 +3193,7 @@ public class GA {
 			return joinErrors(
 					e,
 					existeSimbEnUltimoNivel(listaParamsForms_1.ts().val(),
-							paramFormal.iden().val()));
+							paramFormal.iden().val(), nivelh().val()));
 		}
 
 		@Override
@@ -3237,19 +3249,17 @@ public class GA {
 
 	/**
 	 * <code>
+	 * ListaParametrosFormales ::= ParametroFormal
 	 * Construcción de la tabla de símbolos
 	 * ListaParametrosFormales.params = nuevaLista(ParametroFormal.param)
-	 * ListaParametrosFormales.ts = añadeSimb(ListaParametrosFormales.tsh,
-	 * ParametroFormal.iden, ParametroFormal.clase,
-	 * ParametroFormal.tipo, 0,
-	 * ListaParametrosFormales.nivelh)
+	 * ListaParametrosFormales.ts = añadeSimb(ListaParametrosFormales.tsh,ParametroFormal.iden, ParametroFormal.clase,
+	 * ParametroFormal.tipo, 0, ListaParametrosFormales.nivelh)
 	 * ListaParametrosFormales.dir = ParametroFormal.tam
 	 * Propagación de la tabla de símbolos
 	 * ParametroFormal.tsh = ListaParametrosFormales.tsh
 	 * Comprobación de las restricciones contextuales
-	 * ListaParametrosFormales.error =
-	 * ParametroFormal.error or
-	 * existeSimbEnUltimoNivel(ListaParametrosFormales.tsh,ParametroFormal.iden)
+	 * ListaParametrosFormales.error = ParametroFormal.error or
+	 * existeSimbEnUltimoNivel(ListaParametrosFormales.tsh,ParametroFormal.iden,ListaParametrosFormales.nivelh)
 	 * ListaParametrosFormales.refsAChequear = ParametroFormal.refsAChequear </code>
 	 */
 	public class ListaParamsFormalesR2 extends ListaParamsFormales {
@@ -3277,7 +3287,7 @@ public class GA {
 			return joinErrors(
 					paramFormal.err().val(),
 					existeSimbEnUltimoNivel(tsh().val(), paramFormal.iden()
-							.val()));
+							.val(), nivelh().val()));
 		}
 
 		@Override
@@ -4824,10 +4834,8 @@ public class GA {
 	 * ParametrosReales.etqh = ILlamada.etqh
 	 * ILlamada.etq = ParametrosReales.etq + numeroInstruccionesFinLLamada()
 	 * ILlamada.cod = ParametrosReales.cod ||
-	 * codigoFinLlamada(IDEN.lex,ILlamada.tsh,
-	 * ParametrosReales.etq + numeroInstruccionesFinLLamada())
-	 * ILlamada.llamadasPendientes = direccionSiSaltoIndefinido(IDEN.lex,ILlamada.tsh,
-	 * ParametrosReales.etq) </code>
+	 * codigoFinLlamada(IDEN.lex,ILlamada.tsh,ParametrosReales.etq + numeroInstruccionesFinLLamada())
+	 * ILlamada.llamadasPendientes = direccionSiSaltoIndefinido(IDEN.lex,ILlamada.tsh,ParametrosReales.etq) </code>
 	 */
 	public class ILlamadaR1 extends Inst {
 
@@ -4915,7 +4923,7 @@ public class GA {
 	 * ListaParametrosReales.etqh = ParametrosReales.etqh + numeroInstruccionesInicioLlamada()
 	 * ParametrosReales.etq = ListaParametrosReales.etq + 1
 	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,
-	 * ParametrosReales.tsh)) || ListaParametrosReales.cod || desapila() </code>
+	 * ParametrosReales.tsh),*ParametrosReales.etq*) || ListaParametrosReales.cod || desapila() </code>
 	 */
 	public class ParamsRealesR1 extends ParamsReales {
 
@@ -4957,8 +4965,9 @@ public class GA {
 
 		public List<Instruccion> cod_exp() {
 			List<Instruccion> c = concat(
-					codigoInicioLlamada(nivelDe(subProgramah().val(), tsh()
-							.val())), listaParamsReales.cod().val());
+					codigoInicioLlamada(
+							nivelDe(subProgramah().val(), tsh().val()), etq()
+									.val()), listaParamsReales.cod().val());
 			return concat(c, desapila());
 		}
 
@@ -5001,8 +5010,7 @@ public class GA {
 	 * ListaParametrosReales.etqh = ParametrosReales.etqh + numeroInstruccionesInicioLlamada()
 	 * ParametrosReales.etq = ListaParametrosReales.etq + 1
 	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,
-	 * ParametrosReales.tsh)) ||
-	 * ListaParametrosReales.cod || desapila() </code>
+	 * ParametrosReales.tsh)) || ListaParametrosReales.cod || desapila() </code>
 	 */
 	public class ParamsRealesR2 extends ParamsReales {
 
@@ -5174,9 +5182,7 @@ public class GA {
 	 * Exp0.etqh = ListaParametrosReales.etqh + 1
 	 * ListaParametrosReales.etq = Exp0.etq + numeroInstruccionesCodigoPaso()
 	 * ListaParametrosReales.cod = copia() || Exp0.cod ||
-	 * codigoPaso(ListaParametrosReales.subprogramah,
-	 * 1,Exp0.tipo, Exp0.esDesignador,
-	 * ListaParametrosReales.tsh)
+	 * codigoPaso(ListaParametrosReales.subprogramah,1,Exp0.tipo, Exp0.esDesignador, ListaParametrosReales.tsh)
 	 */
 	public class ListaParamsRealesR2 extends ListaParamsReales {
 
@@ -5314,7 +5320,7 @@ public class GA {
 
 		public List<Instruccion> cod_exp() {
 			return codigoAsignacion(mem.cod().val(), exp0.cod().val(), exp0
-					.esDesignador().val());
+					.esDesignador().val(), mem.tipo().val().tam());
 		}
 
 		private Mem mem;
@@ -5628,7 +5634,6 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-
 			return concat(exp0.cod().val(), codigoEscritura(exp0.tipo().val()));
 
 		}
@@ -6845,7 +6850,7 @@ public class GA {
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(apila_int(num.lex()));
+			return single(apila_int(Integer.parseInt(num.lex())));
 		}
 
 		public Integer etq_exp() {
@@ -7175,7 +7180,6 @@ public class GA {
 		}
 
 		private Mem mem1;
-
 	}
 
 	public class MemR3Debug extends MemR3 {
@@ -7183,6 +7187,94 @@ public class GA {
 
 		public MemR3Debug(Mem mem1) {
 			super(mem1);
+			cod().fijaDescripcion(REGLA + " | mem(0).cod");
+			etq().fijaDescripcion(REGLA + " | mem(0).etq");
+			tipo().fijaDescripcion(REGLA + " | mem(0).tipo");
+			mem1.tsh().fijaDescripcion(REGLA + " | mem(1).tsh");
+			mem1.etqh().fijaDescripcion(REGLA + " | mem(1).etqh");
+		}
+	}
+
+	/**
+	 * <code>
+	 * Mem ::= Mem[Exp0]
+	 * Propagación de la tabla de símbolos
+	 * Mem(1).tsh = Mem(0).tsh
+	 * Exp0.tsh = Mem(0).tsh
+	 * Comprobación de las restricciones contextuales
+	 * Mem(0).tipo = tipoDeIndexacion(Mem(1).tipo,Exp0.tipo)
+	 * Generación de código
+	 * Mem(1).etqh = Mem(0).etqh
+	 * Exp0.etqh = Mem(1).etq
+	 * Mem(0).etq = Exp0.etq + numeroInstruccionesIndexacion(Exp0.esDesignador)
+	 * Mem(0).cod = Mem(1).cod || Exp0.cod || codigoIndexacion(Mem(1).tipo,Exp0.esDesignador)
+	 */
+	public class MemR4 extends Mem {
+
+		public MemR4(Mem mem1, Exp0 exp0) {
+			this.mem1 = mem1;
+			this.exp0 = exp0;
+			exp0.tsh().ponDependencias(tsh());
+			exp0.etqh().ponDependencias(mem1.etq());
+			mem1.tsh().ponDependencias(tsh());
+			mem1.etqh().ponDependencias(etqh());
+			tipo().ponDependencias(mem1.tipo(), exp0.tipo());
+			etq().ponDependencias(exp0.etq(), exp0.esDesignador());
+			cod().ponDependencias(mem1.cod(), exp0.cod(), mem1.tipo(),
+					exp0.esDesignador());
+			mem1.registraCtx(new MemCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return MemR4.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return MemR4.this.etqh().val();
+				}
+			});
+			exp0.registraCtx(new ExpCtx() {
+
+				@Override
+				public TS tsh_exp() {
+					return MemR4.this.tsh().val();
+				}
+
+				@Override
+				public Integer etqh_exp() {
+					return MemR4.this.mem1.etq().val();
+				}
+			});
+		}
+
+		public List<Instruccion> cod_exp() {
+			List<Instruccion> cod;
+			cod = concat(mem1.cod().val(), exp0.cod().val());
+			return concat(
+					cod,
+					codigoIndexacion(mem1.tipo().val(), exp0.esDesignador()
+							.val()));
+		}
+
+		public Integer etq_exp() {
+			return exp0.etq().val()
+					+ numeroInstruccionesIndexacion(exp0.esDesignador().val());
+		}
+
+		public ExpTipo tipo_exp() {
+			return tipoDeIndexacion(mem1.tipo().val(), exp0.tipo().val());
+		}
+
+		private Mem mem1;
+		private Exp0 exp0;
+	}
+
+	public class MemR4Debug extends MemR4 {
+		private final static String REGLA = "Mem(0) ::= Mem(1)[Exp0]";
+
+		public MemR4Debug(Mem mem1, Exp0 exp) {
+			super(mem1, exp);
 			cod().fijaDescripcion(REGLA + " | mem(0).cod");
 			etq().fijaDescripcion(REGLA + " | mem(0).etq");
 			tipo().fijaDescripcion(REGLA + " | mem(0).tipo");
@@ -7607,6 +7699,27 @@ public class GA {
 		return result;
 	}
 
+	public List<Instruccion> concat(Instruccion c1, Instruccion c2) {
+		List<Instruccion> result = new LinkedList<Instruccion>();
+		result.add(c1);
+		result.add(c2);
+		return result;
+	}
+
+	public List<Instruccion> concat(List<Instruccion>... cs) {
+		List<Instruccion> result = new LinkedList<Instruccion>();
+		for (List<Instruccion> c : cs)
+			result.addAll(c);
+		return result;
+	}
+
+	public List<Instruccion> concat(Instruccion... cs) {
+		List<Instruccion> result = new LinkedList<Instruccion>();
+		for (Instruccion c : cs)
+			result.add(c);
+		return result;
+	}
+
 	public List<Instruccion> single(Instruccion i) {
 		List<Instruccion> is = new LinkedList<Instruccion>();
 		is.add(i);
@@ -7631,7 +7744,7 @@ public class GA {
 				return ExpTipo.nuevaExpTipoInt();
 
 		}
-		return null;
+		return ExpTipo.nuevaExpTipoError();
 	}
 
 	public ExpTipo tipoOpUnario(CatLexica op, ExpTipo expTipo) {
@@ -7699,24 +7812,24 @@ public class GA {
 		return Instruccion.nuevaIEq();
 	}
 
-	public Instruccion apila_dir(String arg) {
-		return Instruccion.nuevaIApilaDir(arg);
+	public Instruccion apila_dir(int val) {
+		return Instruccion.nuevaIApilaDir(String.valueOf(val));
+	}
+
+	public Instruccion desapila_dir(int val) {
+		return Instruccion.nuevaIDesapilaDir(String.valueOf(val));
 	}
 
 	public Instruccion apila(String arg) {
 		return Instruccion.nuevaIApila(arg);
 	}
 
-	public static Instruccion desapila(String val) {
-		return Instruccion.nuevaIDesapilaDir(val);
-	}
-
-	public static Instruccion desapila() {
+	public Instruccion desapila() {
 		return Instruccion.nuevaIDesapila();
 	}
 
-	public Instruccion apila_int(String arg) {
-		return Instruccion.nuevaIApila(arg);
+	public Instruccion apila_int(int i) {
+		return Instruccion.nuevaIApila(String.valueOf(i));
 	}
 
 	public Instruccion apila_true() {
@@ -7735,13 +7848,16 @@ public class GA {
 		return Instruccion.nuevaIIr_a(ir);
 	}
 
+	private Instruccion ir_ind() {
+		return Instruccion.nuevaIIr_ind();
+	}
+
 	private Instruccion apila_ind() {
 		return Instruccion.nuevaIApilaInd();
 	}
 
-	private List<Instruccion> copia() {
-		// TODO instruccioncopia
-		return null;
+	private Instruccion copia() {
+		return Instruccion.nuevaICopia();
 	}
 
 	private Instruccion desapila_ind() {
@@ -7773,7 +7889,6 @@ public class GA {
 	}
 
 	// TODO NUEVOS METODOS AUXILIARES
-
 	private Error tiposNoDeclarados(List<ExpTipo> refsAcheck, TS tsDecs) {
 		String nodeclarados = "";// acumulador
 		boolean declarado = false;// bandera
@@ -7928,26 +8043,29 @@ public class GA {
 		return correcto;
 	}
 
-	private List<Instruccion> codigoPaso(String val, Integer val2,
-			ExpTipo val3, Boolean val4, TS val5) {
-		return null;
-	}
-
+	// sacao lo de tam de transparencias
 	private List<Instruccion> codigoAsignacion(List<Instruccion> memcod,
-			List<Instruccion> exp0cod, Boolean exp0EsDesig) {
+			List<Instruccion> exp0cod, Boolean exp0EsDesig, int tamMover) {
 		List<Instruccion> cod;
 		if (exp0EsDesig) {
-			cod = concat(exp0cod, concat(desapila_ind(), memcod));
+			cod = concat(memcod, concat(exp0cod, mueve(tamMover)));
 		} else {
-			cod = concat(exp0cod, memcod);
+			cod = concat(memcod, concat(exp0cod, desapila_ind()));
 		}
 		return cod;
 	}
 
+	private Instruccion mueve(int tamMover) {
+		return Instruccion.nuevaIMueve(String.valueOf(tamMover));
+	}
+
 	// TODO asi directamente :?
 	private int tamañoObjetoApuntado(ExpTipo tipo, TS ts) {
-		return ts.getTamRef(tipo.id());
-
+		if (tipo.t() == CatLexica.REF) {
+			return ts.getTamRef(tipo.id());
+		} else {
+			return tipo.tbase().tam();
+		}
 	}
 
 	private Instruccion reserva(int tamañoObjetoApuntado) {
@@ -8033,136 +8151,235 @@ public class GA {
 			if (campo.id().equals(lex))
 				return campo.tipo();
 		}
-		return null;// no debe entrar aki nunca :O
+		return ExpTipo.nuevaExpTipoError();
 	}
 
 	private ExpTipo tipoDeIndireccion(ExpTipo punt) {
-		return punt.tbase();
+		if (punt.t() == CatLexica.PUNTERO)
+			return punt.tbase();
+		else
+			return ExpTipo.nuevaExpTipoError();
 	}
 
 	private Integer aEntero(String lex) {
 		return Integer.parseInt(lex);
 	}
 
-	// TODO NUEVOS METODOS AUXILIARES
-
-	// TODO wat
-	private Error tipoError(ExpTipo exp) {
-		return null;
+	private boolean reservaMemoriaCorrecta(ExpTipo val) {
+		return val.t() == CatLexica.PUNTERO;
 	}
 
-	// TODO mas casos?, si es puntero o si es registro :O
-	private List<Instruccion> codigoAccesoVar(String lex, TS ts) {
-		ExpTipo e = ts.getExpTipo(lex);
-		List<Instruccion> cod;
-		if (e.t() == CatLexica.REF) {
-			cod = single(desapila_ind());
-		} else {
-			cod = single(apila_dir(String.valueOf(dirDe(lex, ts))));
+	private boolean liberaMemoriaCorrecta(ExpTipo val) {
+		return val.t() == CatLexica.PUNTERO;
+	}
+
+	// sacado de apuntes
+	private Error existeSimbEnUltimoNivel(TS decs1ts, String lex, Integer nivelh) {
+		if (existeSimb(decs1ts, lex)) {
+			if (decs1ts.getNivel(lex) == nivelh)
+				return noError();
 		}
-	
-		return cod;
+		return new Error("No existe en ultimo nivel: " + lex);
 	}
 
-	private Integer numeroInstruccionesAccesoVar(String lex, TS ts) {
-		ExpTipo e = ts.getExpTipo(lex);
-		if (e.t() == CatLexica.REF) {
-			return 2;
+	private Integer numeroInstruccionesIndexacion(Boolean exp0esDesig) {
+		if (exp0esDesig)
+			return 4;// apila_ind,apila_int(tamBase),mul(),suma()
+		else
+			return 3;// apila_int(tamBase),mul(),suma()
+	}
+
+	private List<Instruccion> codigoIndexacion(ExpTipo mem1tipo,
+			Boolean exp0EsDesig) {
+		List<Instruccion> cod;
+		int tamBase = mem1tipo.tbase().tam();
+		if (exp0EsDesig)
+			cod = concat(apila_ind(), apila_int(tamBase));
+		else
+			cod = single(apila_int(tamBase));
+		return concat(cod, concat(mul(), suma()));
+	}
+
+	private ExpTipo tipoDeIndexacion(ExpTipo mem1tipo, ExpTipo exp0tipo) {
+		if (exp0tipo.t() == CatLexica.INT) {
+			return mem1tipo.tbase();
 		} else {
-			return 1;
+			return ExpTipo.nuevaExpTipoError();
 		}
 	}
 
 	private int numeroInstruccionesActivacionProgramaPrincipal() {
-		return 0;
+		return 4;
+		// apila_int(inicioDatosEstaticos),desapilar_dir(1),
+		// apila_int(finDatosEstaticos),desapila_dir(0)
 	}
 
+	// se guarda en posicion 0 la cima de la pila y en 1 el primer display
 	private List<Instruccion> codigoActivacionProgramaPrincipal(
 			Integer dirInicio, Integer anidamiento) {
-		return null;
+		List<Instruccion> codigoDisplay;
+		int inicioDatosEstaticos = anidamiento + 1;
+		codigoDisplay = concat(apila_int(inicioDatosEstaticos), desapila_dir(1));
+
+		List<Instruccion> codigoCP;
+		int finDatosEstaticos = 1 + anidamiento + dirInicio;
+		codigoCP = concat(apila_int(finDatosEstaticos), desapila_dir(0));
+
+		return concat(codigoDisplay, codigoCP);// meter aqui el ir_a(decs.etq)?
 	}
 
 	private Integer numeroInstruccionesPrologo() {
-
-		return null;
+		return 13;
 	}
 
 	private Integer numeroInstruccionesEpilogo() {
-
-		return null;
+		return 13 + 1;// +1 o no si metes el ir_ind en el epilogo
 	}
 
 	private List<Instruccion> codigoPrologo(Integer dir, Integer nivelh) {
 
+		List<Instruccion> saveOldDisplay, fijaNewDisplay, incrementaCP;
+		// El antiguo display esta en 1(salto cp)+nivelh, eso lo meto en valor
+		// generado con la suma de cp+2 (0-cp+[1-dir return|2-oldDisplay])
+		saveOldDisplay = concat(apila_dir(0), apila_int(2), suma(),
+				apila_dir(1 + nivelh), desapila_ind());
+
+		// El nuevo display se guardara en 1+nivelh, y contendra el valor de
+		// inicio de datos del nuevo display (cp+3)
+		fijaNewDisplay = concat(apila_dir(0), apila_int(3), suma(),
+				desapila_dir(1 + nivelh));// coge cima y mete en dir
+		// apila cp, apilo datos locales+2[ret|oldisplay] sumo y save n dir 0
+		incrementaCP = concat(apila_dir(0), apila_int(dir + 2), suma(),
+				desapila_dir(0));
+		return concat(saveOldDisplay, fijaNewDisplay, incrementaCP);
+	}
+
+	private List<Instruccion> codigoEpilogo(Integer dir, Integer nivel) {
+		List<Instruccion> dirRetorno, fijaCP, recuperaOldDisplay;
+		// cojo display, sumo 2 y resto, para situarme en dir ret, y apilo_ind,
+		// para traermelo
+		dirRetorno = concat(apila_dir(1 + nivel), apila_int(2), resta(),
+				apila_ind());
+		// cojo display, apilo inicio datos, resto y copio old CP, y fijo ese
+		// como new cp
+		fijaCP = concat(apila_dir(1 + nivel), apila_int(3), resta(), copia(),
+				desapila_dir(0));
+		// aprovecho copia (old cp) sumo 2 para situarme en campo old display,
+		// apila_ind para traerme lo que contenia y lo guardo como el display
+		// actual
+		recuperaOldDisplay = concat(apila_int(2), suma(), apila_ind(),
+				desapila_dir(1 + nivel));
+
+		return concat(dirRetorno, fijaCP, recuperaOldDisplay, single(ir_ind()));
+	}
+
+	// TODO NUEVOS METODOS AUXILIARES
+	private Error tipoError(ExpTipo exp) {
 		return null;
 	}
 
-	private List<Instruccion> codigoEpilogo(Integer dir, Integer nivelh) {
-
-		return null;
+	private List<Instruccion> codigoAccesoVar(String lex, TS ts) {
+		// apilo display,y dir de var para get dir abs
+		List<Instruccion> cod;
+		int lv = ts.getNivel(lex);
+		int dir = dirDe(lex, ts);
+		cod = concat(apila_dir(1 + lv), apila_int(dir), suma());
+		// y si es pvar añado apila_ind() para get valor
+		if (ts.getClase(lex) == CatLexica.PVAR)
+			cod = concat(cod, apila_ind());
+		return cod;
 	}
 
-	private Error existeSimbEnUltimoNivel(TS val, String val2) {
-
-		return null;
+	private Integer numeroInstruccionesAccesoVar(String lex, TS ts) {
+		if (ts.getClase(lex) == CatLexica.PVAR) {
+			return 4;
+		} else {
+			return 3;
+		}
 	}
 
-	private List<Instruccion> fijaLlamadasPendientes(
-			List<Instruccion> bloqueCod, List<Integer> list, Integer bloqDirIni) {
-		return null;
-	}
-
-	private Integer numeroInstruccionesFinLlamada() {
-		return null;
-	}
-
-	private List<Instruccion> codigoFinLlamada(String lex, TS ts, int nInsts) {
-		return null;
-	}
-
-	private List<Integer> direccionSiSaltoIndefinido(String lex, TS ts,
-			Integer paramsEtq) {
-
-		return null;
-	}
-
-	private int numeroInstruccionesInicioLlamada() {
-		return 0;
-	}
-
-	private List<Instruccion> codigoInicioLlamada(Integer nivelDe) {
-		return null;
-	}
-
-	private int numeroInstruccionesCodigoPaso() {
-		return 0;
-	}
-
-	private boolean reservaMemoriaCorrecta(ExpTipo val) {
-		return false;
-	}
-
-	private boolean liberaMemoriaCorrecta(ExpTipo val) {
-
-		return false;
-	}
-
-	private List<Instruccion> codigoLectura(ExpTipo val) {
-
-		return null;
+	private Instruccion codigoLectura(ExpTipo mem) {
+		return Instruccion.nuevaILectura(mem.t());
 	}
 
 	private boolean lecturaCorrecta(ExpTipo val) {
-		return false;
+		return val.tipo().t() == CatLexica.INT
+				|| val.tipo().t() == CatLexica.BOOLEAN;
 	}
 
 	private boolean escrituraCorrecta(ExpTipo val) {
-
-		return false;
+		return val.tipo().t() == CatLexica.INT
+				|| val.tipo().t() == CatLexica.BOOLEAN;
 	}
 
-	private List<Instruccion> codigoEscritura(ExpTipo val) {
-		return null;
+	private Instruccion codigoEscritura(ExpTipo mem) {
+		return Instruccion.nuevaIEscritura(mem.t());
 	}
 
+	// TODO DUDA
+	private List<Integer> direccionSiSaltoIndefinido(String lex, TS ts,
+			Integer paramsEtq) {
+		List<Integer> l = new LinkedList<Integer>();
+		l.add(paramsEtq);
+		// si esta indefinido es -1 porque asi lo he inicializado yo
+		return dirDe(lex, ts) == -1 ? l : listaIntegerVacia();
+	}
+
+	// TODO DUDA
+	private List<Instruccion> fijaLlamadasPendientes(
+			List<Instruccion> bloqueCod, List<Integer> callPendientes,
+			Integer bloqDirIni) {
+		List<Instruccion> cod = bloqueCod;
+		for (Integer call : callPendientes)
+			cod.add(ir_a(call));
+		cod.add(ir_a(bloqDirIni));
+		return cod;
+	}
+
+	// TODO esto falta algo seguro se supone que nivelDe esta la dir de
+	// retorno pss
+	private List<Instruccion> codigoInicioLlamada(Integer nivelDe,
+			Integer parametqRet) {
+		List<Instruccion> saveReturn, inicioData;
+		saveReturn = concat(apila_dir(0), apila_int(1), suma(),
+				apila_int(parametqRet), desapila_ind());
+		inicioData = concat(apila_dir(0), apila_int(1), suma());
+		return concat(saveReturn, inicioData);
+	}
+
+	private int numeroInstruccionesInicioLlamada() {
+		return 8;// apila_dir(0), apila_int(1),
+					// suma(),apila_int(nivelDe),desapila_ind()
+	}
+
+	private Integer numeroInstruccionesFinLlamada() {
+		return 1;// desapila
+	}
+
+	// ir_a fin de llamada?
+	private List<Instruccion> codigoFinLlamada(String idenLex, TS ts, int nInsts) {
+		return single(desapila());
+	}
+
+	private int numeroInstruccionesCodigoPaso() {
+		return 1;
+	}
+
+	private List<Instruccion> codigoPaso(String subProgramah, Integer nparams,
+			ExpTipo exp0tipo, Boolean exp0EsDesig, TS tsh) {
+		List<Instruccion> cod;
+		ExpTipo metodo = tsh.getExpTipo(subProgramah);
+		ExpTipo param = metodo.params().get(nparams);
+		cod = new LinkedList<Instruccion>();
+		if (exp0EsDesig) {
+			if (param.modo() == CatLexica.VALOR) {
+				cod = concat(cod, mueve(1));
+			} else {
+				cod = concat(cod, desapila_ind());
+			}
+		} else {
+			cod = concat(cod, desapila_ind());
+		}
+		return cod;
+	}
 }

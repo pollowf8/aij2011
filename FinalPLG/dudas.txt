@@ -4,6 +4,8 @@ O como la anterior que se calcula automaticamente
 
 refsAChequear sera una lista de ExpTipo?¿
 
+Toda la parte de paso de parametros
+
 funciones semanticas hechas con dudas
 parametroCorrecto()
 creaNivel()

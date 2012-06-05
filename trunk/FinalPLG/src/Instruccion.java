@@ -566,8 +566,8 @@ abstract public class Instruccion implements Serializable {
 
 	}
 
-	// Interpreta la cima de la pila como una direccion, la subcima como un
-	// valor, y se lleva el valor a la direccion de memoria indicada
+	// Interpreta la cima de la pila como un valor, la subcima como una
+	// dir, y se lleva el valor a la direccion de memoria indicada
 	public static class IDesapilaInd extends Instruccion {
 
 		private IDesapilaInd() {
@@ -579,8 +579,8 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public void ejecuta(VM vm) {
-			VM.PValue dir = vm.pop();
 			VM.PValue op1 = vm.pop();
+			VM.PValue dir = vm.pop();
 			vm.addValMem(dir.asInt(), op1.asInt());
 			vm.incCP();
 		}
@@ -617,7 +617,8 @@ abstract public class Instruccion implements Serializable {
 		public void ejecuta(VM vm) {
 			VM.PValue dir = vm.pop();
 			Integer a = vm.getValMem(dir.asInt());
-			vm.push(new VM.IntPValue(a));
+			//sino definido pone 0
+			vm.push(new VM.IntPValue(a==null?1000:a));
 			vm.incCP();
 		}
 

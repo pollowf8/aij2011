@@ -1,10 +1,9 @@
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Union;
 
 public class GA {
 	// private int identado;
@@ -243,6 +242,12 @@ public class GA {
 			dirh.fijaExpresion(new ExpSem<Integer>() {
 				public Integer val() {
 					return ctx.dirh_exp();
+				}
+			});
+			nivelh = new Atributo<Integer>();
+			nivelh.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return ctx.nivelh_exp();
 				}
 			});
 			etqh = new Atributo<Integer>();
@@ -1114,12 +1119,12 @@ public class GA {
 	// Tipo
 	public abstract class Tipo {
 		protected Tipo() {
-			// tipo = new Atributo<CatLexica>();
-			// tipo.fijaExpresion(new ExpSem<CatLexica>() {
-			// public CatLexica val() {
-			// return tipo_exp();
-			// }
-			// });
+			tipo = new Atributo<ExpTipo>();
+			tipo.fijaExpresion(new ExpSem<ExpTipo>() {
+				public ExpTipo val() {
+					return tipo_exp();
+				}
+			});
 			err = new Atributo<Error>();
 			err.fijaExpresion(new ExpSem<Error>() {
 				public Error val() {
@@ -2057,7 +2062,8 @@ public class GA {
 				}
 
 				public int etqh_exp() {
-					return 0;
+					//return 0;
+					return numeroInstruccionesActivacionProgramaPrincipal();
 				}
 
 				@Override
@@ -2067,7 +2073,8 @@ public class GA {
 
 				@Override
 				public int dirh_exp() {
-					return numeroInstruccionesActivacionProgramaPrincipal();
+					return 0;
+					//return numeroInstruccionesActivacionProgramaPrincipal();
 				}
 			});
 
@@ -2167,7 +2174,10 @@ public class GA {
 			etq().ponDependencias(insts.etq());
 			llamadasPendientes().ponDependencias(insts.llamadasPendientes());
 			anidamiento().ponDependencias(decs.anidamiento());
-			dirInicio().ponDependencias(decs.etq());
+			
+			//dirInicio().ponDependencias(decs.etq());
+			dirInicio().ponDependencias(decs.dir());
+			
 			decs.tsh().ponDependencias(tsh());
 			decs.dirh().ponDependencias(dirh());
 			decs.nivelh().ponDependencias(nivelh());
@@ -2184,9 +2194,9 @@ public class GA {
 		}
 
 		protected final List<Instruccion> cod_exp() {
-			List<Instruccion> out = concat(decs.cod().val(),
-					codigoPrologo(decs.dir().val(), nivelh().val()));
-			return concat(out, codigoEpilogo(decs.dir().val(), nivelh().val()));
+			return concat(decs.cod().val(),
+					codigoPrologo(decs.dir().val(), nivelh().val()),insts.cod().val(),
+					codigoEpilogo(decs.dir().val(), nivelh().val()));
 		}
 
 		@Override
@@ -2196,7 +2206,7 @@ public class GA {
 
 		@Override
 		protected Integer dirInicio_exp() {
-			return decs.etq().val();
+			return decs.dir().val();
 		}
 
 		@Override
@@ -2550,7 +2560,7 @@ public class GA {
 		}
 
 		public Integer dir_exp() {
-			return 1;
+			return dirh().val() + dec.tam().val();
 		}
 
 		@Override
@@ -2581,16 +2591,16 @@ public class GA {
 
 		public DecsR2Debug(Dec dec) {
 			super(dec);
-			err().fijaDescripcion(REGLA + " | Decs(0).err");
-			dir().fijaDescripcion(REGLA + " | Decs(0).dir");
-			ts().fijaDescripcion(REGLA + " | Decs(0).ts");
-			etq().fijaDescripcion(REGLA + " | Decs(0).etq");
-			cod().fijaDescripcion(REGLA + " | Decs(0).cod");
-			refsAChequear().fijaDescripcion(REGLA + " | Decs(0).refsAChequear");
-			anidamiento().fijaDescripcion(REGLA + " | Decs(0).anidamiento");
-			dec.nivelh().fijaDescripcion(REGLA + " | Decs.nivelh");
-			dec.etqh().fijaDescripcion(REGLA + " | Decs.etqh");
-			dec.tsh().fijaDescripcion(REGLA + " | Decs.tsh");
+			err().fijaDescripcion(REGLA + " | Decs.err");
+			dir().fijaDescripcion(REGLA + " | Decs.dir");
+			ts().fijaDescripcion(REGLA + " | Decs.ts");
+			etq().fijaDescripcion(REGLA + " | Decs.etq");
+			cod().fijaDescripcion(REGLA + " | Decs.cod");
+			refsAChequear().fijaDescripcion(REGLA + " | Decs.refsAChequear");
+			anidamiento().fijaDescripcion(REGLA + " | Decs.anidamiento");
+			dec.nivelh().fijaDescripcion(REGLA + " | Dec.nivelh");
+			dec.etqh().fijaDescripcion(REGLA + " | Dec.etqh");
+			dec.tsh().fijaDescripcion(REGLA + " | Dec.tsh");
 		}
 	}
 
@@ -2627,9 +2637,11 @@ public class GA {
 				}
 			});
 
-			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			tam().ponDependencias(tipo.tipo());
+			tipo().ponDependencias(tipo.tipo());
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?tipo.tipo()
 			etq().ponDependencias(etqh());
-			// ni clase ni tipo ni tam ni iden dependencias creo
+			// ni clase ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -2695,11 +2707,16 @@ public class GA {
 
 		public DecR1Debug(Tipo tipo, Token iden) {
 			super(tipo, iden);
+			cod().fijaDescripcion(REGLA + " | Dec.cod");
+			tipo().fijaDescripcion(REGLA + " | Dec.tipo");
 			err().fijaDescripcion(REGLA + " | Dec.err");
 			etq().fijaDescripcion(REGLA + " | Dec.etq");
-			// ni clase ni tipo ni tam ni iden
+			clase().fijaDescripcion(REGLA + " | Dec.clase");
+			tam().fijaDescripcion(REGLA + " | Dec.tam");
+			iden().fijaDescripcion(REGLA + " | Dec.iden");
 			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
+
 		}
 	}
 
@@ -2735,9 +2752,10 @@ public class GA {
 				}
 			});
 
-			err().ponDependencias(tipo.err(), tsh());// TODO?tipo.tipo()
+			tipo().ponDependencias(tipo.tipo());
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?
 			etq().ponDependencias(etqh());
-			// ni clase ni tipo ni tam ni iden dependencias creo
+			// ni clase ni tam ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -2806,7 +2824,7 @@ public class GA {
 			super(tipo, iden);
 			err().fijaDescripcion(REGLA + " | Dec.err");
 			etq().fijaDescripcion(REGLA + " | Dec.etq");
-			// ni clase ni tipo ni tam ni iden
+			tipo().fijaDescripcion(REGLA + " | Dec.tipo");
 			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
 		}
@@ -3571,7 +3589,8 @@ public class GA {
 		public TipoR1Debug() {
 			super();
 			err().fijaDescripcion(REGLA + " | tipo.err");
-			// tipo().fijaDescripcion(REGLA + " | tipo.tipo");
+			tipo().fijaDescripcion(REGLA + " | Tipo.tipo");
+			refsAChequear().fijaDescripcion(REGLA + " | Tipo.refsAChequear");
 		}
 	}
 
@@ -3613,6 +3632,8 @@ public class GA {
 		public TipoR2Debug() {
 			super();
 			err().fijaDescripcion(REGLA + " | tipo.err");
+			tipo().fijaDescripcion(REGLA + " | Tipo.tipo");
+			refsAChequear().fijaDescripcion(REGLA + " | Tipo.refsAChequear");
 		}
 	}
 
@@ -4634,7 +4655,7 @@ public class GA {
 
 		public InstR7(Inst iLectura) {
 			super();
-			this.iDispose = iLectura;
+			this.iLectura = iLectura;
 			iLectura.registraCtx(new InstCtx() {
 				public TS tsh_exp() {
 					return InstR7.this.tsh().val();
@@ -4652,16 +4673,16 @@ public class GA {
 		}
 
 		public Integer etq_exp() {
-			return iDispose.etq().val();
+			return iLectura.etq().val();
 
 		}
 
 		public Error err_exp() {
-			return iDispose.err().val();
+			return iLectura.err().val();
 		}
 
 		public List<Instruccion> cod_exp() {
-			return iDispose.cod().val();
+			return iLectura.cod().val();
 		}
 
 		@Override
@@ -4669,7 +4690,7 @@ public class GA {
 			return listaIntegerVacia();
 		}
 
-		private Inst iDispose;
+		private Inst iLectura;
 
 	}
 
@@ -5298,7 +5319,7 @@ public class GA {
 			});
 			err().ponDependencias(mem.tipo(), exp0.tipo());
 			etq().ponDependencias(exp0.etq());
-			cod().ponDependencias(exp0.cod(), tsh());
+			cod().ponDependencias(mem.cod(), exp0.cod(), exp0.esDesignador());
 
 			mem.tsh().ponDependencias(tsh());
 			mem.etqh().ponDependencias(etqh());
@@ -6393,6 +6414,7 @@ public class GA {
 			cod().ponDependencias(exp2.cod());
 			etq().ponDependencias(exp2.etq());
 			tipo().ponDependencias(exp2.tipo());
+			esDesignador().ponDependencias(exp2.esDesignador());
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -8010,6 +8032,10 @@ public class GA {
 	}
 
 	private boolean llamadaCorrecta(TS ts, String lex, Integer nparams) {
+		if (!estaEn(lex, ts))
+			return false;
+		if (ts.getClase(lex) != CatLexica.PROC)
+			return false;
 		ExpTipo metodo = ts.getExpTipo(lex);
 		return metodo.params().size() == nparams ? true : false;
 	}
@@ -8021,24 +8047,28 @@ public class GA {
 
 	// TODO
 	// que coincida el tipo del parametro nparams con la definicion del metodo
-	// en caso de que sea designador(puntero), se mira el tipo del dato al que
-	// apunta
+	// en caso de que sea designador(puntero), se mira el modo del parametro y
+	// luego se mira el tipo del dato al que apunta
 	private boolean parametroCorrecto(String subProg, int nParams,
 			ExpTipo tipo, Boolean designador, TS tsh) {
 		boolean correcto;
 		ExpTipo metodo = tsh.getExpTipo(subProg);
 		ExpTipo param = metodo.params().get(nParams);
 		if (!designador) {
-			if (tipo.t() == param.t())
+			if (tipo.t() == param.tipo().t())
 				correcto = true;
 			else
 				correcto = false;
 		} else {
-			ExpTipo referenciada = tsh.getExpTipo(tipo.id());
-			if (referenciada.t() == param.t()) {
-				correcto = true;
-			} else
+			if (param.modo() == CatLexica.VALOR)
 				correcto = false;
+			else {
+				ExpTipo referenciada = tsh.getExpTipo(tipo.id());
+				if (referenciada.t() == param.tipo().t()) {
+					correcto = true;
+				} else
+					correcto = false;
+			}
 		}
 		return correcto;
 	}
@@ -8215,17 +8245,19 @@ public class GA {
 	}
 
 	// se guarda en posicion 0 la cima de la pila y en 1 el primer display
+	// TODO dir inicio que representa?
+	//cp,disp,ret,oldis,inicio, por eso el 1+1+1
 	private List<Instruccion> codigoActivacionProgramaPrincipal(
 			Integer dirInicio, Integer anidamiento) {
 		List<Instruccion> codigoDisplay;
-		int inicioDatosEstaticos = anidamiento + 1;
+		int inicioDatosEstaticos = anidamiento +1+1+1;//cp,disp,ret,olddis
 		codigoDisplay = concat(apila_int(inicioDatosEstaticos), desapila_dir(1));
 
 		List<Instruccion> codigoCP;
-		int finDatosEstaticos = 1 + anidamiento + dirInicio;
+		int finDatosEstaticos =  1+1+1+anidamiento + dirInicio;
 		codigoCP = concat(apila_int(finDatosEstaticos), desapila_dir(0));
 
-		return concat(codigoDisplay, codigoCP);// meter aqui el ir_a(decs.etq)?
+		return concat(codigoDisplay, codigoCP);
 	}
 
 	private Integer numeroInstruccionesPrologo() {
@@ -8275,7 +8307,8 @@ public class GA {
 
 	// TODO NUEVOS METODOS AUXILIARES
 	private Error tipoError(ExpTipo exp) {
-		return null;
+		return exp.t() == CatLexica.ERROR ? new Error("Error de tipo")
+				: noError();
 	}
 
 	private List<Instruccion> codigoAccesoVar(String lex, TS ts) {
@@ -8381,5 +8414,33 @@ public class GA {
 			cod = concat(cod, desapila_ind());
 		}
 		return cod;
+	}
+
+	public static void main(String[] args) {
+		GA ga = new GA();
+
+		GA.Programa programa = ga.new ProgR1Debug(ga.new BloqueR1Debug(
+				ga.new DecsR2Debug(ga.new DecR1Debug(ga.new TipoR1Debug(),
+						new Token(CatLexica.IDEN, "x"))),
+				ga.new InstsR2Debug(ga.new InstR1Debug(ga.new IAsigR1Debug(
+						ga.new MemR1Debug(new Token(CatLexica.IDEN, "x")),
+						ga.new Exp0R2Debug(ga.new Exp1R2Debug(
+								ga.new Exp2R2Debug(ga.new Exp3R2Debug(
+										ga.new Exp4R3Debug(new Token(
+												CatLexica.INT, "20")))))))))));
+		try {
+			Evaluador evaluador = new Evaluador();
+			if (evaluador.evalua(programa.err()).val().hayError()) {
+				for (String e : programa.err().val().errores())
+					System.out.println(e);
+			} else {
+				ObjectOutputStream out = new ObjectOutputStream(
+						new FileOutputStream("out.bin"));
+				out.writeObject(evaluador.evalua(programa.cod()).val());
+			}
+		} catch (Exception e) {
+			System.err.println("ERROR:" + e);
+			System.exit(1);
+		}
 	}
 }

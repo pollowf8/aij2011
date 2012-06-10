@@ -40,23 +40,24 @@ public class ConstructorArboles {
 				//ILectura por leer y IEscritura por escribir
 				//IILamada empieza por IDEN
 				//IIF por if y IDO por do
-		if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
-				|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
-				|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
-				|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)) {
-						// IDEN ESTA BIEN ASI? porq instrucciones tb acepta iden :S
-			GA.Decs aDecs = recDecs();
-			if (tokenActual(CatLexica.AMPERSAND)) {
-				rec(CatLexica.AMPERSAND);
-				GA.Insts aInsts = recInsts();
-				return bloqueR1(aDecs, aInsts);
-			}
-		} else if (tokenActual(CatLexica.IDEN) 
+		if ((tokenActual(CatLexica.IDEN) && tokenActual(CatLexica.PAP)) // porq decs tb puede empezar por iden
 				|| tokenActual(CatLexica.IF) || tokenActual(CatLexica.DO)
 				|| tokenActual(CatLexica.NEW)|| tokenActual(CatLexica.DELETE)
 				|| tokenActual(CatLexica.LEER)|| tokenActual(CatLexica.ESCRIBIR)) {
 			GA.Insts aInsts = recInsts();
 			return bloqueR2(aInsts);
+		}else{
+			if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
+					|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
+					|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
+					|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)) {
+				GA.Decs aDecs = recDecs();
+				if (tokenActual(CatLexica.AMPERSAND)) {
+					rec(CatLexica.AMPERSAND);
+					GA.Insts aInsts = recInsts();
+					return bloqueR1(aDecs, aInsts);
+				}
+			} 
 		}
 		errorSintactico();
 		return null;
@@ -74,8 +75,10 @@ public class ConstructorArboles {
 	}
 
 	// Rdecs ::= ; Declaracion RDecs
-	// RDecs(0).a = RDecs(1).a
-	// RDecs(1).ah = decsR1(RDecs(0).ah,Declaracion.a)
+			// RDecs(0).a = RDecs(1).a
+			// RDecs(1).ah = decsR1(RDecs(0).ah,Declaracion.a)
+	//RDecs ::= lambda
+			//RDecs.a=RDecs.ah
 	private GA.Decs recRDecs(GA.Decs ahRDecs0) throws IOException {
 		if (tokenActual(CatLexica.PUNTOCOMA)) {
 			rec(CatLexica.PUNTOCOMA);
@@ -87,43 +90,234 @@ public class ConstructorArboles {
 		}
 	}
 
-	// Declaracion ::= Tipo IDEN
-	// Declaracion.a = decR1(Tipo.a,IDEN.lex)
+//	Declaracion ::= Tipo IDEN
+//			Declaracion.a = decR1(Tipo.a,IDEN.lex)
+//	Declaracion ::= tipo Tipo IDEN
+//			Declaracion.a = decR2(Tipo.a,IDEN.lex)
+//	Declaracion ::= proc IDEN ( ParametrosFormales ) { Bloque }
+//			Declaracion.a = decR3(IDEN.lex,ParametrosFormales.a,Bloque.a)
+
 	private GA.Dec recDec() throws IOException {
-		GA.Tipo aTipo = recTipo();
-		if (tokenActual(CatLexica.IDEN)) {
+		if(tokenActual(CatLexica.TIPO)){//segunda ecuacion
+			rec(CatLexica.TIPO);
+			GA.Tipo aTipo = recTipo();
 			Token tIden = tact;
 			rec(CatLexica.IDEN);
-			return decR1(aTipo, tIden);
-		} else {
+			return decR2(aTipo,tIden);
+		}else{
+			if(tokenActual(CatLexica.PROC)){//tercera ecuacion
+				rec(CatLexica.PROC);
+				Token tIden = tact;
+				rec(CatLexica.IDEN);
+				rec(CatLexica.PAP);
+				GA.ParamsFormales aParamsFormales = recParamsFormals();
+				rec(CatLexica.PCIERRE);
+				rec(CatLexica.LLAVEAP);
+				GA.Bloque aBloque = recBloque();
+				rec(CatLexica.LLAVECIERRE);
+				return decR3(tIden,aParamsFormales,aBloque);
+			}else 
+				if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
+						|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
+						|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
+						|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)){//primera ecuacion
+				GA.Tipo aTipo = recTipo();
+				Token tIden = tact;
+				rec(CatLexica.IDEN);
+				return decR1(aTipo,tIden);
+			}
+			else
+			{
 			errorSintactico(CatLexica.IDEN);
 			return null;
+			}
 		}
 	}
+	
+//	ParametrosFormales ::= ListaParametrosFormales
+//			ParametrosFormales.a = parametrosFormalesR1(ListaParametrosFormales.a)
+//	ParametrosFormales ::=  lambda
+//			ParametrosFormales.a = parametrosFormalesR2()
+//
+	private GA.ParamsFormales recParamsFormals() throws IOException {
+		if (tokenActual(CatLexica.VAR)||tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
+				|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
+				|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
+				|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)) {
+			GA.ListaParamsFormales aListaParamsFormales= recListaParamsFormales();
+			return parametrosFormalesR1(aListaParamsFormales);
+		} else {
+			//rec(CatLexica.lambda);
+			return parametrosFormalesR2();
+		}
 
-	// Tipo ::= int
-	// Tipo.a=tipoR1()
-	// Tipo ::= boolean
-	// Tipo.a=tipoR2()
+	}
+	
+//	ListaParametrosFormales ::= ParametroFormal RListaParamsForm
+//			ListaParametrosFormales.a = RListaParamsForm.a	
+//			RListaParamsForm.ah = listaParametrosFormalesR2(ParametroFormal.a)
+
+	private GA.ListaParamsFormales recListaParamsFormales() throws IOException {	
+
+			GA.ParamFormal aParamFormal= recParamFormal();
+			GA.ListaParamsFormales aRListaParamsFormales = recRListaParamsFormales(listaParametrosFormalesR2(aParamFormal));
+			return aRListaParamsFormales;
+
+	}	
+	
+	
+//		RListaParamsForm ::= , ParametroFormal RListaParamsForm
+//				RListaParamsForm(0).a = RListaParamsForm(1).a 
+//				RListaParamsForm(1).ah = listaParametrosFormalesR1(RListaParamsForm(0).ah, ParametroFormal.a)
+//		RListaParamsForm ::= lambda
+//				RListaParamsForm.a = RListaParamsForm.ah
+
+			private GA.ListaParamsFormales recRListaParamsFormales(GA.ListaParamsFormales ahRListaParamsFormales0) throws IOException {
+				if (tokenActual(CatLexica.COMA)) {
+					rec(CatLexica.COMA);
+					GA.ParamFormal aParamFormal = recParamFormal();
+					GA.ListaParamsFormales aRListaParamsFormales1 = recRListaParamsFormales(listaParametrosFormalesR1(ahRListaParamsFormales0, aParamFormal));
+					return aRListaParamsFormales1;
+				} else {
+					return ahRListaParamsFormales0;
+				}
+			}
+	
+			
+			
+//	ParametroFormal ::= Tipo IDEN
+//			ParametroFormal.a = parametroFormalR1(Tipo.a,IDEN.lex)
+//	ParametroFormal ::= var Tipo IDEN
+//			ParametroFormal.a = parametroFormalR2(Tipo.a,IDEN.lex)
+	private GA.ParamFormal recParamFormal() throws IOException {
+				if(tokenActual(CatLexica.VAR)){//segunda ecuacion
+					rec(CatLexica.VAR);
+					GA.Tipo aTipo = recTipo();
+					Token tIden = tact;
+					rec(CatLexica.IDEN);
+					return parametroFormalR2(aTipo,tIden);
+				}else{
+					GA.Tipo aTipo = recTipo();
+					Token tIden = tact;
+					rec(CatLexica.IDEN);
+					return parametroFormalR1(aTipo,tIden);
+				}
+	}		
+					
+//	Tipo ::= int
+//			Tipo.a=tipoR1() 
+//	Tipo ::= boolean
+//			Tipo.a=tipoR2() 
+//	Tipo ::= tabla [NUM] de Tipo
+//			Tipo.a=tipoR3(NUM.lex,Tipo.a) 
+//	Tipo ::= registro{ Campos }
+//			Tipo.a=tipoR4(Campos.a) 
+//	Tipo ::= puntero Tipo
+//			Tipo.a=tipoR5(Tipo.a) 
+//	Tipo ::= IDEN
+//			Tipo.a=tipoR6(IDEN.lex) 
+
 	private GA.Tipo recTipo() throws IOException {
 		if (tokenActual(CatLexica.INT)) {
-			Token tInt = tact;
 			rec(CatLexica.INT);
-			return tipoR1(tInt);
+			return tipoR1();
 		} else if (tokenActual(CatLexica.BOOLEAN)) {
-			Token tBool = tact;
 			rec(CatLexica.BOOLEAN);
-			return tipoR2(tBool);
-		} else {
-			errorSintactico(CatLexica.INT, CatLexica.BOOLEAN);
+			return tipoR2();
+		} else if (tokenActual(CatLexica.TABLA)) {
+			rec(CatLexica.TABLA);
+			
+			rec(CatLexica.CAP);
+			Token aNum = tact;
+			rec(CatLexica.NUM);			
+			rec(CatLexica.CCIERRE);
+			rec(CatLexica.DE);
+			GA.Tipo aTipo = recTipo();
+			return tipoR3(aNum,aTipo);
+		}else if (tokenActual(CatLexica.REG)) {
+			rec(CatLexica.REG);
+			
+			rec(CatLexica.LLAVEAP);
+			GA.Campos aCampos =recCampos();
+			rec(CatLexica.LLAVECIERRE);
+		
+			return tipoR4(aCampos);
+		}else if (tokenActual(CatLexica.PUNTERO)) {
+			rec(CatLexica.PUNTERO);
+			GA.Tipo aTipo = recTipo();
+			return tipoR5(aTipo);
+			
+		}else if (tokenActual(CatLexica.IDEN)) {
+			Token tIden = tact;
+			rec(CatLexica.IDEN);
+			return tipoR6(tIden);
+		}else{
+			errorSintactico(CatLexica.INT, CatLexica.BOOLEAN,CatLexica.PUNTERO,CatLexica.REG,CatLexica.TABLA,CatLexica.IDEN);
 			return null;
 		}
 
 	}
 
+	
+		
+//	Campos ::= Campo RCampos
+//			Campos.a = RCampos.a 
+//			RCampos.ah = camposR2(Campo.a)
+
+	private GA.Campos recCampos() throws IOException {
+
+			if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
+					|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
+					|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
+					|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)) {
+				
+				GA.Campo aCampo = recCampo();
+				GA.Campos aRCampos = recRCampos(camposR2(aCampo));
+				return aRCampos;
+			}
+			errorSintactico();
+			return null;
+		}
+	
+		
+//		RCampos ::= ; Campo RCampos
+//				RCampos(0).a = RCampos(1).a
+//				RCampos(1).ah = camposR1(RCampos(0).ah,Campo.a)
+//		RCampos ::= lambda
+//				RCampos.a=RCampos.ah
+
+			private GA.Campos recRCampos(GA.Campos ahRCampos0) throws IOException {
+				if (tokenActual(CatLexica.PUNTOCOMA)) {
+					rec(CatLexica.PUNTOCOMA);
+					GA.Campo aCampo = recCampo();
+					GA.Campos aRCampos1 = recRCampos(camposR1(ahRCampos0, aCampo));
+					return aRCampos1;
+				} else {
+					return ahRCampos0;
+				}
+			}
+			
+//			Campo ::= Tipo IDEN
+//					Campo.a= campoR1(Tipo.a, IDEN.lex) 
+	private GA.Campo recCampo() throws IOException {
+
+				if (tokenActual(CatLexica.INT) || tokenActual(CatLexica.BOOLEAN)
+						|| tokenActual(CatLexica.TABLA) || tokenActual(CatLexica.REG)
+						|| tokenActual(CatLexica.PUNTERO)|| tokenActual(CatLexica.IDEN)
+						|| tokenActual(CatLexica.TIPO)|| tokenActual(CatLexica.PROC)) {
+					
+					GA.Tipo aTipo = recTipo();
+					Token tIden= tact;
+					return  campoR1(aTipo,tIden);
+				}
+				errorSintactico();
+				return null;
+			}
+
+
 	// Instrucciones ::= Instruccion RInsts
-	// Instrucciones.a = RInsts.a
-	// RInsts.ah = instsR2(Instruccion.a)
+	// 		Instrucciones.a = RInsts.a
+	// 		RInsts.ah = instsR2(Instruccion.a)
 	private GA.Insts recInsts() throws IOException {
 		GA.Inst aInst = recInst();
 		GA.Insts aRInsts = recRInsts(instsR2(aInst));
@@ -131,8 +325,11 @@ public class ConstructorArboles {
 	}
 
 	// RInsts ::= ; Instruccion RInsts
-	// RInsts (0).a = RInsts (1).a
-	// RInsts (1).ah = instsR1(RInsts (0).ah, Instruccion.a)
+	// 		RInsts (0).a = RInsts (1).a
+	// 		RInsts (1).ah = instsR1(RInsts (0).ah, Instruccion.a)
+	// RInsts ::= lambda
+	//		RInsts.a = RInsts.ah
+
 	private GA.Insts recRInsts(GA.Insts ahRInsts0) throws IOException {
 		if (tokenActual(CatLexica.PUNTOCOMA)) {
 			rec(CatLexica.PUNTOCOMA);
@@ -145,46 +342,189 @@ public class ConstructorArboles {
 
 	}
 
-	// Instruccion ::= IAsignacion
-	// Instruccion.a = instR1(IAsignacion.a)
-	// Instruccion ::= IIF
-	// Instruccion.a = instR2(IIF.a)
-	// Instruccion ::= IDO
-	// Instruccion.a = instR3(IDO.a)
+//	Instruccion ::= IAsignacion
+//			Instruccion.a = instR1(IAsignacion.a)
+//	Instruccion ::= INew
+//			Instruccion.a = instR2(INew.a)
+//	Instruccion ::= IDispose
+//			Instruccion.a = instR3(IDispose.a)
+//	Instruccion ::= ILectura
+//			Instruccion.a = instR4(ILectura.a)
+//	Instruccion ::= IEscritura
+//			Instruccion.a = instR5(IEscritura.a)
+//	Instruccion ::= ILlamada
+//			Instruccion.a = instR6(ILlamada.a)
+//	Instruccion ::= IIF
+//			Instruccion.a = instR7(IIF.a)
+//	Instruccion ::= IDO
+//			Instruccion.a = instR8(IDO.a)
+
 	private GA.Inst recInst() throws IOException {
-		if (tokenActual(CatLexica.IDEN)) {
-			return recIAsig();
+		if (tokenActual(CatLexica.IDEN)&&(tokenActual(CatLexica.IDEN))) {//mem ->Iden
+			GA.Inst aIAsig = recIAsig();
+			return instR1(aIAsig);
+		} else if (tokenActual(CatLexica.NEW)) {
+			GA.Inst aINew = recINew();
+			return instR2(aINew);
+		} else if (tokenActual(CatLexica.DELETE)) {
+			GA.Inst aIDispose = recIDispose();
+			return instR3(aIDispose);
+		} else if (tokenActual(CatLexica.LEER)) {
+			GA.Inst aILectura = recILectura();
+			return instR4(aILectura);
+		} else if (tokenActual(CatLexica.ESCRIBIR)) {
+			GA.Inst aIEscritura = recIEscritura();
+			return instR5(aIEscritura);
+		} else if (tokenActual(CatLexica.IDEN)) {
+			GA.Inst aILlamada = recILamada();
+			return instR6(aILlamada);
 		} else if (tokenActual(CatLexica.IF)) {
-			return recIIF();
-		} else if (tokenActual(CatLexica.DO)) {
-			return recIDO();
+			GA.Inst aIIF = recIIF();
+			return instR7(aIIF);
+		}else if (tokenActual(CatLexica.DO)) {
+			GA.Inst aIDo = recIDO();
+			return instR8(aIDo);
 		} else {
 			errorSintactico();
 			return null;
 		}
 
 	}
-
-	// IAsignacion ::= IDEN := Exp0
-	// IAsignacion.a = iasigR1(IDEN.lex,Exp0.a)
-	private GA.Inst recIAsig() throws IOException {
+	
+//	ILlamada ::= IDEN ( ParametrosReales )
+//			ILlamada.a = illamadaR1(IDEN.lex, ParametrosReales.a)
+	
+	private GA.Inst recILamada() throws IOException {
 		if (tokenActual(CatLexica.IDEN)) {
-			Token tIden = tact;
+			Token tIdem = tact;
 			rec(CatLexica.IDEN);
+			rec(CatLexica.PAP);
+			GA.ParamsReales aParametrosReales =recParamsReals();
+			rec(CatLexica.PCIERRE);
+			return illamadaR1(tIdem,aParametrosReales);
+		} else {
+			//rec(CatLexica.lambda);
+			errorSintactico();
+			return null;
+		}
+		}
+//	ParametrosReales ::= ListaParametrosReales
+//			ParametrosReales.a =parametrosRealesR1(ListaParametrosReales.a)
+//	ParametrosReales ::= lambda
+//			ParametrosReales.a = parametrosRealesR2()
+private GA.ParamsReales recParamsReals() throws IOException {
+if (tokenActual(CatLexica.MENOS)||tokenActual(CatLexica.NOT) || tokenActual(CatLexica.TRUE) //unario,Exp4 , mem
+		|| tokenActual(CatLexica.FALSE) 
+		|| tokenActual(CatLexica.IDEN)||tokenActual(CatLexica.CAP)||tokenActual(CatLexica.PUNTO)||tokenActual(CatLexica.ACENTO)
+		|| tokenActual(CatLexica.NUM)|| tokenActual(CatLexica.PAP)) {
+	GA.ListaParamsReales aListaParamsReales= recListaParamsReales();
+	return parametrosRelaesR1(aListaParamsReales);
+} else {
+	//rec(CatLexica.lambda);
+	return parametrosRelaesR2();
+}
+}
+	
+
+//ListaParametrosReales ::=  Exp0 RListaParamsReales
+//		ListaParametrosReales.a = RListaParamsReales.a 
+//		RListaParamsReales.ah = listaParametrosRealesR2(Exp0.a)
+
+
+private GA.ListaParamsReales recListaParamsReales() throws IOException {
+	GA.Exp0 aExp0= recExp0();
+	GA.ListaParamsReales aRListaParamsReales = recRListaParamsReales(listaParametrosRealesR2(aExp0));
+	return aRListaParamsReales;
+
+
+}
+
+
+
+//	RListaParamsReales ::=  , Exp0 RListaParamsReales
+//			RListaParamsReales (0).a = RListaParamsReales (1).a
+//			RListaParamsReales (1).ah = listaParametrosRealesR1(RListaParamsReales (0).ah,Exp0.a)
+//	RListaParamsReales ::= lambda
+//			RListaParamsReales.a=RListaParamsReales.ah
+
+	private GA.ListaParamsReales recRListaParamsReales(GA.ListaParamsReales ahRListaParamsReales0) throws IOException {
+		if (tokenActual(CatLexica.COMA)) {
+			rec(CatLexica.COMA);
+			GA.Exp0 aExp0 = recExp0();
+			GA.ListaParamsReales aRListaParamsReales1 = recRListaParamsReales(listaParametrosRealesR1(ahRListaParamsReales0, aExp0));
+			return aRListaParamsReales1;
+		} else {
+			return ahRListaParamsReales0;
+		}
+	}
+
+//	IAsignacion ::= Mem := Exp0
+//			IAsignacion.a = iasigR1(Mem.a,Exp0.a)
+
+	private GA.Inst recIAsig() throws IOException {
+		if (tokenActual(CatLexica.IDEN)||tokenActual(CatLexica.CAP)||tokenActual(CatLexica.PUNTO)||tokenActual(CatLexica.ACENTO)) {
+			GA.Mem aMem = recMem();
 			if (tokenActual(CatLexica.IGUAL)) {
 				rec(CatLexica.IGUAL);
 				GA.Exp0 aExpr0 = recExp0();
-				return iasigR1(tIden, aExpr0);
+				return iasigR1(aMem, aExpr0);
 			} else {
 				errorSintactico(CatLexica.IGUAL);
 				return null;
 			}
 		} else {
-			errorSintactico(CatLexica.IDEN);
+			errorSintactico();
 			return null;
 		}
 	}
-
+//	INew ::= new Mem
+//			INew.a=inewR1(Mem.a)
+	private GA.Inst recINew() throws IOException {
+		if (tokenActual(CatLexica.NEW)) {
+			rec(CatLexica.NEW);
+			GA.Mem aMem =recMem();
+			return inewR1(aMem);
+		}else{
+			errorSintactico();
+			return null;
+		}
+	}
+//	IDispose ::= delete Mem
+//			IDispose.a=idisposeR1(Mem.a)
+	private GA.Inst recIDispose() throws IOException {
+		if (tokenActual(CatLexica.DELETE)) {
+			rec(CatLexica.DELETE);
+			GA.Mem aMem =recMem();
+			return idisposeR1(aMem);
+		}else{
+			errorSintactico();
+			return null;
+		}
+	}
+//	ILectura ::= leer Mem
+//			ILectura.a=ilecturaR1(Mem.a)
+	private GA.Inst recILectura() throws IOException {
+		if (tokenActual(CatLexica.LEER)) {
+			rec(CatLexica.LEER);
+			GA.Mem aMem =recMem();
+			return ilecturaR1(aMem);
+		}else{
+			errorSintactico();
+			return null;
+		}
+	}
+//	IEscritura ::= escribir Exp0
+//			IE scritura.a=iescrituraR1(Exp0.a)
+	private GA.Inst recIEscritura() throws IOException {
+		if (tokenActual(CatLexica.ESCRIBIR)) {
+			rec(CatLexica.ESCRIBIR);
+			GA.Exp0 aExp0 =recExp0();
+			return iescrituraR1(aExp0);
+		}else{
+			errorSintactico();
+			return null;
+		}
+	}
 	// IIF ::= if Casos fi
 	// IIF.a = IIFR1(Casos.a)
 	private GA.Inst recIIF() throws IOException {
@@ -223,6 +563,7 @@ public class ConstructorArboles {
 		}
 	}
 
+	
 	// Casos ::= Caso RCasos
 	// Casos.a = RCasos.a
 	// RCasos.ah = CasosR2(Caso.a)
@@ -234,10 +575,10 @@ public class ConstructorArboles {
 	}
 
 	// RCasos ::= [] Caso RCasos
-	// RCasos (0).a = RCasos(1).a
-	// RCasos (1).ah = CasosR1(RCasos(0).ah, Caso.a)
+	// 		RCasos (0).a = RCasos(1).a
+	// 		RCasos (1).ah = CasosR1(RCasos(0).ah, Caso.a)
 	// RCasos ::= lambda
-	// RCasos.a = RCasos.ah
+	// 		RCasos.a = RCasos.ah
 	private GA.Casos recRCasos(GA.Casos ahRCasos0) throws IOException {
 		if (tokenActual(CatLexica.CAP)) {
 			rec(CatLexica.CAP);
@@ -251,7 +592,7 @@ public class ConstructorArboles {
 	}
 
 	// Caso ::= case Exp0 -> Instrucciones
-	// Caso.a = CasoR1(Exp0.a,Instrucciones.a)
+	// 		Caso.a = CasoR1(Exp0.a,Instrucciones.a)
 	private GA.Caso recCaso() throws IOException {
 		if (tokenActual(CatLexica.CASE)) {
 			rec(CatLexica.CASE);
@@ -271,8 +612,8 @@ public class ConstructorArboles {
 	}
 
 	// Exp0 ::= Exp1 RExp0
-	// Exp0.a = RExp0.a
-	// RExp0.ah = Exp1.a
+	//		 Exp0.a = RExp0.a
+	// 		 RExp0.ah = Exp1.a
 	private GA.Exp0 recExp0() throws IOException {
 		GA.Exp1 aExp1 = recExp1();
 		GA.Exp0 aRExp0 = recRExp0(aExp1);
@@ -280,9 +621,9 @@ public class ConstructorArboles {
 	}
 
 	// Rexp0 ::= OpComparacion Exp1
-	// RExp0.a = Exp0R1(RExp0.ah,Exp1.a)
+	//		 RExp0.a = Exp0R1(RExp0.ah,Exp1.a)
 	// RExp0 ::= lambda
-	// RExp0.a = Exp0R2(RExp0.ah)
+	// 		RExp0.a = Exp0R2(RExp0.ah)
 	private GA.Exp0 recRExp0(GA.Exp1 ahRExp0) throws IOException {
 		if (esOpComparacion()) {
 			GA.OpComparacion aOpc = recOpComparacion();
@@ -295,8 +636,8 @@ public class ConstructorArboles {
 	}
 
 	// Exp1 ::= Exp2 RExp1
-	// Exp1.a = RExp1.a
-	// RExp1.ah = Exp1R2(Exp2.a)
+	// 		Exp1.a = RExp1.a
+	// 		RExp1.ah = Exp1R2(Exp2.a)
 	private GA.Exp1 recExp1() throws IOException {
 		GA.Exp2 aExp2 = recExp2();
 		GA.Exp1 aRExp1 = recRExp1(exp1R2(aExp2));
@@ -304,10 +645,10 @@ public class ConstructorArboles {
 	}
 
 	// RExp1 ::= opAditivo Exp2 RExp1
-	// RExp1(0).a = RExp1(1).a
-	// RExp1(1).ah = Exp1R1(RExp1(0).ah, Exp2.a)
+	// 		RExp1(0).a = RExp1(1).a
+	// 		RExp1(1).ah = Exp1R1(RExp1(0).ah, Exp2.a)
 	// RExp1 ::= lambda
-	// RExp1.a = RExp1.ah
+	// 		RExp1.a = RExp1.ah
 	private GA.Exp1 recRExp1(GA.Exp1 ahExp1_0) throws IOException {
 		if (esOpAditivo()) {
 			GA.OpAditivo aOpA = recOpAditivo();
@@ -320,8 +661,8 @@ public class ConstructorArboles {
 	}
 
 	// Exp2 ::= Exp3 RExp2
-	// Exp2.a = RExp2.a
-	// RExp2.ah = Exp2R2(Exp3.a)
+	//		 Exp2.a = RExp2.a
+	// 		 RExp2.ah = Exp2R2(Exp3.a)
 	private GA.Exp2 recExp2() throws IOException {
 		GA.Exp3 aExp3 = recExp3();
 		GA.Exp2 aRExp2 = recRExp2(exp2R2(aExp3));
@@ -329,10 +670,10 @@ public class ConstructorArboles {
 	}
 
 	// RExp2 ::= opMultiplicativo Exp3 RExp2
-	// RExp2 (0).a = RExp2 (1).a
-	// RExp2 (1).ah = Exp2R1(RExp2(0).ah, Exp3.a)
+	// 		RExp2 (0).a = RExp2 (1).a
+	// 		RExp2 (1).ah = Exp2R1(RExp2(0).ah, Exp3.a)
 	// RExp2 ::= lambda
-	// RExp2.a = RExp2.ah
+	// 		RExp2.a = RExp2.ah
 	private GA.Exp2 recRExp2(GA.Exp2 ahExp2_0) throws IOException {
 		if (esOpMultiplicativo()) {
 			GA.OpMultiplicativo aOpM = recOpMultiplicativo();
@@ -345,9 +686,9 @@ public class ConstructorArboles {
 	}
 
 	// Exp3 ::= OpUnario Exp3
-	// Exp3(0).a = exp3R1(Exp3(1).a)
+	// 		Exp3(0).a = exp3R1(Exp3(1).a)
 	// Exp3 ::= Exp4
-	// Exp3.a = exp4R2(Exp4.a)
+	// 		Exp3.a = exp4R2(Exp4.a)
 	private GA.Exp3 recExp3() throws IOException {
 		if (esOpUnario()) {
 			GA.OpUnario aDeOpU = recOpUnario();
@@ -360,15 +701,15 @@ public class ConstructorArboles {
 	}
 
 	// Exp4 ::= true
-	// Exp4.a=exp4R1()
+	// 		Exp4.a=exp4R1()
 	// Exp4 ::= false
-	// Exp4.a=exp4R2()
+	// 		Exp4.a=exp4R2()
 	// Exp4 ::= NUM
-	// Exp4.a = exp4R3(NUM.lex)
-	// Exp4 ::= IDEN
-	// Exp4.a = exp4R4(IDEN.lex)
+	// 		Exp4.a = exp4R3(NUM.lex)
+	//Exp4 ::= Mem
+	//		Exp4.a = exp4R4(Mem.a) 
 	// Exp4 ::= ( Exp0 )
-	// Exp4.a = exp4R5(Exp0.a)
+	// 		Exp4.a = exp4R5(Exp0.a)
 	private GA.Exp4 recExp4() throws IOException {
 		if (tokenActual(CatLexica.TRUE)) {
 			rec(CatLexica.TRUE);
@@ -381,9 +722,8 @@ public class ConstructorArboles {
 			rec(CatLexica.NUM);
 			return exp4R3(tNum);
 		} else if (tokenActual(CatLexica.IDEN)) {
-			Token tIden = tact;
-			rec(CatLexica.IDEN);
-			return exp4R4(tIden);
+			GA.Mem aMem = recMem();
+			return exp4R4(aMem);
 		} else if (tokenActual(CatLexica.PAP)) {
 			rec(CatLexica.PAP);
 			GA.Exp0 aExp0 = recExp0();
@@ -393,7 +733,55 @@ public class ConstructorArboles {
 			errorSintactico();
 		return null;
 	}
+	
+//	Mem ::= IDEN RMem
+//			Mem.a = RMem.a 
+//			RMem.ah = memR1(IDEN.lex)
+	private GA.Mem recMem() throws IOException {
+		
+		Token tIdem = tact;
+		rec(CatLexica.IDEN);
+		
+		GA.Mem aRMem = recRMem(memR1(tIdem));
+		return aRMem;
+	}
+	
+//	RMem ::= [Exp0] RMem
+//			RMem(0).a = RMem (1).a
+//			RMem (1).ah = memR2(RMem(0).ah,Exp0.a)
+//	RMem ::=.IDEN RMem
+//			RMem(0).a = RMem (1).a
+//			RMem (1).ah = memR3(RMem(0).ah,IDEN.lex)
+//	RMem ::= ^ RMem
+//			RMem(0).a = RMem (1).a
+//			RMem (1).ah = memR4(RMem(0).ah)
+//	RMem ::= lambda
+//			RMem.a=RMem.ah
 
+	private GA.Mem recRMem(GA.Mem ahRMem0) throws IOException {
+		if (tokenActual(CatLexica.CAP)) {
+			rec(CatLexica.CAP);
+			GA.Exp0 aExp0 = recExp0();
+			rec(CatLexica.CCIERRE);
+			GA.Mem aRMem = recRMem(memR2(ahRMem0, aExp0));
+			return aRMem;
+		} else if (tokenActual(CatLexica.PUNTO)){
+			rec(CatLexica.PUNTO);
+			Token tIdem = tact;
+			rec(CatLexica.IDEN);
+			GA.Mem aRMem = recRMem(memR3(ahRMem0, tIdem));
+			return aRMem;
+		}else if (tokenActual(CatLexica.ACENTO)){
+			rec(CatLexica.ACENTO);
+			GA.Mem aRMem = recRMem(memR4(ahRMem0));
+			return aRMem;
+		}else {
+			return ahRMem0;
+		}
+
+	}	
+	
+	
 	private boolean esOpUnario() {
 		return tokenActual(CatLexica.MENOS) || tokenActual(CatLexica.NOT);
 
@@ -597,42 +985,243 @@ public class ConstructorArboles {
 		else
 			return gramaticaAtributos.new DecR1(tipo, iden);
 	}
-
-	private GA.Tipo tipoR1(Token tDeInt) {
+	private GA.Dec decR2(GA.Tipo tipo, Token iden) {
 		if (Config.DEBUG)
-			return gramaticaAtributos.new TipoR1Debug(tDeInt);
+			return gramaticaAtributos.new DecR2Debug(tipo, iden);
 		else
-			return gramaticaAtributos.new TipoR1(tDeInt);
+			return gramaticaAtributos.new DecR2(tipo, iden);
 	}
 
-	private GA.Tipo tipoR2(Token tDeBool) {
+	private GA.Dec decR3(Token iden,GA.ParamsFormales  ParamsFormales, GA.Bloque Bloque ) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new DecR3Debug( iden,ParamsFormales,Bloque);
+		else
+			return gramaticaAtributos.new DecR3(iden,ParamsFormales,Bloque);
+	}
+	
+	
+	private GA.ParamsFormalesR1 parametrosFormalesR1(GA.ListaParamsFormales aParamsFormales){
+		if (!Config.DEBUG)
+			return gramaticaAtributos.new ParamsFormalesR1(aParamsFormales);
+			else 
+			return gramaticaAtributos.new ParamsFormalesR1Debug(aParamsFormales);
+	}
+	
+	private GA.ParamsFormalesR2 parametrosFormalesR2(){
+		if (!Config.DEBUG)
+			return gramaticaAtributos.new ParamsFormalesR2();
+			else 
+			return gramaticaAtributos.new ParamsFormalesR2Debug();
+	}
+	
+	private GA.ListaParamsFormalesR2 listaParametrosFormalesR2(GA.ParamFormal aParamFormal){
+		if (!Config.DEBUG)
+			return gramaticaAtributos.new ListaParamsFormalesR2(aParamFormal);
+			else 
+			return gramaticaAtributos.new ListaParamsFormalesR2Debug(aParamFormal);
+	}
+	
+	private GA.ListaParamsFormalesR1 listaParametrosFormalesR1(GA.ListaParamsFormales ahRListaParamsFormales0,GA.ParamFormal aParamFormal){
+		if (!Config.DEBUG)
+			return gramaticaAtributos.new ListaParamsFormalesR1(ahRListaParamsFormales0,aParamFormal);
+			else 
+			return gramaticaAtributos.new ListaParamsFormalesR1Debug(ahRListaParamsFormales0,aParamFormal);
+	}
+	
+	private GA.ParamFormalR2 parametroFormalR2(GA.Tipo aTipo,Token tIden){
+		if (!Config.DEBUG)
+			return gramaticaAtributos.new ParamFormalR2(aTipo,tIden);
+			else 
+			return gramaticaAtributos.new ParamFormalR2Debug(aTipo,tIden);		
+	}
+	
+	private GA.ParamFormalR1 parametroFormalR1(GA.Tipo aTipo,Token tIden){
+		if (!Config.DEBUG)
+			return gramaticaAtributos.new ParamFormalR1(aTipo,tIden);
+			else 
+			return gramaticaAtributos.new ParamFormalR1Debug(aTipo,tIden);
+	}
+
+	private GA.TipoR1 tipoR1() {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new TipoR1Debug();
+		else
+			return gramaticaAtributos.new TipoR1();
+	}
+	
+	private GA.TipoR2 tipoR2() {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new TipoR2Debug();
+		else
+			return gramaticaAtributos.new TipoR2();
+	}
+	
+	private GA.TipoR3 tipoR3(Token aNum,GA.Tipo aTipo){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new TipoR3Debug(aNum,aTipo);
+		else
+			return gramaticaAtributos.new TipoR3(aNum,aTipo);	
+	}
+	
+	private GA.TipoR4 tipoR4(GA.Campos aCampos){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new TipoR4Debug(aCampos);
+		else
+			return gramaticaAtributos.new TipoR4(aCampos);
+	}
+	private GA.TipoR5  tipoR5(GA.Tipo aTipo){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new TipoR5Debug(aTipo);
+		else
+			return gramaticaAtributos.new TipoR5(aTipo);
+	}
+	private GA.TipoR6 tipoR6(Token tIden){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new TipoR6Debug(tIden);
+		else
+			return gramaticaAtributos.new TipoR6(tIden);
+	}
+	private GA.CamposR1 camposR1(GA.Campos ahRCampos0,GA.Campo aCampo){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new CamposR1Debug(ahRCampos0,aCampo);
+		else
+			return gramaticaAtributos.new CamposR1(ahRCampos0,aCampo);
+	}
+	private GA.CamposR2 camposR2(GA.Campo aCamp){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new CamposR2Debug(aCamp);
+		else
+			return gramaticaAtributos.new CamposR2(aCamp);
+	}
+	 private GA.CampoR1 campoR1(GA.Tipo aTipo,Token tIden){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new CampoR1Debug(aTipo,tIden);
+			else
+				return gramaticaAtributos.new CampoR1(aTipo,tIden);
+	 }
+	 private GA.ParamsRealesR1 parametrosRelaesR1(GA.ListaParamsReales aListaParamsReales){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new ParamsRealesR1Debug(aListaParamsReales);
+			else
+				return gramaticaAtributos.new ParamsRealesR1(aListaParamsReales);
+	 }
+	 private GA.ParamsRealesR2 parametrosRelaesR2(){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new ParamsRealesR2Debug();
+			else
+				return gramaticaAtributos.new ParamsRealesR2();
+	 }
+	 private GA.ListaParamsRealesR2 listaParametrosRealesR2(GA.Exp0 aExp0){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new ListaParamsRealesR2Debug(aExp0);
+			else
+				return gramaticaAtributos.new ListaParamsRealesR2(aExp0);
+	 }
+	 private GA.ListaParamsRealesR1 listaParametrosRealesR1(GA.ListaParamsReales ahRListaParamsReales0,GA.Exp0 aExp0){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new ListaParamsRealesR1Debug(ahRListaParamsReales0, aExp0);
+			else
+				return gramaticaAtributos.new ListaParamsRealesR1(ahRListaParamsReales0,aExp0);
+	 }
+	 private GA.MemR1 memR1(Token tIdem){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new MemR1Debug(tIdem);
+			else
+				return gramaticaAtributos.new MemR1(tIdem);
+	 }
+	 private GA.MemR4 memR2(GA.Mem ahRMem0,GA.Exp0 aExp0){
+		 if (Config.DEBUG)
+				return gramaticaAtributos.new MemR4Debug(ahRMem0,aExp0);
+			else
+				return gramaticaAtributos.new MemR4(ahRMem0, aExp0);
+	 }
+	 private GA.MemR2 memR3(GA.Mem ahRMem0,Token tIdem){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new MemR2Debug(ahRMem0,tIdem);
+		else
+			return gramaticaAtributos.new MemR2(ahRMem0,tIdem);
+	}
+	private GA.MemR3 memR4(GA.Mem ahRMem0){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new MemR3Debug(ahRMem0);
+		else
+			return gramaticaAtributos.new MemR3(ahRMem0);
+	 }
+	/*private GA.Tipo tipoR2(Token tDeBool) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new TipoR2Debug(tDeBool);
 		else
 			return gramaticaAtributos.new TipoR2(tDeBool);
 	}
-	
+	*/
+
+	//---------------------------------Cuidado las intruciones del constructor del arbol tienen distinto numero que las de la gramatica
+	private GA.InstR1 instR1(GA.Inst IAsig) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR1Debug(IAsig);
+		else
+			return gramaticaAtributos.new InstR1(IAsig);
+	}
+	private GA.Inst instR2(GA.Inst INew) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR4Debug(INew);
+		else
+			return gramaticaAtributos.new InstR4(INew);
+	}
+	private GA.Inst instR3(GA.Inst IDispose) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR6Debug(IDispose);
+		else
+			return gramaticaAtributos.new InstR6(IDispose);
+	}
+	private GA.Inst instR4(GA.Inst ILectura) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR7Debug(ILectura);
+		else
+			return gramaticaAtributos.new InstR7(ILectura);
+	}
+	private GA.Inst instR5(GA.Inst IEscritura) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR8Debug(IEscritura);
+		else
+			return gramaticaAtributos.new InstR8(IEscritura);
+	}
+	private GA.Inst instR6(GA.Inst ILlamada) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR9Debug(ILlamada);
+		else
+			return gramaticaAtributos.new InstR9(ILlamada);
+	}
+	private GA.Inst instR7(GA.Inst IIF) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR2Debug(IIF);
+		else
+			return gramaticaAtributos.new InstR2(IIF);
+	}
+	private GA.Inst instR8(GA.Inst IDo) {
+		if (Config.DEBUG)
+			return gramaticaAtributos.new InstR3Debug(IDo);
+		else
+			return gramaticaAtributos.new InstR3(IDo);
+	}
 	private GA.Insts instsR1(GA.Insts ahDeRInsts0, GA.Inst aInst) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new InstsR1Debug(ahDeRInsts0, aInst);
 		else
 			return gramaticaAtributos.new InstsR1(ahDeRInsts0, aInst);
 	}
-	
 	private GA.Insts instsR2(GA.Inst inst) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new InstsR2Debug(inst);
 		else
 			return gramaticaAtributos.new InstsR2(inst);
 	}
-
-	private GA.Inst iasigR1(Token iden, GA.Exp0 exp0) {
+	private GA.Inst iasigR1(GA.Mem mem, GA.Exp0 exp0) {
 		if (Config.DEBUG)
-			return gramaticaAtributos.new IAsigR1Debug(iden, exp0);
+			return gramaticaAtributos.new IAsigR1Debug(mem, exp0);
 		else
-			return gramaticaAtributos.new IAsigR1(iden, exp0);
+			return gramaticaAtributos.new IAsigR1(mem, exp0);
 	}
-
 	private GA.Inst iifR1(GA.Casos casos) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new IIFR1Debug(casos);
@@ -646,7 +1235,36 @@ public class ConstructorArboles {
 		else
 			return gramaticaAtributos.new IDOR1(casos);
 	}
-
+	private GA.INewR1 inewR1(GA.Mem mem){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new INewR1Debug(mem);
+		else
+			return gramaticaAtributos.new INewR1Debug(mem);
+	}
+	private GA.IDisposeR1 idisposeR1(GA.Mem mem){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new IDisposeR1Debug(mem);
+		else
+			return gramaticaAtributos.new IDisposeR1(mem);
+	}
+	private GA.ILecturaR1 ilecturaR1(GA.Mem mem){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new ILecturaR1Debug(mem);
+		else
+			return gramaticaAtributos.new ILecturaR1(mem);
+	}
+	private GA.IEscrituraR1 iescrituraR1(GA.Exp0 exp0){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new IEscrituraR1Debug(exp0);
+		else
+			return gramaticaAtributos.new IEscrituraR1(exp0);
+	}
+	private GA.ILlamadaR1 illamadaR1(Token tIdem,GA.ParamsReales aParametrosReales){
+		if (Config.DEBUG)
+			return gramaticaAtributos.new ILlamadaR1Debug(tIdem,aParametrosReales);
+		else
+			return gramaticaAtributos.new ILlamadaR1(tIdem,aParametrosReales);
+	}
 	private GA.Caso casoR1(GA.Exp0 exp0, GA.Insts insts) {
 		if (Config.DEBUG)
 			return gramaticaAtributos.new CasoR1Debug(exp0, insts);
@@ -746,11 +1364,11 @@ public class ConstructorArboles {
 			return gramaticaAtributos.new Exp4R3(num);
 	}
 
-	private GA.Exp4 exp4R4(Token iden) {
+	private GA.Exp4 exp4R4(GA.Mem mem){
 		if (Config.DEBUG)
-			return gramaticaAtributos.new Exp4R4Debug(iden);
+			return gramaticaAtributos.new Exp4R4Debug(mem);
 		else
-			return gramaticaAtributos.new Exp4R4(iden);
+			return gramaticaAtributos.new Exp4R4(mem);
 	}
 
 	private GA.Exp4 exp4R5(GA.Exp0 exp0) {

@@ -91,9 +91,14 @@ public enum CatLexica {
 			return "->";
 		}
 	},
-	CAP {
+	CAP {  /// CUIDADO!!! ESTE ANTES TENIA [], PERO SE HA CAMBIADO A SOLO [ Y SE HA CREADO CCIERRE PARA ]
 		public String toString() {
-			return "[]";
+			return "[";
+		}
+	},
+	CCIERRE {
+		public String toString() {
+			return "]";
 		}
 	},
 	PUNTOCOMA {
@@ -234,5 +239,30 @@ public enum CatLexica {
 		public String toString() {
 			return "escribir";
 		}
-	}
+	},
+	LLAVEAP {
+		public String toString() {
+			return "{";
+		}
+	},
+	LLAVECIERRE {
+		public String toString() {
+			return "}";
+		}
+	},
+	COMA {
+		public String toString() {
+			return ",";
+		}
+	},
+	PUNTO {
+		public String toString() {
+			return ".";
+		}
+	},
+	ACENTO {
+		public String toString() {
+			return "^";
+		}
+	},
 };

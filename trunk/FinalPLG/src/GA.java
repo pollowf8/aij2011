@@ -2405,7 +2405,7 @@ public class GA {
 			});
 
 			err().ponDependencias(decs_1.ts(), dec.iden(), dec.fila(),
-					dec.col(), decs_1.err());
+					dec.col(), decs_1.err(),nivelh(),dec.err);
 			dir().ponDependencias(decs_1.dir(), dec.tam());
 			ts().ponDependencias(decs_1.ts(), decs_1.dir(), dec.iden(),
 					dec.tipo(), dec.clase(), nivelh());
@@ -2486,6 +2486,9 @@ public class GA {
 			decs_1.etqh().fijaDescripcion(REGLA + " | Decs(1).etqh");
 			dec.nivelh().fijaDescripcion(REGLA + " | Decs.nivelh");
 			dec.etqh().fijaDescripcion(REGLA + " | Decs.etqh");
+			dec.tsh().fijaDescripcion(REGLA + " | Decs.tsh");
+			dec.col().fijaDescripcion(REGLA + " | Dec.col");
+			dec.fila().fijaDescripcion(REGLA + " | Dec.fila");
 			dec.tsh().fijaDescripcion(REGLA + " | Decs.tsh");
 		}
 

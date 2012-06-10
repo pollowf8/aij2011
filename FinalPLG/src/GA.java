@@ -2601,6 +2601,8 @@ public class GA {
 			dec.nivelh().fijaDescripcion(REGLA + " | Dec.nivelh");
 			dec.etqh().fijaDescripcion(REGLA + " | Dec.etqh");
 			dec.tsh().fijaDescripcion(REGLA + " | Dec.tsh");
+			dec.fila().fijaDescripcion(REGLA + " | Dec.fila");
+			dec.col().fijaDescripcion(REGLA + " | Dec.columna");
 		}
 	}
 
@@ -2716,6 +2718,7 @@ public class GA {
 			iden().fijaDescripcion(REGLA + " | Dec.iden");
 			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
+			anidamiento().fijaDescripcion(REGLA + " | Dec.anidamiento");
 
 		}
 	}
@@ -4359,9 +4362,9 @@ public class GA {
 
 		public InstR1Debug(Inst iAsig) {
 			super(iAsig);
-			err().fijaDescripcion(REGLA + " | Instrucciones.err");
-			cod().fijaDescripcion(REGLA + " | Instrucciones.cod");
-			etq().fijaDescripcion(REGLA + " | Instrucciones.etq");
+			err().fijaDescripcion(REGLA + " | Instruccion.err");
+			cod().fijaDescripcion(REGLA + " | Instruccion.cod");
+			etq().fijaDescripcion(REGLA + " | Instruccion.etq");
 			iAsig.etqh().fijaDescripcion(REGLA + " | Iasignacion.etqh");
 			iAsig.tsh().fijaDescripcion(REGLA + " | Iasignacion.tsh");
 		}
@@ -6806,6 +6809,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp4.cod");
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp4.esDesignador");
 		}
 
 	}
@@ -6852,6 +6856,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp4.cod");
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp4.esDesignador");
 		}
 	}
 
@@ -6899,6 +6904,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp4.cod");
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp4.esDesignador");
 		}
 	}
 
@@ -6968,6 +6974,7 @@ public class GA {
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 			mem.tsh().fijaDescripcion(REGLA + " | mem.tsh");
+			esDesignador().fijaDescripcion(REGLA + " | exp4.esDesignador");
 		}
 	}
 
@@ -7037,6 +7044,7 @@ public class GA {
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			cod().fijaDescripcion(REGLA + " | exp4.cod");
+			esDesignador().fijaDescripcion(REGLA + " | exp4.esDesignador");
 		}
 	}
 

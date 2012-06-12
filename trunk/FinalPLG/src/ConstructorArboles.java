@@ -360,7 +360,7 @@ public class ConstructorArboles {
 //			Instruccion.a = instR8(IDO.a)
 
 	private GA.Inst recInst() throws IOException {
-		if (tokenActual(CatLexica.IDEN)&&(tokenActual(CatLexica.IDEN))) {//mem ->Iden
+		if (tokenActual(CatLexica.IDEN)/*&&(tokenActual(CatLexica.IDEN))*/) {//mem ->Iden
 			GA.Inst aIAsig = recIAsig();
 			return instR1(aIAsig);
 		} else if (tokenActual(CatLexica.NEW)) {
@@ -580,8 +580,8 @@ private GA.ListaParamsReales recListaParamsReales() throws IOException {
 	// RCasos ::= lambda
 	// 		RCasos.a = RCasos.ah
 	private GA.Casos recRCasos(GA.Casos ahRCasos0) throws IOException {
-		if (tokenActual(CatLexica.CAP)) {
-			rec(CatLexica.CAP);
+		if (tokenActual(CatLexica.CORCHETES)) {//TODO CAMBIADO
+			rec(CatLexica.CORCHETES);
 			GA.Caso aCaso = recCaso();
 			GA.Casos aRCasos = recRCasos(casosR1(ahRCasos0, aCaso));
 			return aRCasos;

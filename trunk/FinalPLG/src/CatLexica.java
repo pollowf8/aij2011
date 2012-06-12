@@ -96,6 +96,11 @@ public enum CatLexica {
 			return "[";
 		}
 	},
+	CORCHETES { 
+		public String toString() {
+			return "[]";
+		}
+	},
 	CCIERRE {
 		public String toString() {
 			return "]";

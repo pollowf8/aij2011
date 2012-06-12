@@ -543,7 +543,7 @@ abstract public class Instruccion implements Serializable {
 		public void ejecuta(VM vm) {
 			VM.PValue origen = vm.pop();
 			VM.PValue destino = vm.pop();
-			for (int i = 0; i < tamMover - 1; i++) {
+			for (int i = 0; i < tamMover; i++) {
 				Integer a = vm.getValMem(origen.asInt() + i);
 				vm.addValMem(destino.asInt() + i, a);
 			}
@@ -559,7 +559,7 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public String toString() {
-			return "APILA_DIR(" + tamMover + ")";
+			return "MUEVE(" + tamMover + ")";
 		}
 
 		private int tamMover;
@@ -775,6 +775,7 @@ abstract public class Instruccion implements Serializable {
 		public void ejecuta(VM vm) {
 			VM.PValue p=vm.pop();
 			System.out.print(p);
+			vm.incCP();
 		}
 
 		public ICOD ci() {

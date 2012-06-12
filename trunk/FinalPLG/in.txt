@@ -1,16 +1,6 @@
-int x;
-int y;
-int tmp
+tabla [5] de int y;
+int x
 &
-x:=456;
-y:=342;
-if
-	case x gt y ->
-		tmp:=x;
-		x:=y;
-		y:=tmp
-[]
-	case true ->
-		x:=0;
-		y:=2*y		
-fi
+x:=19;
+y[0]:=x;
+y[3]:=5

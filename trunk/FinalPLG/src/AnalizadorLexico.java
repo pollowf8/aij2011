@@ -3,7 +3,7 @@ import java.io.IOException;
 
 enum EstadoLexico {
 
-	INICIO, RECNUM, RECDIG, RECCERO, RECIDEN, RECMAS, RECMENOS, RECASTERISCO, RECBARRA, RECPAP, RECPCIERRE, INITIGUAL, DOSPUNTOS, RECIGUAL, RECMAYOR, RECCAP, RECCORCHETE, RECPUNTOCOMA, RECAMPERSAND, RECEOF, RECCOM
+	INICIO, RECNUM, RECDIG, RECPUNTO, RECACENTO, RECCERO, RECIDEN, RECMAS, RECMENOS, RECASTERISCO, RECBARRA, RECPAP, RECPCIERRE, INITIGUAL, DOSPUNTOS, RECIGUAL, RECMAYOR, RECCAP,RECCIERRE, RECCORCHETE, RECPUNTOCOMA, RECAMPERSAND, RECEOF, RECCOM
 };
 
 public class AnalizadorLexico {
@@ -39,6 +39,10 @@ public class AnalizadorLexico {
 					transita(EstadoLexico.RECNUM);
 				} else if (esZero(caract)) {
 					transita(EstadoLexico.RECCERO);
+				} else if (caract == '^') {
+					transita(EstadoLexico.RECACENTO);
+				} else if (caract == '.') {
+					transita(EstadoLexico.RECPUNTO);
 				} else if (caract == '+') {
 					transita(EstadoLexico.RECMAS);
 				} else if (caract == '-') {
@@ -55,6 +59,8 @@ public class AnalizadorLexico {
 					transita(EstadoLexico.DOSPUNTOS);
 				} else if (caract == '[') {
 					transita(EstadoLexico.RECCAP);
+				} else if (caract == ']') {
+					transita(EstadoLexico.RECCIERRE);
 				} else if (caract == ';') {
 					transita(EstadoLexico.RECPUNTOCOMA);
 				} else if (caract == '&') {
@@ -83,6 +89,10 @@ public class AnalizadorLexico {
 				return new Token(filaInicio, colInicio, CatLexica.PAP);
 			case RECPCIERRE:
 				return new Token(filaInicio, colInicio, CatLexica.PCIERRE);
+			case RECPUNTO:
+				return new Token(filaInicio, colInicio, CatLexica.PUNTO);
+			case RECACENTO:
+				return new Token(filaInicio, colInicio, CatLexica.ACENTO);
 			case DOSPUNTOS:
 				if (caract == '=') {
 					transita(EstadoLexico.RECIGUAL);
@@ -101,18 +111,27 @@ public class AnalizadorLexico {
 				break;
 			case RECMAYOR:
 				return new Token(filaInicio, colInicio, CatLexica.FLECHA);
+			case RECCIERRE:
+				return new Token(filaInicio, colInicio, CatLexica.CCIERRE);
 			case RECCAP:
 				if (caract == ']') {
 					transita(EstadoLexico.RECCORCHETE);
+				} else if (esDigito(caract)) {
+//					lexema = "";
+//					transita(EstadoLexico.RECNUM);
+					return new Token(filaInicio, colInicio, CatLexica.CAP);
 				} else {
 					errorLexico();
 				}
 				break;
 			case RECCORCHETE:
-				return new Token(filaInicio, colInicio, CatLexica.CAP);
+				return new Token(filaInicio, colInicio, CatLexica.CORCHETES);
 			case RECNUM:
 				if (esDigito(caract)) {
 					transita(EstadoLexico.RECNUM);
+				} else if (caract == ']') {
+					return new Token(filaInicio, colInicio, CatLexica.NUM,
+							lexema);
 				} else {
 					return new Token(filaInicio, colInicio, CatLexica.NUM,
 							lexema);
@@ -229,6 +248,26 @@ public class AnalizadorLexico {
 			return new Token(filaInicio, colInicio, CatLexica.INT);
 		} else if (lexema.equals("boolean")) {
 			return new Token(filaInicio, colInicio, CatLexica.BOOLEAN);
+		} else if (lexema.equals("escribir")) {
+			return new Token(filaInicio, colInicio, CatLexica.ESCRIBIR);
+		} else if (lexema.equals("leer")) {
+			return new Token(filaInicio, colInicio, CatLexica.LEER);
+		} else if (lexema.equals("tipo")) {
+			return new Token(filaInicio, colInicio, CatLexica.TIPO);
+		} else if (lexema.equals("proc")) {
+			return new Token(filaInicio, colInicio, CatLexica.PROC);
+		} else if (lexema.equals("new")) {
+			return new Token(filaInicio, colInicio, CatLexica.NEW);
+		} else if (lexema.equals("delete")) {
+			return new Token(filaInicio, colInicio, CatLexica.DELETE);
+		} else if (lexema.equals("tabla")) {
+			return new Token(filaInicio, colInicio, CatLexica.TABLA);
+		} else if (lexema.equals("registro")) {
+			return new Token(filaInicio, colInicio, CatLexica.REG);
+		} else if (lexema.equals("puntero")) {
+			return new Token(filaInicio, colInicio, CatLexica.PUNTERO);
+		} else if (lexema.equals("de")) {
+			return new Token(filaInicio, colInicio, CatLexica.DE);
 		} else {
 			return new Token(filaInicio, colInicio, CatLexica.IDEN, lexema);
 		}

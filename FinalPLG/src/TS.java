@@ -65,11 +65,12 @@ public class TS {
 	//Meto en una lista los que son declaraciones de tipos y lo devuelvo
 	public List<String> getTiposDeclarados(){
 		LinkedList<String> decTipos=new LinkedList<String>();
-		Iterator<ArrayList<Object>> it =tabla.values().iterator();
-		while(it.hasNext()){
-			ArrayList<Object> in=(ArrayList<Object>) it.next();
+		Iterator<String> itlex =tabla.keySet().iterator();
+		while(itlex.hasNext()){
+			String id=itlex.next();
+			ArrayList<Object> in=(ArrayList<Object>) tabla.get(id);
 			if(in.get(2).equals(CatLexica.TIPO)){
-				decTipos.add((String) in.get(0));
+				decTipos.add(id);
 			}
 		}
 		return decTipos;

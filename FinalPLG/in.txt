@@ -1,14 +1,4 @@
-int x;
-int y;
-int mcd
+tipo tabla [5] de int tvect;
+tvect pvect
 &
-x:=12;
-y:=5;
-do 
-	case x gt y ->
-		x:=x-y
-[]
-	case y gt x ->
-		y:=y-x		
-od;
-mcd:=x
+pvect[0] := 2

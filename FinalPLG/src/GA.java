@@ -2861,6 +2861,7 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | Dec.err");
 			etq().fijaDescripcion(REGLA + " | Dec.etq");
 			tipo().fijaDescripcion(REGLA + " | Dec.tipo");
+			iden().fijaDescripcion(REGLA + " | Dec.iden");
 			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
 		}
@@ -3480,6 +3481,7 @@ public class GA {
 			param().fijaDescripcion(REGLA + " | ParametroFormal.param");
 			tipo().fijaDescripcion(REGLA + " | ParametroFormal.tipo");
 			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
+			iden().fijaDescripcion(REGLA + " | ParametroFormal.iden");
 			// ni clase ni tipo ni tam ni iden dependencias creo
 			refsAChequear().fijaDescripcion(
 					REGLA + " | ParametroFormal.refsAChequear");
@@ -6198,14 +6200,13 @@ public class GA {
 
 				public Integer etqh_exp() {
 					return Exp0R1.this.exp1_0.etq().val()
-							+ unoSiCierto(Exp0R1.this.esDesignador()
-									.val()) + 1;
+							+ unoSiCierto(Exp0R1.this.esDesignador().val()) + 1;
 				}
 			});
 			exp1_0.tsh().ponDependencias(tsh());
 			exp1_1.tsh().ponDependencias(tsh());
 			exp1_0.etqh().ponDependencias(etqh());
-			exp1_1.etqh().ponDependencias(exp1_0.etq(),esDesignador());
+			exp1_1.etqh().ponDependencias(exp1_0.etq(), esDesignador());
 			cod().ponDependencias(exp1_0.cod(), exp1_1.cod(), opc.cod(),
 					exp1_0.esDesignador(), exp1_1.esDesignador());
 			etq().ponDependencias(exp1_1.etq(), exp1_1.esDesignador());
@@ -7279,12 +7280,12 @@ public class GA {
 	 * Mem(1).tsh = Mem(0).tsh
 	 * Exp0.tsh = Mem(0).tsh
 	 * Comprobación de las restricciones contextuales
-	 * Mem(0).tipo = tipoDeIndexacion(Mem(1).tipo,Exp0.tipo)
+	 * Mem(0).tipo = tipoDeIndexacion(Mem(1).tipo,Exp0.tipo,*Mem(0).tsh()*)
 	 * Generación de código
 	 * Mem(1).etqh = Mem(0).etqh
 	 * Exp0.etqh = Mem(1).etq
 	 * Mem(0).etq = Exp0.etq + numeroInstruccionesIndexacion(Exp0.esDesignador)
-	 * Mem(0).cod = Mem(1).cod || Exp0.cod || codigoIndexacion(Mem(1).tipo,Exp0.esDesignador)
+	 * Mem(0).cod = Mem(1).cod || Exp0.cod || codigoIndexacion(Mem(1).tipo,Exp0.esDesignador*,Mem(0).tsh()*))
 	 */
 	public class MemR4 extends Mem {
 
@@ -7331,7 +7332,7 @@ public class GA {
 			return concat(
 					cod,
 					codigoIndexacion(mem1.tipo().val(), exp0.esDesignador()
-							.val()));
+							.val(),tsh().val()));
 		}
 
 		public Integer etq_exp() {
@@ -7340,7 +7341,8 @@ public class GA {
 		}
 
 		public ExpTipo tipo_exp() {
-			return tipoDeIndexacion(mem1.tipo().val(), exp0.tipo().val());
+			return tipoDeIndexacion(mem1.tipo().val(), exp0.tipo().val(), tsh()
+					.val());
 		}
 
 		private Mem mem1;
@@ -8202,7 +8204,7 @@ public class GA {
 				exp3Desig);
 	}
 
-	// si es desighay que meterle el desapilaind,luego 1 ins mas
+	// si es desighay que meterle el apilaind,luego 1 ins mas
 	private Integer numeroInstruccionesOpUnario(Boolean designador) {
 		return designador ? 1 : 0;
 	}
@@ -8212,7 +8214,7 @@ public class GA {
 
 		List<Instruccion> cod;
 		if (exp3EsDesig)
-			cod = concat(exp3cod, concat(desapila_ind(), opucod));
+			cod = concat(exp3cod, concat(apila_ind(), opucod));
 		else
 			cod = concat(exp3cod, opucod);
 		return cod;
@@ -8274,9 +8276,10 @@ public class GA {
 	}
 
 	private List<Instruccion> codigoIndexacion(ExpTipo mem1tipo,
-			Boolean exp0EsDesig) {
+			Boolean exp0EsDesig, TS ts) {
 		List<Instruccion> cod;
-		int tamBase = mem1tipo.tbase().tam();
+		//int tamBase = mem1tipo.tbase().tam();
+		int tamBase=ref(ts,mem1tipo).tbase().tam();
 		if (exp0EsDesig)
 			cod = concat(apila_ind(), apila_int(tamBase));
 		else
@@ -8284,14 +8287,26 @@ public class GA {
 		return concat(cod, concat(mul(), suma()));
 	}
 
-	private ExpTipo tipoDeIndexacion(ExpTipo mem1tipo, ExpTipo exp0tipo) {
+	private ExpTipo tipoDeIndexacion(ExpTipo mem1tipo, ExpTipo exp0tipo, TS ts) {
 		if (exp0tipo.t() == CatLexica.INT) {
-			return mem1tipo.tbase();
+//			if (mem1tipo.t() == CatLexica.REF) {
+//				return ts.getExpTipo(mem1tipo.id()).tbase();
+			return ref(ts,mem1tipo).tbase();
+//			} else
+//				return mem1tipo.tbase();
 		} else {
 			return ExpTipo.nuevaExpTipoError();
 		}
 	}
 
+	private ExpTipo ref(TS ts, ExpTipo exp){
+		if (exp.t() == CatLexica.REF) {
+			if(existeSimb(ts, exp.id()))
+				return ref(ts,ts.getExpTipo(exp.id()));
+		}else
+			return exp;
+		return exp;
+	}
 	private int numeroInstruccionesActivacionProgramaPrincipal() {
 		return 4 + 1;
 		// apila_int(inicioDatosEstaticos),desapilar_dir(1),

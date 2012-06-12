@@ -96,6 +96,12 @@ public class GA {
 					return dirInicio_exp();
 				}
 			});
+			dirSalto = new Atributo<Integer>();
+			dirSalto.fijaExpresion(new ExpSem<Integer>() {
+				public Integer val() {
+					return dirSalto_exp();
+				}
+			});
 			llamadasPendientes = new Atributo<List<Integer>>();
 			llamadasPendientes.fijaExpresion(new ExpSem<List<Integer>>() {
 				public List<Integer> val() {
@@ -143,6 +149,10 @@ public class GA {
 			return dirInicio;
 		}
 
+		public Atributo<Integer> dirSalto() {
+			return dirSalto;
+		}
+
 		public Atributo<List<Integer>> llamadasPendientes() {
 			return llamadasPendientes;
 		}
@@ -159,6 +169,8 @@ public class GA {
 
 		protected abstract Integer dirInicio_exp();
 
+		protected abstract Integer dirSalto_exp();
+
 		protected abstract List<Integer> llamadasPendientes_exp();
 
 		protected abstract Integer anidamiento_exp();
@@ -170,6 +182,7 @@ public class GA {
 		private Atributo<Integer> dirh;
 		private Atributo<Integer> nivelh;
 		private Atributo<Integer> dirInicio;
+		private Atributo<Integer> dirSalto;
 		private Atributo<List<Integer>> llamadasPendientes;
 		private Atributo<Integer> anidamiento;
 		private Atributo<TS> tsh;
@@ -2045,9 +2058,9 @@ public class GA {
 	 *  Bloque.tsh = creaTS()
 	    Bloque.nivelh = 0
 		Programa.error = Bloque.error
-		Bloque.etqh=0
-		Bloque.dirh= numeroInstruccionesActivacionProgramaPrincipal()
-		Programa.cod = codigoActivacionProgramaPrincipal(Bloque.dirInicio, Bloque.anidamiento) || Bloque.cod
+		Bloque.etqh=numeroInstruccionesActivacionProgramaPrincipal()
+		Bloque.dirh=0
+		Programa.cod = codigoActivacionProgramaPrincipal(Bloque.dirInicio, Bloque.anidamiento,Bloque.dirSalto) || Bloque.cod
 	 * </code>
 	 */
 	public class ProgR1 extends Programa {
@@ -2062,7 +2075,7 @@ public class GA {
 				}
 
 				public int etqh_exp() {
-					//return 0;
+					// return 0;
 					return numeroInstruccionesActivacionProgramaPrincipal();
 				}
 
@@ -2074,13 +2087,13 @@ public class GA {
 				@Override
 				public int dirh_exp() {
 					return 0;
-					//return numeroInstruccionesActivacionProgramaPrincipal();
+					// return numeroInstruccionesActivacionProgramaPrincipal();
 				}
 			});
 
 			err().ponDependencias(bloque.err());
-			cod().ponDependencias(bloque.dirInicio(), bloque.anidamiento(),
-					bloque.cod());
+			cod().ponDependencias(bloque.dirInicio(), bloque.dirSalto(),
+					bloque.anidamiento(), bloque.cod());
 		}
 
 		protected final Error err_exp() {
@@ -2090,7 +2103,8 @@ public class GA {
 		protected final List<Instruccion> cod_exp() {
 			return concat(
 					codigoActivacionProgramaPrincipal(bloque.dirInicio().val(),
-							bloque.anidamiento().val()), bloque.cod().val());
+							bloque.anidamiento().val(), bloque.dirSalto().val()),
+					bloque.cod().val());
 		}
 
 		private Bloque bloque;
@@ -2124,7 +2138,8 @@ public class GA {
 	 * 	Declaraciones.etqh = Bloque.etqh
 	 * 	Instrucciones.etqh=Declaraciones.etq + numeroInstruccionesPrologo()
 	 * 	Bloque.etq = Instrucciones.etq + numeroInstruccionesEpilogo()
-	 * 	Bloque.dirInicio = Declaraciones.etq
+	 * 	Bloque.dirInicio = Declaraciones.dir
+	 *  Bloque.dirSalto = Declaraciones.etq
 	 * 	Bloque.cod = Declaraciones.cod || codigoPrologo(Declaraciones.dir,Bloque.nivelh) || Instrucciones.cod ||
 	 * 				codigoEpilogo(Declaraciones.dir,Bloque.nivelh)
 	 * 	Bloque.llamadasPendientes = Instrucciones.llamadasPendientes
@@ -2174,10 +2189,10 @@ public class GA {
 			etq().ponDependencias(insts.etq());
 			llamadasPendientes().ponDependencias(insts.llamadasPendientes());
 			anidamiento().ponDependencias(decs.anidamiento());
-			
-			//dirInicio().ponDependencias(decs.etq());
+
+			// dirInicio().ponDependencias(decs.etq());
 			dirInicio().ponDependencias(decs.dir());
-			
+			dirSalto().ponDependencias(decs.etq());
 			decs.tsh().ponDependencias(tsh());
 			decs.dirh().ponDependencias(dirh());
 			decs.nivelh().ponDependencias(nivelh());
@@ -2195,7 +2210,8 @@ public class GA {
 
 		protected final List<Instruccion> cod_exp() {
 			return concat(decs.cod().val(),
-					codigoPrologo(decs.dir().val(), nivelh().val()),insts.cod().val(),
+					codigoPrologo(decs.dir().val(), nivelh().val()), insts
+							.cod().val(),
 					codigoEpilogo(decs.dir().val(), nivelh().val()));
 		}
 
@@ -2207,6 +2223,11 @@ public class GA {
 		@Override
 		protected Integer dirInicio_exp() {
 			return decs.dir().val();
+		}
+
+		@Override
+		protected Integer dirSalto_exp() {
+			return decs.etq().val();
 		}
 
 		@Override
@@ -2236,6 +2257,7 @@ public class GA {
 					REGLA + " | Bloque.llamadasPendientes");
 			anidamiento().fijaDescripcion(REGLA + " | Bloque.anidamiento");
 			dirInicio().fijaDescripcion(REGLA + " | Bloque.dirInicio");
+			dirSalto().fijaDescripcion(REGLA + " | Bloque.dirSalto");
 			decs.tsh().fijaDescripcion(REGLA + " | decs.tsh");
 			decs.dirh().fijaDescripcion(REGLA + " | decs.dirh");
 			decs.nivelh().fijaDescripcion(REGLA + " | decs.nivelh");
@@ -2253,6 +2275,7 @@ public class GA {
 			Instrucciones.etqh = Bloque.etqh + numeroInstruccionesPrologo()
 			Bloque.etq = Instrucciones.etq + numeroInstruccionesEpilogo()
 			Bloque.dirInicio = Bloque.dirh
+			Bloque.dirSalto = Bloque.etqh
 			Bloque.cod = codigoPrologo(Bloque.dirh,Bloque.nivelh) || Instrucciones.cod ||
 							codigoEpilogo(Bloque.dirh,Bloque.nivelh)
 			Bloque.llamadasPendientes = Instrucciones.llamadasPendientes
@@ -2280,6 +2303,7 @@ public class GA {
 			etq().ponDependencias(insts.etq());
 			llamadasPendientes().ponDependencias(insts.llamadasPendientes());
 			dirInicio().ponDependencias(dirh());
+			dirSalto().ponDependencias(etqh());
 			insts.tsh().ponDependencias(tsh());
 			insts.etqh().ponDependencias(etqh());
 		}
@@ -2300,6 +2324,11 @@ public class GA {
 		@Override
 		protected Integer dirInicio_exp() {
 			return dirh().val();
+		}
+
+		@Override
+		protected Integer dirSalto_exp() {
+			return etqh().val();
 		}
 
 		@Override
@@ -2405,7 +2434,7 @@ public class GA {
 			});
 
 			err().ponDependencias(decs_1.ts(), dec.iden(), dec.fila(),
-					dec.col(), decs_1.err(),nivelh(),dec.err);
+					dec.col(), decs_1.err(), nivelh(), dec.err);
 			dir().ponDependencias(decs_1.dir(), dec.tam());
 			ts().ponDependencias(decs_1.ts(), decs_1.dir(), dec.iden(),
 					dec.tipo(), dec.clase(), nivelh());
@@ -8250,25 +8279,31 @@ public class GA {
 	}
 
 	private int numeroInstruccionesActivacionProgramaPrincipal() {
-		return 4;
+		return 4 + 1;
 		// apila_int(inicioDatosEstaticos),desapilar_dir(1),
 		// apila_int(finDatosEstaticos),desapila_dir(0)
+		// ir_a(Bloque.dirSalto)
 	}
 
 	// se guarda en posicion 0 la cima de la pila y en 1 el primer display
-	// TODO dir inicio que representa?
-	//cp,disp,ret,oldis,inicio, por eso el 1+1+1
+	// dir inicio que representa? pos siguiente en base a tamDatos
+	// cp,disp,ret,oldis,inicio, por eso el 1+1+1
+	// Segunda Interpretacion
+	// Fijamos cp a pos despues de displays, y el display a vacio, xk no se ha
+	// activao aun ningun reg de act, el prologo lo hara despues
 	private List<Instruccion> codigoActivacionProgramaPrincipal(
-			Integer dirInicio, Integer anidamiento) {
+			Integer dirInicio, Integer anidamiento, Integer dirSalto) {
 		List<Instruccion> codigoDisplay;
-		int inicioDatosEstaticos = anidamiento +1+1+1;//cp,disp,ret,olddis
+		int inicioDatosEstaticos = 0/* anidamiento + 1 + 1 + 1 */;
 		codigoDisplay = concat(apila_int(inicioDatosEstaticos), desapila_dir(1));
 
 		List<Instruccion> codigoCP;
-		int finDatosEstaticos =  1+1+1+anidamiento + dirInicio;
+		int finDatosEstaticos = anidamiento + 1;
+
+		// 1+ 1 + 1 + anidamiento + dirInicio-1
 		codigoCP = concat(apila_int(finDatosEstaticos), desapila_dir(0));
 
-		return concat(codigoDisplay, codigoCP);
+		return concat(codigoDisplay, codigoCP, single(ir_a(dirSalto)));
 	}
 
 	private Integer numeroInstruccionesPrologo() {
@@ -8347,13 +8382,13 @@ public class GA {
 	}
 
 	private boolean lecturaCorrecta(ExpTipo val) {
-		return val.tipo().t() == CatLexica.INT
-				|| val.tipo().t() == CatLexica.BOOLEAN;
+		return val.t() == CatLexica.INT
+				|| val.t() == CatLexica.BOOLEAN;
 	}
 
 	private boolean escrituraCorrecta(ExpTipo val) {
-		return val.tipo().t() == CatLexica.INT
-				|| val.tipo().t() == CatLexica.BOOLEAN;
+		return val.t() == CatLexica.INT
+				|| val.t() == CatLexica.BOOLEAN;
 	}
 
 	private Instruccion codigoEscritura(ExpTipo mem) {

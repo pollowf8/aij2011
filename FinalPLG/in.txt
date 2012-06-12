@@ -1,6 +1,4 @@
-tabla [5] de int y;
+int x;
 int x
 &
-x:=19;
-y[0]:=x;
-y[3]:=5
+x:=19

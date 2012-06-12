@@ -2183,8 +2183,9 @@ public class GA {
 				}
 			});
 
-			err().ponDependencias(insts.err(), decs.err(),
-					decs.refsAChequear(), decs.ts());
+			//TODO cambie orden de decs.ts antes que dec.err
+			err().ponDependencias(insts.err(), decs.ts(), decs.err(),
+					decs.refsAChequear());
 			cod().ponDependencias(decs.cod(), decs.dir(), nivelh(), insts.cod());
 			etq().ponDependencias(insts.etq());
 			llamadasPendientes().ponDependencias(insts.llamadasPendientes());
@@ -2434,7 +2435,7 @@ public class GA {
 			});
 
 			err().ponDependencias(decs_1.ts(), dec.iden(), dec.fila(),
-					dec.col(), decs_1.err(), nivelh(), dec.err);
+					dec.col(), dec.err(), decs_1.err(), nivelh());
 			dir().ponDependencias(decs_1.dir(), dec.tam());
 			ts().ponDependencias(decs_1.ts(), decs_1.dir(), dec.iden(),
 					dec.tipo(), dec.clase(), nivelh());
@@ -2566,7 +2567,7 @@ public class GA {
 			});
 
 			err().ponDependencias(tsh(), dec.iden(), dec.fila(), dec.col(),
-					dec.err());
+					dec.err(),nivelh());
 			dir().ponDependencias(dirh(), dec.tam());
 			ts().ponDependencias(tsh(), dirh(), dec.iden(), dec.tipo(),
 					dec.clase(), nivelh());
@@ -8245,11 +8246,10 @@ public class GA {
 
 	// sacado de apuntes
 	private Error existeSimbEnUltimoNivel(TS decs1ts, String lex, Integer nivelh) {
-		if (existeSimb(decs1ts, lex)) {
-			if (decs1ts.getNivel(lex) == nivelh)
-				return noError();
-		}
-		return new Error("No existe en ultimo nivel: " + lex);
+		if (existeSimb(decs1ts, lex) && decs1ts.getNivel(lex) == nivelh) {
+			return new Error("Ya Existe: " + lex);
+		} else
+			return noError();
 	}
 
 	private Integer numeroInstruccionesIndexacion(Boolean exp0esDesig) {
@@ -8382,13 +8382,11 @@ public class GA {
 	}
 
 	private boolean lecturaCorrecta(ExpTipo val) {
-		return val.t() == CatLexica.INT
-				|| val.t() == CatLexica.BOOLEAN;
+		return val.t() == CatLexica.INT || val.t() == CatLexica.BOOLEAN;
 	}
 
 	private boolean escrituraCorrecta(ExpTipo val) {
-		return val.t() == CatLexica.INT
-				|| val.t() == CatLexica.BOOLEAN;
+		return val.t() == CatLexica.INT || val.t() == CatLexica.BOOLEAN;
 	}
 
 	private Instruccion codigoEscritura(ExpTipo mem) {

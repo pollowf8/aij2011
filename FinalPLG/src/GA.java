@@ -2183,7 +2183,7 @@ public class GA {
 				}
 			});
 
-			//TODO cambie orden de decs.ts antes que dec.err
+			// TODO cambie orden de decs.ts antes que dec.err
 			err().ponDependencias(insts.err(), decs.ts(), decs.err(),
 					decs.refsAChequear());
 			cod().ponDependencias(decs.cod(), decs.dir(), nivelh(), insts.cod());
@@ -2567,7 +2567,7 @@ public class GA {
 			});
 
 			err().ponDependencias(tsh(), dec.iden(), dec.fila(), dec.col(),
-					dec.err(),nivelh());
+					dec.err(), nivelh());
 			dir().ponDependencias(dirh(), dec.tam());
 			ts().ponDependencias(tsh(), dirh(), dec.iden(), dec.tipo(),
 					dec.clase(), nivelh());
@@ -6197,27 +6197,31 @@ public class GA {
 				}
 
 				public Integer etqh_exp() {
-					return Exp0R1.this.exp1_0.etq().val();
+					return Exp0R1.this.exp1_0.etq().val()
+							+ unoSiCierto(Exp0R1.this.esDesignador()
+									.val()) + 1;
 				}
 			});
 			exp1_0.tsh().ponDependencias(tsh());
 			exp1_1.tsh().ponDependencias(tsh());
 			exp1_0.etqh().ponDependencias(etqh());
-			exp1_1.etqh().ponDependencias(exp1_0.etq());
-			cod().ponDependencias(exp1_0.cod(), exp1_1.cod(), opc.cod());
-			etq().ponDependencias(exp1_1.etq());
+			exp1_1.etqh().ponDependencias(exp1_0.etq(),esDesignador());
+			cod().ponDependencias(exp1_0.cod(), exp1_1.cod(), opc.cod(),
+					exp1_0.esDesignador(), exp1_1.esDesignador());
+			etq().ponDependencias(exp1_1.etq(), exp1_1.esDesignador());
 			tipo().ponDependencias(opc.op(), exp1_0.tipo(), exp1_1.tipo());
 
 		}
 
 		public List<Instruccion> cod_exp() {
-			return codigoOpComparacion(cod().val(), exp1_1.cod().val(), opc
-					.cod().val(), esDesignador().val(), exp1_1.esDesignador()
-					.val());
+			return codigoOpComparacion(exp1_0.cod().val(), exp1_1.cod().val(),
+					opc.cod().val(), exp1_0.esDesignador().val(), exp1_1
+							.esDesignador().val());
 		}
 
 		public Integer etq_exp() {
-			return exp1_1.etq().val() + unoSiCierto(esDesignador().val());
+			return exp1_1.etq().val()
+					+ unoSiCierto(exp1_1.esDesignador().val()) + 1;
 		}
 
 		public ExpTipo tipo_exp() {
@@ -6248,6 +6252,7 @@ public class GA {
 			cod().fijaDescripcion(REGLA + " | exp0.cod");
 			etq().fijaDescripcion(REGLA + " | exp0.etq");
 			tipo().fijaDescripcion(REGLA + " | exp0.tipo");
+			esDesignador().fijaDescripcion(REGLA + " | exp0.esDesignador");
 		}
 	}
 
@@ -6328,13 +6333,18 @@ public class GA {
 	/**
 	 * <code>
 	 * Exp1 ::= Exp1 OpAditivo Exp2
-	 * Exp1(1).tsh = Exp1(0).tsh 
-	 * Exp2.tsh = Exp1(0).tsh 
+	 * Propagación de la tabla de símbolos
+	 * Exp1(1).tsh = Exp1(0).tsh
+	 * Exp2.tsh = Exp1(0).tsh
+	 * Comprobación de las restricciones contextuales
 	 * Exp1(0).tipo = tipoOpBin(OpAditivo.op,Exp1(1).tipo,Exp2.tipo)
-	 * Exp1(1).etqh = Exp1(0).etqh 
-	 * Exp2.etqh = Exp1(1).etq 
-	 * Exp1(0).etq = Exp2.etq + 1 
-	 * Exp1(0).cod = Exp1(1).cod || Exp2.cod || OpAditivo.cod
+	 * Exp1.esDesignador = false
+	 * Generación de código
+	 * Exp1(1).etqh = Exp1(0).etqh
+	 * Exp2.etqh = Exp1(1).etq + unoSiCierto(Exp1(1).esDesignador)
+	 * Exp1(0).etq = Exp2.etq + unoSiCierto(Exp2.esDesignador) + 1
+	 * Exp1(0).cod = codigoOpAditivo(Exp1(1).cod, Exp2.cod, OpAditivo.cod,
+	 * Exp1(1).esDesignador,Exp2.esDesignador)
 	 * </code>
 	 */
 	public class Exp1R1 extends Exp1 {
@@ -6362,15 +6372,16 @@ public class GA {
 
 				public Integer etqh_exp() {
 					return Exp1R1.this.exp1.etq().val()
-							+ unoSiCierto(Exp1R1.this.esDesignador().val());
+							+ unoSiCierto(Exp1R1.this.exp1.esDesignador().val());
 				}
 			});
 			exp1.tsh().ponDependencias(tsh());
 			exp2.tsh().ponDependencias(tsh());
 			exp1.etqh().ponDependencias(etqh());
-			exp2.etqh().ponDependencias(exp1.etq());
-			cod().ponDependencias(exp1.cod(), exp2.cod(), opa.cod());
-			etq().ponDependencias(exp2.etq());
+			exp2.etqh().ponDependencias(exp1.etq(), exp1.esDesignador());
+			cod().ponDependencias(exp1.cod(), exp2.cod(), opa.cod(),
+					exp1.esDesignador(), exp2.esDesignador());
+			etq().ponDependencias(exp2.etq(), exp2.esDesignador());
 			tipo().ponDependencias(opa.op(), exp1.tipo(), exp2.tipo());
 
 		}
@@ -6512,9 +6523,10 @@ public class GA {
 			exp2.etqh().ponDependencias(etqh());
 			exp2.tsh().ponDependencias(tsh());
 			exp3.tsh().ponDependencias(tsh());
-			exp3.etqh().ponDependencias(exp2.etq());
-			cod().ponDependencias(exp2.cod(), exp3.cod(), opm.cod());
-			etq().ponDependencias(exp3.etq());
+			exp3.etqh().ponDependencias(exp2.etq(), exp2.esDesignador());
+			cod().ponDependencias(exp2.cod(), exp3.cod(), opm.cod(),
+					exp2.esDesignador(), exp3.esDesignador());
+			etq().ponDependencias(exp3.etq(), exp3.esDesignador());
 			tipo().ponDependencias(opm.op(), exp2.tipo(), exp3.tipo());
 
 			exp2.registraCtx(new ExpCtx() {
@@ -6961,6 +6973,7 @@ public class GA {
 			this.mem = mem;
 			etq().ponDependencias(etqh());
 			mem.tsh().ponDependencias(tsh());
+			mem.etqh().ponDependencias(etqh());
 			tipo().ponDependencias(mem.tipo());
 			etq().ponDependencias(mem.etq());
 			cod().ponDependencias(mem.cod());
@@ -7007,6 +7020,7 @@ public class GA {
 			etq().fijaDescripcion(REGLA + " | exp4.etq");
 			tipo().fijaDescripcion(REGLA + " | exp4.tipo");
 			mem.tsh().fijaDescripcion(REGLA + " | mem.tsh");
+			mem.etqh().fijaDescripcion(REGLA + " | mem.etqh");
 			esDesignador().fijaDescripcion(REGLA + " | exp4.esDesignador");
 		}
 	}
@@ -8155,7 +8169,7 @@ public class GA {
 		return val ? 1 : 0;
 	}
 
-	// desapila_ind para traerme el dato
+	// apila_ind para traerme el dato
 	// Exp1(0).cod || Exp1(1).cod || OpComparacion.cod
 	private List<Instruccion> codigoOpComparacion(List<Instruccion> exp1cod,
 			List<Instruccion> exp1_1cod, List<Instruccion> opccod,
@@ -8163,12 +8177,12 @@ public class GA {
 		List<Instruccion> cod;
 		// compruebo si exp1esDesig
 		if (exp1EsDesig)
-			cod = concat(exp1cod, concat(desapila_ind(), exp1_1cod));
+			cod = concat(exp1cod, concat(apila_ind(), exp1_1cod));
 		else
 			cod = concat(exp1cod, exp1_1cod);
 		// compruebo exp11
 		if (exp1_1EsDesig)
-			cod = concat(cod, desapila_ind());
+			cod = concat(cod, apila_ind());
 		// concateno finalmente el operador de comparacion
 		return concat(cod, opccod);
 	}

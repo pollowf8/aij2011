@@ -2434,6 +2434,7 @@ public class GA {
 				}
 			});
 
+			//TODO dec.err y decs_1.ts tiene k ir antes ke decs_1.err
 			err().ponDependencias(decs_1.ts(), dec.iden(), dec.fila(),
 					dec.col(), dec.err(), decs_1.err(), nivelh());
 			dir().ponDependencias(decs_1.dir(), dec.tam());

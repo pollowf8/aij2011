@@ -3826,7 +3826,6 @@ public class GA {
 					tipo_1.tipo());// TODO
 			// tipo_1.tipo()?
 			tipo_1.registraCtx(new TipoCtx() {
-
 				@Override
 				public TS tsh_exp() {
 					return TipoR5.this.tsh().val();
@@ -8058,6 +8057,7 @@ public class GA {
 
 	// TODO dudas si tipo no existe en ts,añadirlo a check
 	private List<ExpTipo> aChequear(TS ts, ExpTipo tipo) {
+		if(tipo.t()!=CatLexica.REF)return listaExpTipoVacia();
 		LinkedList<ExpTipo> a = new LinkedList<ExpTipo>();
 		boolean declarado = false;
 		Iterator<String> it = ts.getTiposDeclarados().iterator();

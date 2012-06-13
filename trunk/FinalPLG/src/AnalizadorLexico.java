@@ -3,7 +3,7 @@ import java.io.IOException;
 
 enum EstadoLexico {
 
-	INICIO, RECNUM, RECDIG, RECPUNTO, RECACENTO, RECCERO, RECIDEN, RECMAS, RECMENOS, RECASTERISCO, RECBARRA, RECPAP, RECPCIERRE, INITIGUAL, DOSPUNTOS, RECIGUAL, RECMAYOR, RECCAP,RECCIERRE, RECCORCHETE, RECPUNTOCOMA, RECAMPERSAND, RECEOF, RECCOM
+	INICIO, RECNUM, RECDIG, RECPUNTO, RECACENTO, RECCERO, RECIDEN, RECMAS, RECMENOS, RECASTERISCO, RECBARRA, RECPAP, RECPCIERRE, INITIGUAL, DOSPUNTOS, RECIGUAL, RECMAYOR, RECCAP,RECCIERRE, RECCORCHETE, RECPUNTOCOMA, RECAMPERSAND, RECEOF, RECCOM, RECLLAP, RECLLCIERRE
 };
 
 public class AnalizadorLexico {
@@ -71,6 +71,10 @@ public class AnalizadorLexico {
 					transitaIgnorando(EstadoLexico.RECCOM);
 				} else if (esSep(caract)) {
 					transitaIgnorando(EstadoLexico.INICIO);
+				} else if (caract == '{') {
+					transita(EstadoLexico.RECLLAP);
+				} else if (caract == '}') {
+					transita(EstadoLexico.RECLLCIERRE);
 				} else {
 					errorLexico();
 				}
@@ -89,6 +93,10 @@ public class AnalizadorLexico {
 				return new Token(filaInicio, colInicio, CatLexica.PAP);
 			case RECPCIERRE:
 				return new Token(filaInicio, colInicio, CatLexica.PCIERRE);
+			case RECLLAP:
+				return new Token(filaInicio, colInicio, CatLexica.LLAVEAP);
+			case RECLLCIERRE:
+				return new Token(filaInicio, colInicio, CatLexica.LLAVECIERRE);
 			case RECPUNTO:
 				return new Token(filaInicio, colInicio, CatLexica.PUNTO);
 			case RECACENTO:

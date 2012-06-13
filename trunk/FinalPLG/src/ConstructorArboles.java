@@ -112,8 +112,8 @@ public class ConstructorArboles {
 				rec(CatLexica.PAP);
 				GA.ParamsFormales aParamsFormales = recParamsFormals();
 				rec(CatLexica.PCIERRE);
-				rec(CatLexica.LLAVEAP);
 				GA.Bloque aBloque = recBloque();
+				rec(CatLexica.LLAVEAP);
 				rec(CatLexica.LLAVECIERRE);
 				return decR3(tIden,aParamsFormales,aBloque);
 			}else 
@@ -308,6 +308,7 @@ public class ConstructorArboles {
 					
 					GA.Tipo aTipo = recTipo();
 					Token tIden= tact;
+					rec(CatLexica.IDEN);
 					return  campoR1(aTipo,tIden);
 				}
 				errorSintactico();

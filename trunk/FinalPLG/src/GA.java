@@ -7146,11 +7146,11 @@ public class GA {
 	 * Propagación de la tabla de símbolos
 	 * Mem(1).tsh = Mem(0).tsh
 	 * Comprobación de las restricciones contextuales
-	 * Mem(0).tipo = tipoDeSelectorCampo(Mem(1).tipo,IDEN.lex)
+	 * Mem(0).tipo = tipoDeSelectorCampo(Mem(1).tipo,IDEN.lex,*&Mem(0).tsh()&*)
 	 * Generación de código
 	 * Mem(1).etqh = Mem(0).etqh
 	 * Mem(0).etq = Mem(1).etq + 2
-	 * Mem(0).cod = Mem(1).cod || apila(desplazamientoDeCampo(Mem(1).tipo,IDEN.lex)) || suma</code>
+	 * Mem(0).cod = Mem(1).cod || apila(desplazamientoDeCampo(Mem(1).tipo,IDEN.lex,*&Mem(0).tsh()&*)) || suma</code>
 	 */
 	public class MemR2 extends Mem {
 
@@ -7178,7 +7178,7 @@ public class GA {
 
 		public List<Instruccion> cod_exp() {
 			List<Instruccion> o = concat(mem1.cod().val(),
-					apila(desplazamientoDeCampo(mem1.tipo().val(), iden.lex())));
+					apila(desplazamientoDeCampo(mem1.tipo().val(), iden.lex(),tsh().val())));
 			return concat(o, suma());
 		}
 
@@ -7187,7 +7187,7 @@ public class GA {
 		}
 
 		public ExpTipo tipo_exp() {
-			return tipoDeSelectorCampo(mem1.tipo().val(), iden.lex());
+			return tipoDeSelectorCampo(mem1.tipo().val(), iden.lex(),tsh().val());
 		}
 
 		private Token iden;
@@ -8220,8 +8220,8 @@ public class GA {
 		return cod;
 	}
 
-	private String desplazamientoDeCampo(ExpTipo campos, String lex) {
-		Iterator<ExpTipo> it = campos.campos().iterator();
+	private String desplazamientoDeCampo(ExpTipo campos, String lex, TS ts) {
+		Iterator<ExpTipo> it = ref(ts,campos).campos().iterator();
 		while (it.hasNext()) {
 			ExpTipo campo = it.next();
 			if (campo.id().equals(lex))
@@ -8231,8 +8231,9 @@ public class GA {
 		return null;// no debe entrar aki nunca :O
 	}
 
-	private ExpTipo tipoDeSelectorCampo(ExpTipo campos, String lex) {
-		Iterator<ExpTipo> it = campos.campos().iterator();
+	private ExpTipo tipoDeSelectorCampo(ExpTipo campos, String lex,TS ts) {
+		
+		Iterator<ExpTipo> it = ref(ts,campos).campos().iterator();
 		while (it.hasNext()) {
 			ExpTipo campo = it.next();
 			if (campo.id().equals(lex))
@@ -8318,7 +8319,7 @@ public class GA {
 	// dir inicio que representa? pos siguiente en base a tamDatos
 	// cp,disp,ret,oldis,inicio, por eso el 1+1+1
 	// Segunda Interpretacion
-	// Fijamos cp a pos despues de displays, y el display a vacio, xk no se ha
+	// Fijamos cp a pos ultima de displays, y el display a vacio, xk no se ha
 	// activao aun ningun reg de act, el prologo lo hara despues
 	private List<Instruccion> codigoActivacionProgramaPrincipal(
 			Integer dirInicio, Integer anidamiento, Integer dirSalto) {
@@ -8327,7 +8328,7 @@ public class GA {
 		codigoDisplay = concat(apila_int(inicioDatosEstaticos), desapila_dir(1));
 
 		List<Instruccion> codigoCP;
-		int finDatosEstaticos = anidamiento + 1;
+		int finDatosEstaticos = anidamiento ;
 
 		// 1+ 1 + 1 + anidamiento + dirInicio-1
 		codigoCP = concat(apila_int(finDatosEstaticos), desapila_dir(0));

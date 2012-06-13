@@ -1,0 +1,4 @@
+tipo tabla [5] de int tvect;
+puntero tvect vect
+&
+vect^[0] := 2

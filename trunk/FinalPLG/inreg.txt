@@ -1,0 +1,5 @@
+tipo registro {int x;int y} tp;
+tp p
+&
+p.x := 2;
+p.y := p.x

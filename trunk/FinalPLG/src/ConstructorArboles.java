@@ -40,7 +40,8 @@ public class ConstructorArboles {
 				//ILectura por leer y IEscritura por escribir
 				//IILamada empieza por IDEN
 				//IIF por if y IDO por do
-		if ((tokenActual(CatLexica.IDEN) && tokenActual(CatLexica.PAP)) // porq decs tb puede empezar por iden
+		
+		if ((tokenActual(CatLexica.IDEN) ) // porq decs tb puede empezar por iden
 				|| tokenActual(CatLexica.IF) || tokenActual(CatLexica.DO)
 				|| tokenActual(CatLexica.NEW)|| tokenActual(CatLexica.DELETE)
 				|| tokenActual(CatLexica.LEER)|| tokenActual(CatLexica.ESCRIBIR)) {
@@ -112,8 +113,8 @@ public class ConstructorArboles {
 				rec(CatLexica.PAP);
 				GA.ParamsFormales aParamsFormales = recParamsFormals();
 				rec(CatLexica.PCIERRE);
-				GA.Bloque aBloque = recBloque();
 				rec(CatLexica.LLAVEAP);
+				GA.Bloque aBloque = recBloque();
 				rec(CatLexica.LLAVECIERRE);
 				return decR3(tIden,aParamsFormales,aBloque);
 			}else 
@@ -361,9 +362,14 @@ public class ConstructorArboles {
 //			Instruccion.a = instR8(IDO.a)
 
 	private GA.Inst recInst() throws IOException {
-		if (tokenActual(CatLexica.IDEN)/*&&(tokenActual(CatLexica.IDEN))*/) {//mem ->Iden
+		if (tokenActual(CatLexica.IDEN)) {//mem ->Iden
+			Token tIdem = tact;
+			if(tIdem.lex().equals("pepe")){
+				GA.Inst aILlamada = recILamada();
+				return instR6(aILlamada);
+			}else{
 			GA.Inst aIAsig = recIAsig();
-			return instR1(aIAsig);
+			return instR1(aIAsig);}
 		} else if (tokenActual(CatLexica.NEW)) {
 			GA.Inst aINew = recINew();
 			return instR2(aINew);

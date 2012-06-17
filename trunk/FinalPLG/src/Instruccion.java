@@ -350,7 +350,9 @@ abstract public class Instruccion implements Serializable {
 		public ICOD ci() {
 			return ICOD.IR_A;
 		}
-
+		public void set_arg1(int e){
+			this.etq=e;
+		}
 		public int arg1() {
 			return etq;
 		}

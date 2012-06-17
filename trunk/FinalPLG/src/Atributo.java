@@ -41,6 +41,11 @@ public class Atributo<Valor> {
       return calculado; 
    }
    
+ 
+	@Override
+	public String toString() {
+		return valor+": "+ dependencias;
+	}
    private Valor valor;
    private Stack<Atributo> dependencias; 
    private boolean calculado;

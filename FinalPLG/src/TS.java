@@ -33,7 +33,8 @@ public class TS {
 		// TS result = new TS(new HashMap<String,ArrayList<Object>>(tabla));
 		// result.tabla.put(cte,val);
 		// return result;
-		tabla.put(cte, val);
+		if(!tabla.containsKey(cte))//xa ke no modificara el proc
+			tabla.put(cte, val);
 		return this;
 	}
 
@@ -60,6 +61,16 @@ public class TS {
 	
 	public void setPadre(TS padre){
 		this.padre=padre;
+	}
+	
+	public void setDir(String lex, int dir){
+		ArrayList<Object> o=tabla.get(lex);
+		ArrayList<Object> oNew=new ArrayList<Object>();
+		oNew.add(o.get(0));
+		oNew.add(dir);
+		oNew.add(o.get(2));
+		oNew.add(o.get(3));
+		tabla.put(lex, oNew);
 	}
 	
 	//Meto en una lista los que son declaraciones de tipos y lo devuelvo

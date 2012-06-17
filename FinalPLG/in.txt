@@ -1,4 +1,3 @@
-tipo tabla [5] de int tvect;
-puntero tvect vect
+proc pepe () { int y & y:=1000 }
 &
-vect^[0] := 2
+pepe()

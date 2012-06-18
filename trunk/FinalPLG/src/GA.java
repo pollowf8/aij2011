@@ -2058,9 +2058,9 @@ public class GA {
 	 *  Bloque.tsh = creaTS()
 	    Bloque.nivelh = 0
 		Programa.error = Bloque.error
-		Bloque.etqh=numeroInstruccionesActivacionProgramaPrincipal()
+		Bloque.etqh=numeroInstruccionesActivacionProgramaPrincipal(&bloque.anidamiento&)
 		Bloque.dirh=0
-		Programa.cod = codigoActivacionProgramaPrincipal(Bloque.dirInicio, Bloque.anidamiento,Bloque.dirSalto) || Bloque.cod
+		Programa.cod = codigoActivacionProgramaPrincipal(Bloque.dirInicio, Bloque.anidamiento,Bloque.dirSalto) || Bloque.cod || stop()
 	 * </code>
 	 */
 	public class ProgR1 extends Programa {
@@ -2076,7 +2076,8 @@ public class GA {
 
 				public int etqh_exp() {
 					// return 0;
-					return numeroInstruccionesActivacionProgramaPrincipal();
+					return numeroInstruccionesActivacionProgramaPrincipal(ProgR1.this.bloque
+							.anidamiento().val());
 				}
 
 				@Override
@@ -2090,7 +2091,7 @@ public class GA {
 					// return numeroInstruccionesActivacionProgramaPrincipal();
 				}
 			});
-
+			bloque.etqh().ponDependencias(bloque.anidamiento());
 			err().ponDependencias(bloque.err());
 			cod().ponDependencias(bloque.dirInicio(), bloque.dirSalto(),
 					bloque.anidamiento(), bloque.cod());
@@ -2104,7 +2105,7 @@ public class GA {
 			return concat(
 					codigoActivacionProgramaPrincipal(bloque.dirInicio().val(),
 							bloque.anidamiento().val(), bloque.dirSalto().val()),
-					bloque.cod().val());
+					bloque.cod().val(), single(stop()));
 		}
 
 		private Bloque bloque;
@@ -2138,8 +2139,8 @@ public class GA {
 	 * 	Declaraciones.etqh = Bloque.etqh
 	 * 	Instrucciones.etqh=Declaraciones.etq + numeroInstruccionesPrologo()
 	 * 	Bloque.etq = Instrucciones.etq + numeroInstruccionesEpilogo()
-	 * 	Bloque.dirInicio = Declaraciones.dir
-	 *  Bloque.dirSalto = Declaraciones.etq
+	 * 	Bloque.dirInicio = &Declaraciones.dir&
+	 *  &Bloque.dirSalto = Declaraciones.etq&
 	 * 	Bloque.cod = Declaraciones.cod || codigoPrologo(Declaraciones.dir,Bloque.nivelh) || Instrucciones.cod ||
 	 * 				codigoEpilogo(Declaraciones.dir,Bloque.nivelh)
 	 * 	Bloque.llamadasPendientes = Instrucciones.llamadasPendientes
@@ -2183,7 +2184,7 @@ public class GA {
 				}
 			});
 
-			// TODO cambie orden de decs.ts antes que dec.err
+			// TODO decs.ts antes que dec.err
 			err().ponDependencias(insts.err(), decs.ts(), decs.err(),
 					decs.refsAChequear());
 			cod().ponDependencias(decs.cod(), decs.dir(), nivelh(), insts.cod());
@@ -2314,7 +2315,8 @@ public class GA {
 		}
 
 		protected final List<Instruccion> cod_exp() {
-			return insts.cod().val();
+			return concat(codigoPrologo(dirh().val(), nivelh().val()), insts
+					.cod().val(), codigoEpilogo(dirh().val(), nivelh().val()));
 		}
 
 		@Override
@@ -2675,9 +2677,8 @@ public class GA {
 
 			tam().ponDependencias(tipo.tipo());
 			tipo().ponDependencias(tipo.tipo());
-			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?tipo.tipo()
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());
 			etq().ponDependencias(etqh());
-			// ni clase ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -2790,9 +2791,8 @@ public class GA {
 			});
 
 			tipo().ponDependencias(tipo.tipo());
-			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());
 			etq().ponDependencias(etqh());
-			// ni clase ni tam ni iden dependencias creo
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -2863,6 +2863,8 @@ public class GA {
 			etq().fijaDescripcion(REGLA + " | Dec.etq");
 			tipo().fijaDescripcion(REGLA + " | Dec.tipo");
 			iden().fijaDescripcion(REGLA + " | Dec.iden");
+			tam().fijaDescripcion(REGLA + " | Dec.tam");
+			clase().fijaDescripcion(REGLA + " | Dec.clase");
 			refsAChequear().fijaDescripcion(REGLA + " | Dec.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
 		}
@@ -2880,7 +2882,7 @@ public class GA {
 	 * ParametrosFormales.nivelh = Declaracion.nivelh + 1
 	 * Bloque.nivelh = Declaracion.nivelh + 1
 	 * ParametrosFormales.tsh = añadeSimb(creaNivel(Declaracion.tsh),IDEN.lex,proc,
-	 * <t:proc, params: ParametrosFormales.params>,?, Declaracion.nivelh+1)
+	 * <t:proc, params: ParametrosFormales.params>,*Bloque.dirSalto*, Declaracion.nivelh+1)
 	 * Bloque.tsh = ParametrosFormales.ts
 	 * Bloque.dirh = ParametrosFormales.dir
 	 * Comprobación de las restricciones contextuales
@@ -2904,12 +2906,15 @@ public class GA {
 			paramsForms.registraCtx(new ParamsFormalesCtx() {
 				@Override
 				public TS tsh_exp() {
-					// TODO crear ExpTipo para proc
+					// TODO chanchullo para guardar la direccion de salto
+					// correctametne :O
+					// Creo que la dir del procedimiento guarda el inicio de su
+					// codigo
 					aniadeSimb(tsh().val(), DecR3.this.iden.lex(),
 							CatLexica.PROC, ExpTipo.nuevaExpTipoProc(
 									CatLexica.PROC, DecR3.this.paramsForms
-											.params().val()), -1, nivelh()
-									.val() + 1);
+											.params().val()), DecR3.this.bloque
+									.dirSalto().val(), nivelh().val() + 1);
 					return aniadeSimb(creaNivel(tsh()), DecR3.this.iden.lex(),
 							CatLexica.PROC, ExpTipo.nuevaExpTipoProc(
 									CatLexica.PROC, DecR3.this.paramsForms
@@ -2944,12 +2949,13 @@ public class GA {
 					return DecR3.this.paramsForms.dir().val();
 				}
 			});
+			err().ponDependencias(bloque.err(), paramsForms.err());
 			anidamiento().ponDependencias(bloque.anidamiento());
-			err().ponDependencias(paramsForms.err(), bloque.err());
 			etq().ponDependencias(bloque.etq());
 			cod().ponDependencias(bloque.cod(), bloque.llamadasPendientes(),
 					bloque.dirSalto());
 			tipo().ponDependencias(paramsForms.params());
+			tsh().ponDependencias(bloque.dirSalto());
 
 			refsAChequear().ponDependencias(paramsForms.refsAChequear());
 
@@ -3078,10 +3084,10 @@ public class GA {
 					return ParamsFormalesR1.this.nivelh().val();
 				}
 			});
+			err().ponDependencias(listaParamsForms.err());
 			params().ponDependencias(listaParamsForms.params());
 			ts().ponDependencias(listaParamsForms.ts());
 			dir().ponDependencias(listaParamsForms.dir());
-			err().ponDependencias(listaParamsForms.err());
 			refsAChequear().ponDependencias(listaParamsForms.refsAChequear());
 
 			listaParamsForms.tsh().ponDependencias(tsh());
@@ -3207,7 +3213,7 @@ public class GA {
 	 * Propagación de la tabla de símbolos
 	 * ParametroFormal.tsh = ListaParametrosFormales(1).ts
 	 * Comprobación de las restricciones contextuales
-	 * ListaParametrosFormales(0).error =ListaParametrosFormales(1).error orParametroFormal.error or
+	 * ListaParametrosFormales(0).error =ListaParametrosFormales(1).error or ParametroFormal.error or
 	 * existeSimbEnUltimoNivel(ListaParametrosFormales(1).ts,ParametroFormal.iden,ListaParametrosFormales(0).nivelh)
 	 * ListaParametrosFormales(0).refsAChequear = ListaParametrosFormales(1).refsAChequear U
 	 * ParametroFormal.refsAChequear </code>
@@ -3237,14 +3243,16 @@ public class GA {
 							.val();
 				}
 			});
+			// TODO paramFormal.err y listaParamsForms_1.ts tiene k ir antes ke
+			// listaParamsForms_1.err
+			err().ponDependencias(paramFormal.err(), listaParamsForms_1.ts(),
+					listaParamsForms_1.err(), paramFormal.iden(), nivelh());
 			params().ponDependencias(listaParamsForms_1.params(),
 					paramFormal.param());
 			ts().ponDependencias(listaParamsForms_1.ts(), paramFormal.iden(),
 					paramFormal.clase(), paramFormal.tipo(),
 					listaParamsForms_1.dir(), listaParamsForms_1.nivelh());
 			dir().ponDependencias(listaParamsForms_1.dir(), paramFormal.tam());
-			err().ponDependencias(listaParamsForms_1.err(), paramFormal.err(),
-					listaParamsForms_1.ts(), paramFormal.iden());
 			refsAChequear().ponDependencias(listaParamsForms_1.refsAChequear(),
 					paramFormal.refsAChequear());
 
@@ -3339,11 +3347,12 @@ public class GA {
 					return ListaParamsFormalesR2.this.tsh().val();
 				}
 			});
+			err().ponDependencias(tsh(), paramFormal.err(), paramFormal.iden(),
+					nivelh());
 			params().ponDependencias(paramFormal.param());
 			ts().ponDependencias(tsh(), paramFormal.iden(),
 					paramFormal.clase(), paramFormal.tipo(), nivelh());
 			dir().ponDependencias(paramFormal.tam());
-			err().ponDependencias(paramFormal.err(), tsh(), paramFormal.iden());
 			refsAChequear().ponDependencias(paramFormal.refsAChequear());
 
 			paramFormal.tsh().ponDependencias(tsh());
@@ -3430,8 +3439,7 @@ public class GA {
 			tam().ponDependencias(tipo.tipo());
 			param().ponDependencias(tipo.tipo());
 			tipo().ponDependencias(tipo.tipo());
-			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?tipo.tipo()
-			// ni clase ni tipo ni tam ni iden dependencias creo
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -3490,6 +3498,7 @@ public class GA {
 			super(tipo, iden);
 			tam().fijaDescripcion(REGLA + " | ParametroFormal.tam");
 			param().fijaDescripcion(REGLA + " | ParametroFormal.param");
+			clase().fijaDescripcion(REGLA + " | ParametroFormal.clase");
 			tipo().fijaDescripcion(REGLA + " | ParametroFormal.tipo");
 			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
 			iden().fijaDescripcion(REGLA + " | ParametroFormal.iden");
@@ -3502,7 +3511,7 @@ public class GA {
 
 	/**
 	 * <code>
-	 * ParametroFormal ::= Tipo IDEN
+	 * ParametroFormal ::= var Tipo IDEN
 	 * Construcción de la tabla de símbolos
 	 * ParametroFormal.clase = pvar
 	 * ParametroFormal.tipo = Tipo.tipo
@@ -3513,8 +3522,7 @@ public class GA {
 	 * Tipo.tsh = ParametroFormal.tsh
 	 * Comprobación de las restricciones contextuales
 	 * ParametroFormal.refsAChequear = Tipo.refsAChequear
-	 * ParametroFormal.error = Tipo.error or tipoRefIncorrecto(ParametroFormal.tsh,Tipo.tipo)
-	 * </code>
+	 * ParametroFormal.error = Tipo.error or tipoRefIncorrecto(ParametroFormal.tsh,Tipo.tipo)	 * </code>
 	 */
 	public class ParamFormalR2 extends ParamFormal {
 
@@ -3532,8 +3540,7 @@ public class GA {
 
 			param().ponDependencias(tipo.tipo());
 			tipo().ponDependencias(tipo.tipo());
-			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// TODO?tipo.tipo()
-			// ni clase ni tam ni iden dependencias creo
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -3577,7 +3584,7 @@ public class GA {
 
 		@Override
 		protected ExpTipo param_exp() {
-			return ExpTipo.nuevaExpTipoParam(tipo.tipo().val(), CatLexica.VAR);
+			return ExpTipo.nuevaExpTipoParam(tipo.tipo().val(), CatLexica.PVAR);
 		}
 
 		private Token iden;
@@ -3592,7 +3599,9 @@ public class GA {
 			param().fijaDescripcion(REGLA + " | ParametroFormal.param");
 			tipo().fijaDescripcion(REGLA + " | ParametroFormal.tipo");
 			err().fijaDescripcion(REGLA + " | ParametroFormal.err");
-			// ni clase ni tam ni iden dependencias creo
+			clase().fijaDescripcion(REGLA + " | ParametroFormal.clase");
+			tam().fijaDescripcion(REGLA + " | ParametroFormal.tam");
+			iden().fijaDescripcion(REGLA + " | ParametroFormal.iden");
 			refsAChequear().fijaDescripcion(
 					REGLA + " | ParametroFormal.refsAChequear");
 			tipo.tsh().fijaDescripcion(REGLA + " | Tipo.tsh");
@@ -3705,8 +3714,7 @@ public class GA {
 			this.NUM = num;
 			this.tipo_1 = tipo_1;
 			tipo().ponDependencias(tipo_1.tipo());
-			err().ponDependencias(tipo_1.err(), tsh(), tipo_1.tipo());// TODO
-																		// tipo.tipo?
+			err().ponDependencias(tipo_1.err(), tsh(), tipo_1.tipo());
 			refsAChequear().ponDependencias(tipo_1.refsAChequear());
 			tipo_1.tsh().ponDependencias(tsh());
 			tipo_1.registraCtx(new TipoCtx() {
@@ -3775,8 +3783,7 @@ public class GA {
 					return TipoR4.this.tsh().val();
 				}
 			});
-			tipo().ponDependencias(campos.campos(), campos.tam());// TODO
-																	// necesario?
+			tipo().ponDependencias(campos.campos(), campos.tam());
 			campos.tsh().ponDependencias(tsh());
 			err().ponDependencias(campos.err());
 			refsAChequear().ponDependencias(campos.refsAChequear());
@@ -3830,12 +3837,11 @@ public class GA {
 		public TipoR5(Tipo tipo_1) {
 			super();
 			this.tipo_1 = tipo_1;
-			tipo().ponDependencias(tipo_1.tipo());// TODO tipo o no
+			tipo().ponDependencias(tipo_1.tipo());
 			tipo_1.tsh().ponDependencias(tsh());
 			err().ponDependencias(tipo_1.err());
 			refsAChequear().ponDependencias(tipo_1.refsAChequear(), tsh(),
-					tipo_1.tipo());// TODO
-			// tipo_1.tipo()?
+					tipo_1.tipo());
 			tipo_1.registraCtx(new TipoCtx() {
 				@Override
 				public TS tsh_exp() {
@@ -3917,8 +3923,9 @@ public class GA {
 
 		public TipoR6Debug(Token iden) {
 			super(iden);
-			// TODO tipo si es atrib k calcular
 			tipo().fijaDescripcion(REGLA + " | Tipo.tipo");
+			err().fijaDescripcion(REGLA + " | Tipo.err");
+			refsAChequear().fijaDescripcion(REGLA + " | refsAChequear.tipo");
 		}
 	}
 
@@ -4123,10 +4130,9 @@ public class GA {
 					return CampoR1.this.tsh().val();
 				}
 			});
-			campo().ponDependencias(desplazamientoh(), tipo.tipo());// TODO?tipo.tipo()
-			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());// ?tipo.tipo()
-			tam().ponDependencias(tipo.tipo());// ?¿
-			// ni clase ni tipo ni tam ni iden dependencias creo
+			campo().ponDependencias(desplazamientoh(), tipo.tipo());
+			err().ponDependencias(tipo.err(), tsh(), tipo.tipo());
+			tam().ponDependencias(tipo.tipo());
 			refsAChequear().ponDependencias(tipo.refsAChequear());
 			tipo.tsh().ponDependencias(tsh());
 		}
@@ -4908,7 +4914,7 @@ public class GA {
 	 * Propagación de la tabla de símbolos
 	 * ParametrosReales.tsh = ILlamada.tsh
 	 * Comprobación de las restricciones contextuales
-	 * ILlamada.error = not llamadaCorrecta(ILlamada.tsh,IDEN.lex,ParametrosReales.nparams)
+	 * ILlamada.error = &ParametrosReales.err& or not llamadaCorrecta(ILlamada.tsh,IDEN.lex,ParametrosReales.nparams)
 	 * ParametrosReales.subprogramah = IDEN.lex
 	 * Generación de código
 	 * ParametrosReales.etqh = ILlamada.etqh
@@ -4938,7 +4944,8 @@ public class GA {
 				}
 
 			});
-			err().ponDependencias(tsh(), paramsReales.nparams());
+			err().ponDependencias(tsh(), paramsReales.nparams(),
+					paramsReales.err());
 			etq().ponDependencias(paramsReales.etq());
 			cod().ponDependencias(paramsReales.cod(), tsh(), paramsReales.etq());
 			llamadasPendientes().ponDependencias(tsh(), paramsReales.etq());
@@ -4951,12 +4958,13 @@ public class GA {
 		}
 
 		public Error err_exp() {
+			Error e = paramsReales.err().val();
 			if (llamadaCorrecta(tsh().val(), iden.lex(), paramsReales.nparams()
 					.val()))
-				return noError();
+				return e;
 			else
-				return new Error("Error de llamada a " + iden.lex()
-						+ " con nparams: " + paramsReales.nparams().val());
+				return joinErrors(new Error("Error de llamada a " + iden.lex()
+						+ " con nparams: " + paramsReales.nparams().val()), e);
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -5003,7 +5011,7 @@ public class GA {
 	 * Generación de código
 	 * ListaParametrosReales.etqh = ParametrosReales.etqh + numeroInstruccionesInicioLlamada()
 	 * ParametrosReales.etq = ListaParametrosReales.etq + 1
-	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,ParametrosReales.tsh),*ParametrosReales.etq*)
+	 * ParametrosReales.cod = codigoInicioLlamada(nivelDe(ParametrosReales.subprogramah,ParametrosReales.tsh))
 	 *  || ListaParametrosReales.cod || desapila() </code>
 	 */
 	public class ParamsRealesR1 extends ParamsReales {
@@ -5031,6 +5039,7 @@ public class GA {
 			etq().ponDependencias(listaParamsReales.etq());
 			cod().ponDependencias(subProgramah(), tsh(),
 					listaParamsReales.cod());
+			nparams().ponDependencias(listaParamsReales.nparams());
 			listaParamsReales.tsh().ponDependencias(tsh());
 			listaParamsReales.etqh().ponDependencias(etqh());
 			listaParamsReales.subProgramah().ponDependencias(subProgramah());
@@ -5046,9 +5055,8 @@ public class GA {
 
 		public List<Instruccion> cod_exp() {
 			List<Instruccion> c = concat(
-					codigoInicioLlamada(
-							nivelDe(subProgramah().val(), tsh().val()), etq()
-									.val()), listaParamsReales.cod().val());
+					codigoInicioLlamada(nivelDe(subProgramah().val(), tsh()
+							.val())), listaParamsReales.cod().val());
 			return concat(c, desapila());
 		}
 
@@ -5069,12 +5077,13 @@ public class GA {
 			err().fijaDescripcion(REGLA + " | ParametrosReales.err");
 			etq().fijaDescripcion(REGLA + " | ParametrosReales.etq");
 			cod().fijaDescripcion(REGLA + " | ParametrosReales.cod");
+			nparams().fijaDescripcion(REGLA + " | ParametrosReales.nparams");
 			listaParamsReales.tsh().fijaDescripcion(
 					REGLA + " | ListaParametrosReales.tsh");
 			listaParamsReales.etqh().fijaDescripcion(
-					REGLA + " | ParametrosReales.etqh");
+					REGLA + " | ListaParametrosReales.etqh");
 			listaParamsReales.subProgramah().fijaDescripcion(
-					REGLA + " | ParametrosReales.subProgramah");
+					REGLA + " | ListaParametrosReales.subProgramah");
 		}
 	}
 
@@ -5177,7 +5186,6 @@ public class GA {
 							.val() + 1;
 				}
 			});
-			// TODO añadir?exp0.tipo(),exp0.esDesignador() en estas 2
 			err().ponDependencias(listaParamsReales_1.err(), exp0.tipo(),
 					exp0.esDesignador(), subProgramah(),
 					listaParamsReales_1.nparams(), tsh());
@@ -5191,7 +5199,7 @@ public class GA {
 			exp0.etqh().ponDependencias(listaParamsReales_1.etq());
 
 			listaParamsReales_1.tsh().ponDependencias(tsh());
-			listaParamsReales_1.etqh().ponDependencias(etq());
+			listaParamsReales_1.etqh().ponDependencias(etqh());
 			listaParamsReales_1.subProgramah().ponDependencias(subProgramah());
 		}
 
@@ -5207,8 +5215,9 @@ public class GA {
 					.esDesignador().val(), tsh().val()))
 				return e;
 			else
-				return joinErrors(e, new Error("Parametro incorrecto en: "
-						+ subProgramah()));
+				return joinErrors(e, new Error("Parametro número "
+						+ listaParamsReales_1.nparams().val()
+						+ " incorrecto en llamada: " + subProgramah().val()));
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -5237,15 +5246,21 @@ public class GA {
 		public ListaParamsRealesR1Debug(ListaParamsReales listaParamsReales_1,
 				Exp0 exp0) {
 			super(listaParamsReales_1, exp0);
-			err().fijaDescripcion(REGLA + " | ParametrosReales.err");
-			etq().fijaDescripcion(REGLA + " | ParametrosReales.etq");
-			cod().fijaDescripcion(REGLA + " | ParametrosReales.cod");
+			err().fijaDescripcion(REGLA + " | ListaParametrosReales(0).err");
+			etq().fijaDescripcion(REGLA + " | ListaParametrosReales(0).etq");
+			cod().fijaDescripcion(REGLA + " | ListaParametrosReales(0).cod");
+			nparams().fijaDescripcion(
+					REGLA + " | ListaParametrosReales(0).nparams");
+
 			listaParamsReales_1.tsh().fijaDescripcion(
-					REGLA + " | ListaParametrosReales.tsh");
+					REGLA + " | ListaParametrosReales(1).tsh");
 			listaParamsReales_1.etqh().fijaDescripcion(
-					REGLA + " | ParametrosReales.etqh");
+					REGLA + " | ListaParametrosReales(1).etqh");
 			listaParamsReales_1.subProgramah().fijaDescripcion(
-					REGLA + " | ParametrosReales.subProgramah");
+					REGLA + " | ListaParametrosReales(1).subProgramah");
+
+			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.tsh");
+			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.etqh");
 		}
 	}
 
@@ -5256,7 +5271,7 @@ public class GA {
 	 * Exp0.tsh = ListaParametrosReales.tsh
 	 * Comprobación de las restricciones contextuales
 	 * ListaParametrosReales.error = tipoError(Exp0.tipo) or
-	 * not parametroCorrecto(ListaParametrosReales.subprogramah1,Exp0.tipo, Exp0.esDesignador,
+	 * not parametroCorrecto(ListaParametrosReales.subprogramah,Exp0.tipo, Exp0.esDesignador,
 ListaParametrosReales.tsh)
 	 * ListaParametrosReales(0).nparams = 1
 	 * Generación de código
@@ -5282,11 +5297,10 @@ ListaParametrosReales.tsh)
 					return ListaParamsRealesR2.this.etqh().val() + 1;
 				}
 			});
-			// TODO añadir?exp0.tipo(),exp0.esDesignador() en estas 2
 			err().ponDependencias(exp0.tipo(), exp0.esDesignador(),
 					subProgramah(), tsh());
 			cod().ponDependencias(subProgramah(), tsh(), exp0.tipo(),
-					exp0.cod(), subProgramah(), exp0.esDesignador());
+					exp0.cod(), exp0.esDesignador());
 			etq().ponDependencias(exp0.etq());
 
 			exp0.tsh().ponDependencias(tsh());
@@ -5303,8 +5317,8 @@ ListaParametrosReales.tsh)
 					exp0.esDesignador().val(), tsh().val()))
 				return e;
 			else
-				return joinErrors(e, new Error("Parametro incorrecto en: "
-						+ subProgramah()));
+				return joinErrors(e, new Error("Parametro número " + 0
+						+ " incorrecto en llamada: " + subProgramah().val()));
 		}
 
 		public List<Instruccion> cod_exp() {
@@ -5324,15 +5338,17 @@ ListaParametrosReales.tsh)
 	}
 
 	public class ListaParamsRealesR2Debug extends ListaParamsRealesR2 {
-		private final static String REGLA = "ListaParametrosReales(0) ::= ListaParametrosReales(1) , Exp0";
+		private final static String REGLA = "ListaParametrosReales ::= Exp0";
 
 		public ListaParamsRealesR2Debug(Exp0 exp0) {
 			super(exp0);
 			err().fijaDescripcion(REGLA + " | ListaParametrosReales.err");
 			etq().fijaDescripcion(REGLA + " | ListaParametrosReales.etq");
 			cod().fijaDescripcion(REGLA + " | ListaParametrosReales.cod");
-			exp0.tsh().fijaDescripcion(REGLA + " | exp0.tsh");
-			exp0.etqh().fijaDescripcion(REGLA + " | exp0.etqh");
+			nparams().fijaDescripcion(
+					REGLA + " | ListaParametrosReales.nparams");
+			exp0.tsh().fijaDescripcion(REGLA + " | Exp0.tsh");
+			exp0.etqh().fijaDescripcion(REGLA + " | Exp0.etqh");
 		}
 	}
 
@@ -5394,7 +5410,8 @@ ListaParametrosReales.tsh)
 
 		public Error err_exp() {
 			if (!asignacionCorrecta(mem.tipo().val(), exp0.tipo().val())) {
-				return new Error("La asignación no ha sido correcta");
+				return new Error("La asignación no ha sido correcta: "
+						+ mem.tipo().val().t() + ":=" + exp0.tipo().val().t());
 			} else
 				return new Error();
 		}
@@ -5519,8 +5536,8 @@ ListaParametrosReales.tsh)
 	 * IDispose.error = not liberacionMemoriaCorrecta(Mem.tipo)
 	 * Generación de código
 	 * Mem.etqh = IDispose.etqh
-	 * IDispose.etq = Mem.etq + 1
-	 * IDispose.cod = Mem.cod || libera(tamañoObjetoApuntado(Mem.tipo,IDispose.tsh))
+	 * IDispose.etq = Mem.etq + &2&
+	 * IDispose.cod = Mem.cod &|| apila_ind()& || libera(tamañoObjetoApuntado(Mem.tipo,IDispose.tsh))
 	 */
 	public class IDisposeR1 extends Inst {
 
@@ -5558,10 +5575,14 @@ ListaParametrosReales.tsh)
 				return new Error();
 		}
 
+		//TODO añadido apila_ind para traerte la direccion donde apunta mem
 		public List<Instruccion> cod_exp() {
-			List<Instruccion> o = concat(mem.cod().val(),
-					libera(tamañoObjetoApuntado(mem.tipo().val(), tsh().val())));
-			return concat(o, desapila_ind());
+			List<Instruccion> o = concat(
+					mem.cod().val(),
+					single(apila_ind()),
+					single(libera(tamañoObjetoApuntado(mem.tipo().val(), tsh()
+							.val()))));
+			return o;
 
 		}
 
@@ -5675,8 +5696,8 @@ ListaParametrosReales.tsh)
 	 * IEscritura.error = not escrituraCorrecta(Exp0.tipo)
 	 * Generación de código
 	 * Exp0.etqh = IEscritura.etqh
-	 * IEscritura.etq = Exp0.etq + 1
-	 * IEscritura.cod = Exp0.cod || codigoEscritura(Exp0.tipo)
+	 * IEscritura.etq = Exp0.etq + orig(1) &unoSiCierto(Exp0.esDesignador)& + 1
+	 * IEscritura.cod = Exp0.cod || codigoEscritura(Exp0.tipo,&Exp0.esDesignador&)
 	 */
 	public class IEscrituraR1 extends Inst {
 
@@ -5696,15 +5717,16 @@ ListaParametrosReales.tsh)
 				}
 			});
 			err().ponDependencias(exp0.tipo());
-			etq().ponDependencias(exp0.etq());
-			cod().ponDependencias(exp0.cod(), exp0.tipo());
+			etq().ponDependencias(exp0.etq(), exp0.esDesignador());
+			cod().ponDependencias(exp0.cod(), exp0.tipo(), exp0.esDesignador());
 
 			exp0.tsh().ponDependencias(tsh());
 			exp0.etqh().ponDependencias(etqh());
 		}
 
 		public Integer etq_exp() {
-			return exp0.etq().val() + 1;
+			return exp0.etq().val() + unoSiCierto(exp0.esDesignador().val())
+					+ 1;
 		}
 
 		public Error err_exp() {
@@ -5715,7 +5737,10 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return concat(exp0.cod().val(), codigoEscritura(exp0.tipo().val()));
+			return concat(
+					exp0.cod().val(),
+					codigoEscritura(exp0.tipo().val(), exp0.esDesignador()
+							.val()));
 
 		}
 
@@ -7763,7 +7788,7 @@ ListaParametrosReales.tsh)
 	}
 
 	// FUNCIONES DE AYUDA
-	// TODO CONTROLAR LO DE QUE EXISTAN VARIOS TS
+	// TODO CONTROLAR LO DE QUE EXISTAN VARIOS TS, creo que controlao ;O
 	public TS aniadeSimb(TS ts, String iden, CatLexica clase, ExpTipo expTipo,
 			int dir, int nivelh) {
 		ArrayList<Object> a = new ArrayList<Object>();
@@ -7779,7 +7804,8 @@ ListaParametrosReales.tsh)
 	}
 
 	public ExpTipo tipoDe(String cte, TS ts) {
-		return (ExpTipo) ts.valDe(cte).get(0);
+		ArrayList<Object> o = ts.valDe(cte);
+		return (ExpTipo) (o == null ? ExpTipo.nuevaExpTipoError() : o.get(0));
 	}
 
 	public int dirDe(String lex, TS ts) {
@@ -7992,7 +8018,7 @@ ListaParametrosReales.tsh)
 		return memTipo.t().equals(expTipo.t());
 	}
 
-	// TODO NUEVOS METODOS AUXILIARES
+	// TODO nodecs
 	private Error tiposNoDeclarados(List<ExpTipo> refsAcheck, TS tsDecs) {
 		String nodeclarados = "";// acumulador
 		boolean declarado = false;// bandera
@@ -8060,7 +8086,6 @@ ListaParametrosReales.tsh)
 		}
 	}
 
-	// TODO crea una nueva tabla de simbolos con padre la actual
 	private TS creaNivel(Atributo<TS> tsh) {
 		return new TS(tsh.val());
 	}
@@ -8115,6 +8140,8 @@ ListaParametrosReales.tsh)
 		return new LinkedList<Integer>();
 	}
 
+	// Que exista el metodo, k sea de clase proc y ke el numero de parametros
+	// formales coincida con los reales
 	private boolean llamadaCorrecta(TS ts, String lex, Integer nparams) {
 		if (!estaEn(lex, ts))
 			return false;
@@ -8131,13 +8158,14 @@ ListaParametrosReales.tsh)
 
 	// TODO
 	// que coincida el tipo del parametro nparams con la definicion del metodo
-	// en caso de que sea designador(puntero), se mira el modo del parametro y
-	// luego se mira el tipo del dato al que apunta
+	// en caso de que sea designador no puede ser de tipo formal VALOR
 	private boolean parametroCorrecto(String subProg, int nParams,
 			ExpTipo tipo, Boolean designador, TS tsh) {
 		boolean correcto;
+		if (!estaEn(subProg, tsh))
+			return false;
 		ExpTipo metodo = tsh.getExpTipo(subProg);
-		ExpTipo param = metodo.params().get(nParams);
+		ExpTipo param = metodo.params().get(nParams - 1);
 		if (!designador) {
 			if (tipo.t() == param.tipo().t())
 				correcto = true;
@@ -8147,8 +8175,8 @@ ListaParametrosReales.tsh)
 			if (param.modo() == CatLexica.VALOR)
 				correcto = false;
 			else {
-				ExpTipo referenciada = tsh.getExpTipo(tipo.id());
-				if (referenciada.t() == param.tipo().t()) {
+				// ExpTipo referenciada = tsh.getExpTipo(tipo.id());
+				if (tipo.t() == param.tipo().t()) {
 					correcto = true;
 				} else
 					correcto = false;
@@ -8173,9 +8201,8 @@ ListaParametrosReales.tsh)
 		return Instruccion.nuevaIMueve(String.valueOf(tamMover));
 	}
 
-	// TODO asi directamente :?
 	private int tamañoObjetoApuntado(ExpTipo tipo, TS ts) {
-		return ref(ts, tipo).tam();
+		return ref(ts, tipo).tbase().tam();
 		// if (tipo.t() == CatLexica.REF) {
 		// return ts.getTamRef(tipo.id());
 		// } else {
@@ -8337,9 +8364,9 @@ ListaParametrosReales.tsh)
 		return exp;
 	}
 
-	private int numeroInstruccionesActivacionProgramaPrincipal() {
-		return 4 + 1;
-		// apila_int(inicioDatosEstaticos),desapilar_dir(1),
+	private int numeroInstruccionesActivacionProgramaPrincipal(int anidamiento) {
+		return 2 + 2 * anidamiento + 1;
+		// apila_int(inicioDatosEstaticos),desapilar_dir(1),*anidamiento
 		// apila_int(finDatosEstaticos),desapila_dir(0)
 		// ir_a(Bloque.dirSalto)
 	}
@@ -8352,10 +8379,13 @@ ListaParametrosReales.tsh)
 	// activao aun ningun reg de act, el prologo lo hara despues
 	private List<Instruccion> codigoActivacionProgramaPrincipal(
 			Integer dirInicio, Integer anidamiento, Integer dirSalto) {
-		List<Instruccion> codigoDisplay;
+		List<Instruccion> codigoDisplay = new LinkedList<Instruccion>();
 		int inicioDatosEstaticos = 0/* anidamiento + 1 + 1 + 1 */;
-		codigoDisplay = concat(apila_int(inicioDatosEstaticos), desapila_dir(1));
-
+		for (int i = 0; i < anidamiento; i++) {
+			codigoDisplay = concat(codigoDisplay,
+					single(apila_int(inicioDatosEstaticos)),
+					single(desapila_dir(i + 1)));
+		}
 		List<Instruccion> codigoCP;
 		int finDatosEstaticos = anidamiento;
 
@@ -8410,9 +8440,8 @@ ListaParametrosReales.tsh)
 		return concat(dirRetorno, fijaCP, recuperaOldDisplay, single(ir_ind()));
 	}
 
-	// TODO NUEVOS METODOS AUXILIARES
 	private Error tipoError(ExpTipo exp) {
-		return exp.t() == CatLexica.ERROR ? new Error("Error de tipo")
+		return exp.t() == CatLexica.ERROR ? new Error("Error de tipo ")
 				: noError();
 	}
 
@@ -8448,8 +8477,16 @@ ListaParametrosReales.tsh)
 		return val.t() == CatLexica.INT || val.t() == CatLexica.BOOLEAN;
 	}
 
-	private Instruccion codigoEscritura(ExpTipo mem) {
-		return Instruccion.nuevaIEscritura(mem.t());
+	private List<Instruccion> codigoEscritura(ExpTipo mem, Boolean exp0EsDesig) {
+		List<Instruccion> cod = new LinkedList<Instruccion>();
+		if (exp0EsDesig)
+			cod = concat(apila_ind());
+
+		return concat(cod, Instruccion.nuevaIEscritura(mem.t()));
+	}
+
+	private Instruccion stop() {
+		return Instruccion.nuevaIStop();
 	}
 
 	// TODO DUDA
@@ -8481,34 +8518,32 @@ ListaParametrosReales.tsh)
 		return cod;
 	}
 
-	// TODO esto falta algo seguro se supone que nivelDe esta la dir de
-	// retorno pss
-	private List<Instruccion> codigoInicioLlamada(Integer nivelDe,
-			Integer parametqRet) {
-		List<Instruccion> saveReturn, inicioData;
+	// TODO solo prepara para paso de parametros
+	private List<Instruccion> codigoInicioLlamada(Integer nivelDe) {
+		List<Instruccion> saveReturn, inicioPrimerParam;
 		// saveReturn = concat(apila_dir(0), apila_int(1), suma(),
 		// apila_int(parametqRet), desapila_ind());
 		// para inicio de parametros
-		inicioData = concat(apila_dir(nivelDe + 1), apila_int(0), suma());
-		return concat(inicioData);
+		// inicioPrimerParam = concat(apila_dir(nivelDe + 1), apila_int(0),
+		// suma());
+		inicioPrimerParam = concat(apila_dir(0), apila_int(3), suma());
+		return concat(inicioPrimerParam);
 	}
 
 	private int numeroInstruccionesInicioLlamada() {
-		return 3;
-		// apila_dir(0), apila_int(1), suma(),
-		// apila_int(parametqRet), desapila_ind());
-		// inicioData = concat(apila_dir(0), apila_int(3), suma()
+		return 3;// apila_dir(0), apila_int(3), suma()
 	}
 
 	private Integer numeroInstruccionesFinLlamada() {
-		return 6;// ir_a(fin call)
+		return 6;// salva dir retorno y ir_a(fin call)
 	}
 
 	// TODO ir_a fin de call?
 	private List<Instruccion> codigoFinLlamada(String idenLex, TS ts, int nInsts) {
 		List<Instruccion> saveReturn;
-		// CREO K ES ASI pero se pone en bucle infinito, xk la direccion del
-		// procedimiento es 0
+		// CREO K ES ASI pero se pone en error, xk la direccion del
+		// procedimiento es -1 o 0 si quito lo de que no se modifique si existe
+		// en TS
 		saveReturn = concat(apila_dir(0), apila_int(1), suma(),
 				apila_int(nInsts), desapila_ind());
 		return concat(saveReturn, single(ir_a(dirDe(idenLex, ts))));
@@ -8521,13 +8556,12 @@ ListaParametrosReales.tsh)
 		return 3;
 	}
 
-	// meterle apila_int(tamaño)+suma
 	private List<Instruccion> codigoPaso(String subProgramah, Integer nparams,
 			ExpTipo exp0tipo, Boolean exp0EsDesig, TS tsh) {
 		List<Instruccion> cod;
 		int size = exp0tipo.tam();
 		ExpTipo metodo = tsh.getExpTipo(subProgramah);
-		ExpTipo param = metodo.params().get(nparams);
+		ExpTipo param = metodo.params().get(nparams - 1);
 		if (exp0EsDesig) {
 			if (param.modo() == CatLexica.VALOR) {
 				cod = concat(mueve(1), apila_int(1), suma());
@@ -8575,15 +8609,15 @@ ListaParametrosReales.tsh)
 										CatLexica.PROC, "pepe"),
 										ga.new ParamsRealesR2Debug())))));
 
-//		GA.Programa programa = ga.new ProgR1Debug(ga.new BloqueR1Debug(
-//				ga.new DecsR2Debug(ga.new DecR1Debug(ga.new TipoR1Debug(),
-//						new Token(CatLexica.IDEN, "x"))),
-//				ga.new InstsR2Debug(ga.new InstR1Debug(ga.new IAsigR1Debug(
-//						ga.new MemR1Debug(new Token(CatLexica.IDEN, "x")),
-//						ga.new Exp0R2Debug(ga.new Exp1R2Debug(
-//								ga.new Exp2R2Debug(ga.new Exp3R2Debug(
-//										ga.new Exp4R3Debug(new Token(
-//												CatLexica.INT, "20")))))))))));
+		// GA.Programa programa = ga.new ProgR1Debug(ga.new BloqueR1Debug(
+		// ga.new DecsR2Debug(ga.new DecR1Debug(ga.new TipoR1Debug(),
+		// new Token(CatLexica.IDEN, "x"))),
+		// ga.new InstsR2Debug(ga.new InstR1Debug(ga.new IAsigR1Debug(
+		// ga.new MemR1Debug(new Token(CatLexica.IDEN, "x")),
+		// ga.new Exp0R2Debug(ga.new Exp1R2Debug(
+		// ga.new Exp2R2Debug(ga.new Exp3R2Debug(
+		// ga.new Exp4R3Debug(new Token(
+		// CatLexica.INT, "20")))))))))));
 		try {
 			Evaluador evaluador = new Evaluador();
 			if (evaluador.evalua(programa.err()).val().hayError()) {

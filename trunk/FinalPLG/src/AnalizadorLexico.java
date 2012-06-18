@@ -3,7 +3,7 @@ import java.io.IOException;
 
 enum EstadoLexico {
 
-	INICIO, RECNUM, RECDIG, RECPUNTO, RECACENTO, RECCERO, RECIDEN, RECMAS, RECMENOS, RECASTERISCO, RECBARRA, RECPAP, RECPCIERRE, INITIGUAL, DOSPUNTOS, RECIGUAL, RECMAYOR, RECCAP,RECCIERRE, RECCORCHETE, RECPUNTOCOMA, RECAMPERSAND, RECEOF, RECCOM, RECLLAP, RECLLCIERRE
+	INICIO, RECNUM, RECDIG, RECPUNTO, RECCOMA,RECACENTO, RECCERO, RECIDEN, RECMAS, RECMENOS, RECASTERISCO, RECBARRA, RECPAP, RECPCIERRE, INITIGUAL, DOSPUNTOS, RECIGUAL, RECMAYOR, RECCAP,RECCIERRE, RECCORCHETE, RECPUNTOCOMA, RECAMPERSAND, RECEOF, RECCOM, RECLLAP, RECLLCIERRE
 };
 
 public class AnalizadorLexico {
@@ -63,6 +63,8 @@ public class AnalizadorLexico {
 					transita(EstadoLexico.RECCIERRE);
 				} else if (caract == ';') {
 					transita(EstadoLexico.RECPUNTOCOMA);
+				} else if (caract == ',') {
+					transita(EstadoLexico.RECCOMA);
 				} else if (caract == '&') {
 					transita(EstadoLexico.RECAMPERSAND);
 				} else if (caract == EOF) {
@@ -91,6 +93,8 @@ public class AnalizadorLexico {
 				return new Token(filaInicio, colInicio, CatLexica.AMPERSAND);
 			case RECPAP:
 				return new Token(filaInicio, colInicio, CatLexica.PAP);
+			case RECCOMA:
+				return new Token(filaInicio, colInicio, CatLexica.COMA);
 			case RECPCIERRE:
 				return new Token(filaInicio, colInicio, CatLexica.PCIERRE);
 			case RECLLAP:
@@ -276,6 +280,8 @@ public class AnalizadorLexico {
 			return new Token(filaInicio, colInicio, CatLexica.PUNTERO);
 		} else if (lexema.equals("de")) {
 			return new Token(filaInicio, colInicio, CatLexica.DE);
+		} else if (lexema.equals("var")) {
+			return new Token(filaInicio, colInicio, CatLexica.VAR);
 		} else {
 			return new Token(filaInicio, colInicio, CatLexica.IDEN, lexema);
 		}

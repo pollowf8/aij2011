@@ -12,13 +12,13 @@ public class TS {
 
 	public TS() {
 		tabla = new HashMap<String, ArrayList<Object>>();
-		padre=null;
+		padre = null;
 	}
-	
-	//Para uso en nuevos niveles
+
+	// Para uso en nuevos niveles
 	public TS(TS ts) {
 		tabla = new HashMap<String, ArrayList<Object>>();
-		padre=ts;
+		padre = ts;
 	}
 
 	public boolean estaEn(String cte) {
@@ -33,59 +33,78 @@ public class TS {
 		// TS result = new TS(new HashMap<String,ArrayList<Object>>(tabla));
 		// result.tabla.put(cte,val);
 		// return result;
-		if(!tabla.containsKey(cte))//xa ke no modificara el proc
+		if (!tabla.containsKey(cte))// xa ke no modificara el proc
 			tabla.put(cte, val);
 		return this;
 	}
 
-	public ArrayList<Object> valDe(String cte) {
-		return tabla.get(cte);
+	private ArrayList<Object> checkPadres(String cte) {
+		TS sig = padre;
+		while (sig != null) {
+			if (sig.tabla.containsKey(cte))
+				return tabla.get(cte);
+			else
+				sig = sig.padre;
+		}
+		return null;
 	}
 
-	public ExpTipo getExpTipo(String cte){
+	public ArrayList<Object> valDe(String cte) {
+		if (tabla.containsKey(cte)) {
+			return tabla.get(cte);
+		} else {
+			return checkPadres(cte);
+		}
+	}
+
+	public ExpTipo getExpTipo(String cte) {
 		return (ExpTipo) tabla.get(cte).get(0);
 	}
-	public Integer getNivel(String cte){
+
+	public Integer getNivel(String cte) {
 		return (Integer) tabla.get(cte).get(3);
 	}
-	public CatLexica getClase(String cte){
+
+	public CatLexica getClase(String cte) {
 		return (CatLexica) tabla.get(cte).get(2);
 	}
+
 	public String toString() {
 		return tabla.toString();
 	}
-	
-	public TS getPadre(){
+
+	public TS getPadre() {
 		return padre;
 	}
-	
-	public void setPadre(TS padre){
-		this.padre=padre;
+
+	public void setPadre(TS padre) {
+		this.padre = padre;
 	}
-	
-	public void setDir(String lex, int dir){
-		ArrayList<Object> o=tabla.get(lex);
-		ArrayList<Object> oNew=new ArrayList<Object>();
+
+	public void setDir(String lex, int dir) {
+		ArrayList<Object> o = tabla.get(lex);
+		ArrayList<Object> oNew = new ArrayList<Object>();
 		oNew.add(o.get(0));
 		oNew.add(dir);
 		oNew.add(o.get(2));
 		oNew.add(o.get(3));
 		tabla.put(lex, oNew);
 	}
-	
-	//Meto en una lista los que son declaraciones de tipos y lo devuelvo
-	public List<String> getTiposDeclarados(){
-		LinkedList<String> decTipos=new LinkedList<String>();
-		Iterator<String> itlex =tabla.keySet().iterator();
-		while(itlex.hasNext()){
-			String id=itlex.next();
-			ArrayList<Object> in=(ArrayList<Object>) tabla.get(id);
-			if(in.get(2).equals(CatLexica.TIPO)){
+
+	// Meto en una lista los que son declaraciones de tipos y lo devuelvo
+	public List<String> getTiposDeclarados() {
+		LinkedList<String> decTipos = new LinkedList<String>();
+		Iterator<String> itlex = tabla.keySet().iterator();
+		while (itlex.hasNext()) {
+			String id = itlex.next();
+			ArrayList<Object> in = (ArrayList<Object>) tabla.get(id);
+			if (in.get(2).equals(CatLexica.TIPO)) {
 				decTipos.add(id);
 			}
 		}
 		return decTipos;
 	}
+
 	public int getTamRef(String lex) {
 		ArrayList<Object> o = tabla.get(lex);
 		ExpTipo exp = (ExpTipo) o.get(0);

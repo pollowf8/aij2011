@@ -13,9 +13,9 @@ import java.io.ObjectOutputStream;
 public class TinyVM {
 	public static void main(String[] args) throws IOException {
 		try {
-			if (args.length != 2) {
+			if (args.length != 3) {
 				System.err
-						.println("ERROR: Se precisa indicar el archivo fuente,el archivo objeto");
+						.println("ERROR: Se precisa indicar el archivo fuente,el archivo objeto y memoria estatica");
 				System.exit(0);
 			}
 			InputStream input = new FileInputStream(args[0]);
@@ -32,7 +32,7 @@ public class TinyVM {
 				ObjectOutputStream out = new ObjectOutputStream(
 						new FileOutputStream(args[1]));
 				out.writeObject(evaluador.evalua(programa.cod()).val());
-				 VM vm = new VM(args[1]);
+				 VM vm = new VM(args[1],args[2]);
 			     vm.run(true);
 			}
 		} catch (Exception e) {

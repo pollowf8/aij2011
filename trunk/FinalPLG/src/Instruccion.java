@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 abstract public class Instruccion implements Serializable {
 	public enum ICOD {
-		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA, IESCRITURA, ILECTURA, ICOPIA, IR_IND
+		SUM, MUL, APILA, DESAPILA_DIR, APILA_TRUE, APILA_FALSE, APILA_INT, APILA_DIR, EQ, NEQ, GT, GE, LT, LE, RESTA, OR, DIV, AND, MENOS, NOT, IR_F, IR_A, APILA_IND, DESAPILA_IND, MUEVE, INEW, IDEL, DESAPILA, IESCRITURA, ILECTURA, ICOPIA, IR_IND, STOP, ISEG
 	};
 
 	private static ISuma iSuma = null;
@@ -350,9 +350,11 @@ abstract public class Instruccion implements Serializable {
 		public ICOD ci() {
 			return ICOD.IR_A;
 		}
-		public void set_arg1(int e){
-			this.etq=e;
+
+		public void set_arg1(int e) {
+			this.etq = e;
 		}
+
 		public int arg1() {
 			return etq;
 		}
@@ -478,7 +480,7 @@ abstract public class Instruccion implements Serializable {
 
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
-			vm.addValMem(dir, op1.asInt());
+			vm.addValMem(dir, op1);
 			vm.incCP();
 		}
 
@@ -509,8 +511,8 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public void ejecuta(VM vm) {
-			Integer a = vm.getValMem(dir);
-			vm.push(new VM.IntPValue(a));
+			VM.PValue a = vm.getValMem(dir);
+			vm.push(a);
 			vm.incCP();
 		}
 
@@ -546,7 +548,7 @@ abstract public class Instruccion implements Serializable {
 			VM.PValue origen = vm.pop();
 			VM.PValue destino = vm.pop();
 			for (int i = 0; i < tamMover; i++) {
-				Integer a = vm.getValMem(origen.asInt() + i);
+				VM.PValue a = vm.getValMem(origen.asInt() + i);
 				vm.addValMem(destino.asInt() + i, a);
 			}
 			vm.incCP();
@@ -583,7 +585,7 @@ abstract public class Instruccion implements Serializable {
 		public void ejecuta(VM vm) {
 			VM.PValue op1 = vm.pop();
 			VM.PValue dir = vm.pop();
-			vm.addValMem(dir.asInt(), op1.asInt());
+			vm.addValMem(dir.asInt(), op1);
 			vm.incCP();
 		}
 
@@ -609,18 +611,13 @@ abstract public class Instruccion implements Serializable {
 	public static class IApilaInd extends Instruccion {
 
 		private IApilaInd() {
-			// try {
-			// this.dir = Integer.valueOf(dir).intValue();
-			// } catch (NumberFormatException e) {
-			// this.dir = 0;
-			// }
 		}
 
 		public void ejecuta(VM vm) {
 			VM.PValue dir = vm.pop();
-			Integer a = vm.getValMem(dir.asInt());
-			//sino definido pone 0
-			vm.push(new VM.IntPValue(a==null?1000:a));
+			VM.PValue a = vm.getValMem(dir.asInt());
+			// sino definido pone posicion de fin
+			vm.push((a == null ? vm.getStop() : a));
 			vm.incCP();
 		}
 
@@ -628,16 +625,9 @@ abstract public class Instruccion implements Serializable {
 			return ICOD.APILA_IND;
 		}
 
-		// public int arg1() {
-		// return dir;
-		// }
-
 		public String toString() {
-			// return "APILA_IND(" + dir + ")";
 			return "APILA_IND()";
 		}
-
-		// private int dir;
 
 	}
 
@@ -681,10 +671,13 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public void ejecuta(VM vm) {
-			Integer poslibre = vm.getPrimeraPosLibre();
-			// TODO RESERVA?¿
-			vm.push(new VM.IntPValue(poslibre));
-			vm.incCP();
+			Integer posLibre = vm.reserva(tamReserva);
+			if (posLibre == null)
+				vm.parar("No espacio en el heap para: " + tamReserva);
+			else {
+				vm.push(new VM.IntPValue(posLibre));
+				vm.incCP();
+			}
 		}
 
 		public ICOD ci() {
@@ -703,6 +696,37 @@ abstract public class Instruccion implements Serializable {
 
 	}
 
+	public static class ISeg extends Instruccion {
+
+		private ISeg(String sizeMemEstatica) {
+			try {
+				this.sizeMemEstatica = Integer.valueOf(sizeMemEstatica)
+						.intValue();
+			} catch (NumberFormatException e) {
+				this.sizeMemEstatica = 0;
+			}
+		}
+
+		public void ejecuta(VM vm) {
+			vm.setMemStatica(sizeMemEstatica);
+		}
+
+		public ICOD ci() {
+			return ICOD.ISEG;
+		}
+
+		public int arg1() {
+			return sizeMemEstatica;
+		}
+
+		public String toString() {
+			return "ISeg(" + sizeMemEstatica + ")";
+		}
+
+		private int sizeMemEstatica;
+
+	}
+
 	public static class IDel extends Instruccion {
 
 		private IDel(String tamReserva) {
@@ -714,8 +738,8 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public void ejecuta(VM vm) {
-			VM.PValue posinicio = vm.pop();
-			// TODO LIBERA?¿
+			VM.PValue posInicio = vm.pop();
+			vm.libera(posInicio.asInt(),tamReserva);
 			vm.incCP();
 		}
 
@@ -746,7 +770,7 @@ abstract public class Instruccion implements Serializable {
 				sc = new Scanner(System.in);
 			if (tipo == CatLexica.INT) {
 				vm.push(new VM.IntPValue(sc.nextInt()));
-			} else if(tipo == CatLexica.BOOLEAN){
+			} else if (tipo == CatLexica.BOOLEAN) {
 				vm.push(new VM.BooleanPValue(sc.nextBoolean()));
 			}
 			vm.incCP();
@@ -761,9 +785,9 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public String toString() {
-			return "ILECTURA(" + tipo + ")";
+			return "LEER(" + tipo + ")";
 		}
-		
+
 		Scanner sc;
 		private CatLexica tipo;
 	}
@@ -771,11 +795,11 @@ abstract public class Instruccion implements Serializable {
 	public static class IEscritura extends Instruccion {
 
 		private IEscritura(CatLexica tipo) {
-			this.tipo=tipo;
+			this.tipo = tipo;
 		}
 
 		public void ejecuta(VM vm) {
-			VM.PValue p=vm.pop();
+			VM.PValue p = vm.pop();
 			System.out.print(p);
 			vm.incCP();
 		}
@@ -789,7 +813,7 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public String toString() {
-			return "IESCRITURA(" + tipo + ")";
+			return "ESCRIBIR(" + tipo + ")";
 		}
 
 		private CatLexica tipo;
@@ -814,6 +838,25 @@ abstract public class Instruccion implements Serializable {
 
 		public String toString() {
 			return "ICOPIA()";
+		}
+	}
+
+	public static class IStop extends Instruccion {
+
+		private IStop() {
+
+		}
+
+		public void ejecuta(VM vm) {
+			vm.setCP(-1);
+		}
+
+		public ICOD ci() {
+			return ICOD.STOP;
+		}
+
+		public String toString() {
+			return "STOP()";
 		}
 	}
 
@@ -978,11 +1021,16 @@ abstract public class Instruccion implements Serializable {
 	public static Instruccion nuevaICopia() {
 		return new ICopia();
 	}
+
 	public static Instruccion nuevaILectura(CatLexica tipo) {
 		return new ILectura(tipo);
 	}
 
 	public static Instruccion nuevaIEscritura(CatLexica tipo) {
 		return new IEscritura(tipo);
+	}
+
+	public static Instruccion nuevaIStop() {
+		return new IStop();
 	}
 }

@@ -1,0 +1,7 @@
+int z;
+boolean y;
+proc p1 (var int q,var boolean z) { int j & j:=30000;q:=1000;z:=false}
+&
+z:=500;
+y:=true;
+p1(z,y)

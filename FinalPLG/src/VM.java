@@ -10,8 +10,10 @@ public class VM {
 	private Stack<PValue> pilaEvaluacion;
 	private Instruccion[] programa;
 	private int cp;
-	private ArrayList<Integer> memoria;
-	private Integer[] memoriaArray;
+	private PValue stop;
+	// private ArrayList<Integer> memoria;
+	private PValue[] memoria;
+	private int memStatica;
 
 	// para una máquina más complicada existirá también una memoria de
 	// evaluación. Puede representarse, por ejemplo, mediante un array,
@@ -34,7 +36,6 @@ public class VM {
 	// Puede proporcionarse una subclase de PValue para cada tipo de valor
 	// basico
 	// de la máquina P.
-
 	public static class IntPValue extends PValue {
 		private int value;
 
@@ -47,7 +48,7 @@ public class VM {
 		}
 
 		public String toString() {
-			return "<" + value + ">";
+			return String.valueOf(value);
 		}
 	}
 
@@ -63,14 +64,15 @@ public class VM {
 		}
 
 		public String toString() {
-			return "<" + new Boolean(value).toString() + ">";
+			return new Boolean(value).toString();
 		}
 	}
 
-	public VM(String fprograma) {
+	public VM(String fprograma, String statica) {
 		try {
-			// memoria = new ArrayList<Integer>();// A�adido
-			memoriaArray = new Integer[20];// A�adido
+			int sizeMem = Integer.parseInt(statica);
+			memoria = new PValue[sizeMem];// A�adido
+			memStatica = (int) (0.75 * sizeMem);
 			pilaEvaluacion = new Stack<PValue>();
 			List<Instruccion> instrucciones = (List<Instruccion>) new ObjectInputStream(
 					new FileInputStream(fprograma)).readObject();
@@ -79,6 +81,7 @@ public class VM {
 			for (Instruccion i : instrucciones)
 				programa[j++] = i;
 			cp = 0;
+			stop = new IntPValue(j - 1);
 		} catch (Exception e) {
 			System.err.println("Error al cargar el programa:" + e);
 			System.exit(1);
@@ -88,14 +91,18 @@ public class VM {
 	public void run(boolean traza) {
 		if (traza)
 			System.out.println(pilaEvaluacion);
-		while (cp < programa.length) {
-			if (traza)
-				System.out.print(programa[cp] + "=>");
-			programa[cp].ejecuta(this);
-			if (traza) {
-				System.out.println(pilaEvaluacion);
-				System.out.println(memTostring());
+		try {
+			while (cp < programa.length) {
+				if (traza)
+					System.out.print(programa[cp] + "=>");
+				programa[cp].ejecuta(this);
+				if (traza) {
+					System.out.println(pilaEvaluacion);
+					System.out.println(memTostring());
+				}
 			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.print("FIN DE PROGRAMA");
 		}
 	}
 
@@ -111,10 +118,6 @@ public class VM {
 		cp++;
 	}
 
-	public void decCP() {
-		cp--;
-	}
-
 	public void setCP(int newCp) {
 		cp = newCp;
 	}
@@ -124,12 +127,12 @@ public class VM {
 			System.err.println("ERROR - debe indicarse archivo a interpretar");
 			System.exit(1);
 		}
-		VM vm = new VM(args[0]);
+		VM vm = new VM(args[0], args[1]);
 		vm.run(true);
 	}
 
 	// a�adido
-	public void addValMem(int dir, int val) {
+	public void addValMem(int dir, PValue op1) {
 		// try {
 		// memoria.ensureCapacity(dir + 1);
 		// memoria.set(dir, val);
@@ -141,24 +144,24 @@ public class VM {
 		// }
 		//
 		ensureCap(dir + 1);
-		memoriaArray[dir] = val;
+		memoria[dir] = op1;
 	}
 
 	private void ensureCap(int minCapacity) {
-		int oldCapacity = memoriaArray.length;
+		int oldCapacity = memoria.length;
 		if (minCapacity > oldCapacity) {
-			Object oldData[] = memoriaArray;
+			Object oldData[] = memoria;
 			int newCapacity = (oldCapacity * 3) / 2 + 1;
 			if (newCapacity < minCapacity)
 				newCapacity = minCapacity;
 			// minCapacity is usually close to size, so this is a win:
-			memoriaArray = Arrays.copyOf(memoriaArray, newCapacity);
+			memoria = Arrays.copyOf(memoria, newCapacity);
 		}
 	}
 
 	private String memTostring() {
 		StringBuilder sb = new StringBuilder("[");
-		for (Integer i : memoriaArray) {
+		for (PValue i : memoria) {
 			sb.append(i + ",");
 		}
 		sb.setLength(sb.length() - 1);
@@ -166,7 +169,7 @@ public class VM {
 		return sb.toString();
 	}
 
-	public Integer getValMem(int dir) {
+	public PValue getValMem(int dir) {
 		// try {
 		// Integer a = memoria.get(dir);
 		// return a;
@@ -174,15 +177,45 @@ public class VM {
 		// return new Integer(-1);
 		// }
 		try {
-			Integer a = memoriaArray[dir];
+			PValue a = memoria[dir];
 			return a;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return new Integer(-1);
+			return null;
 		}
 	}
 
-	public Integer getPrimeraPosLibre() {
-		return memoria.size();
+	public Integer reserva(int tamReserva) {
+		for (int j = 0; j < memoria.length; j++) {
+			int i = memStatica;
+			for (; memoria[i] != null; i++)
+				;// primera pos
+
+			int z = i+1;
+			for (; z < tamReserva && memoria[z] != null; z++)
+				;
+			if (z - i >= tamReserva)
+				return i;// suficiente tama�o
+		}
+		return null;
+
+	}
+
+	public void setMemStatica(int s) {
+		this.memStatica = s;
+	}
+
+	public PValue getStop() {
+		return stop;
+	}
+
+	public void parar(String msg) {
+		programa[stop.asInt()].ejecuta(this);
+		System.err.print(msg);
+	}
+
+	public void libera(int posInicio, int tamReserva) {
+		for (int j = posInicio; j < tamReserva; j++)
+			memoria[j] = null;
 	}
 
 }

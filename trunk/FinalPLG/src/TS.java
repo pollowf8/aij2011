@@ -81,6 +81,8 @@ public class TS {
 		this.padre = padre;
 	}
 
+	//modifico la direccion de una entrada en la tabla de simbolos
+	//usado para procedimientos
 	public void setDir(String lex, int dir) {
 		ArrayList<Object> o = tabla.get(lex);
 		ArrayList<Object> oNew = new ArrayList<Object>();

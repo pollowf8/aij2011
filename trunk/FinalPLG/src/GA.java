@@ -2105,7 +2105,7 @@ public class GA {
 			return concat(
 					codigoActivacionProgramaPrincipal(bloque.dirInicio().val(),
 							bloque.anidamiento().val(), bloque.dirSalto().val()),
-					bloque.cod().val(), single(stop()));
+					bloque.cod().val(), concat(stop()));
 		}
 
 		private Bloque bloque;
@@ -2381,7 +2381,7 @@ public class GA {
 		Comprobación de las restricciones contextuales
 		Declaraciones(0).error = Declaraciones(1).error or Declaracion.error or
 		existeSimbEnUltimoNivel(Declaraciones(1).ts,Declaracion.iden,Declaraciones(0).nivelh)
-		Declaraciones(0).refsAChequear = Declaraciones(1).refsAChequear  Declaracion.refsAChequear
+		Declaraciones(0).refsAChequear = Declaraciones(1).refsAChequear U Declaracion.refsAChequear
 		Generación de código
 		Declaraciones(1).etqh = Declaraciones(0).etqh
 		Declaracion.etqh = Declaraciones(1).etq
@@ -2438,7 +2438,8 @@ public class GA {
 
 			// TODO dec.err y decs_1.ts tiene k ir antes ke decs_1.err
 			err().ponDependencias(decs_1.ts(), dec.iden(), dec.fila(),
-					dec.col(), dec.err(), decs_1.err(), nivelh());
+					dec.col(), dec.err(), decs_1.err(), nivelh(), dec.fila(),
+					dec.col());
 			dir().ponDependencias(decs_1.dir(), dec.tam());
 			ts().ponDependencias(decs_1.ts(), decs_1.dir(), dec.iden(),
 					dec.tipo(), dec.clase(), nivelh());
@@ -2468,7 +2469,8 @@ public class GA {
 			return joinErrors(
 					e,
 					existeSimbEnUltimoNivel(decs_1.ts().val(),
-							dec.iden().val(), nivelh().val()));
+							dec.iden().val(), nivelh().val(), dec.fila().val(),
+							dec.col().val()));
 		}
 
 		public Integer dir_exp() {
@@ -2592,7 +2594,7 @@ public class GA {
 			return joinErrors(
 					dec.err().val(),
 					existeSimbEnUltimoNivel(tsh().val(), dec.iden().val(),
-							nivelh().val()));
+							nivelh().val(), dec.fila().val(), dec.col().val()));
 		}
 
 		public Integer dir_exp() {
@@ -3267,7 +3269,7 @@ public class GA {
 			return joinErrors(
 					e,
 					existeSimbEnUltimoNivel(listaParamsForms_1.ts().val(),
-							paramFormal.iden().val(), nivelh().val()));
+							paramFormal.iden().val(), nivelh().val(), 0, 0));
 		}
 
 		@Override
@@ -3362,7 +3364,7 @@ public class GA {
 			return joinErrors(
 					paramFormal.err().val(),
 					existeSimbEnUltimoNivel(tsh().val(), paramFormal.iden()
-							.val(), nivelh().val()));
+							.val(), nivelh().val(), 0, 0));
 		}
 
 		@Override
@@ -3840,7 +3842,7 @@ public class GA {
 			tipo().ponDependencias(tipo_1.tipo());
 			tipo_1.tsh().ponDependencias(tsh());
 			err().ponDependencias(tipo_1.err());
-			refsAChequear().ponDependencias(tipo_1.refsAChequear(), tsh(),
+			refsAChequear().ponDependencias(tsh(),tipo_1.refsAChequear(),
 					tipo_1.tipo());
 			tipo_1.registraCtx(new TipoCtx() {
 				@Override
@@ -5359,7 +5361,7 @@ ListaParametrosReales.tsh)
 	 * Mem.tsh = IAsignacion.tsh
 	 * Exp0.tsh = IAsignacion.tsh
 	 * Comprobación de las restricciones contextuales
-	 * IAsignacion.error = not asignacionCorrecta(Mem.tipo,Exp0.tipo)
+	 * IAsignacion.error = not asignacionCorrecta(Mem.tipo,Exp0.tipo,&Iasignacion.tsh)
 	 * Generación de código
 	 * Mem.etqh = IAsignacion.etqh
 	 * Exp0.etqh = Mem.etq + 1
@@ -5393,7 +5395,7 @@ ListaParametrosReales.tsh)
 					return IAsigR1.this.etqh().val();
 				}
 			});
-			err().ponDependencias(mem.tipo(), exp0.tipo());
+			err().ponDependencias(mem.tipo(), exp0.tipo(), tsh());
 			etq().ponDependencias(exp0.etq());
 			cod().ponDependencias(mem.cod(), exp0.cod(), exp0.esDesignador());
 
@@ -5409,9 +5411,10 @@ ListaParametrosReales.tsh)
 		}
 
 		public Error err_exp() {
-			if (!asignacionCorrecta(mem.tipo().val(), exp0.tipo().val())) {
+			if (!asignacionCorrecta(mem.tipo().val(), exp0.tipo().val(), tsh()
+					.val())) {
 				return new Error("La asignación no ha sido correcta: "
-						+ mem.tipo().val().t() + ":=" + exp0.tipo().val().t());
+						+ mem.tipo().val() + ":=" + exp0.tipo().val());
 			} else
 				return new Error();
 		}
@@ -5491,7 +5494,8 @@ ListaParametrosReales.tsh)
 
 		public Error err_exp() {
 			if (!reservaMemoriaCorrecta(mem.tipo().val())) {
-				return new Error("La reserva de memoria no ha sido correcta");
+				return new Error("La reserva de memoria de:" + mem.tipo().val()
+						+ " no ha sido correcta");
 			} else
 				return new Error();
 		}
@@ -5570,17 +5574,18 @@ ListaParametrosReales.tsh)
 
 		public Error err_exp() {
 			if (!liberaMemoriaCorrecta(mem.tipo().val())) {
-				return new Error("La liberacion de memoria no ha sido correcta");
+				return new Error("La liberacion de memoria de:"
+						+ mem.tipo().val() + " no ha sido correcta");
 			} else
 				return new Error();
 		}
 
-		//TODO añadido apila_ind para traerte la direccion donde apunta mem
+		// TODO añadido apila_ind para traerte la direccion donde apunta mem
 		public List<Instruccion> cod_exp() {
 			List<Instruccion> o = concat(
 					mem.cod().val(),
-					single(apila_ind()),
-					single(libera(tamañoObjetoApuntado(mem.tipo().val(), tsh()
+					concat(apila_ind()),
+					concat(libera(tamañoObjetoApuntado(mem.tipo().val(), tsh()
 							.val()))));
 			return o;
 
@@ -6741,10 +6746,12 @@ ListaParametrosReales.tsh)
 					return Exp3R1.this.etqh().val();
 				}
 			});
+
 			exp3_1.tsh().ponDependencias(tsh());
 			exp3_1.etqh().ponDependencias(etqh());
-			cod().ponDependencias(exp3_1.cod(), opu.cod());
-			etq().ponDependencias(exp3_1.etq());
+			cod().ponDependencias(exp3_1.cod(), opu.cod(),
+					exp3_1.esDesignador());
+			etq().ponDependencias(exp3_1.etq(), exp3_1.esDesignador());
 			tipo().ponDependencias(opu.op(), exp3_1.tipo());
 		}
 
@@ -6874,7 +6881,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(apila_true());
+			return concat(apila_true());
 
 		}
 
@@ -6923,7 +6930,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(apila_false());
+			return concat(apila_false());
 		}
 
 		public Integer etq_exp() {
@@ -6970,7 +6977,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(apila_int(Integer.parseInt(num.lex())));
+			return concat(apila_int(Integer.parseInt(num.lex())));
 		}
 
 		public Integer etq_exp() {
@@ -7432,7 +7439,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(eq());
+			return concat(eq());
 		}
 	}
 
@@ -7458,7 +7465,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(neq());
+			return concat(neq());
 		}
 	}
 
@@ -7485,7 +7492,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(gt());
+			return concat(gt());
 
 		}
 	}
@@ -7511,7 +7518,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(ge());
+			return concat(ge());
 		}
 
 	}
@@ -7538,7 +7545,7 @@ ListaParametrosReales.tsh)
 
 		public List<Instruccion> cod_exp() {
 
-			return single(lt());
+			return concat(lt());
 
 		}
 
@@ -7565,7 +7572,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(le());
+			return concat(le());
 
 		}
 	}
@@ -7591,7 +7598,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(suma());
+			return concat(suma());
 		}
 	}
 
@@ -7616,7 +7623,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(resta());
+			return concat(resta());
 		}
 
 	}
@@ -7643,7 +7650,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(or());
+			return concat(or());
 		}
 
 	}
@@ -7669,7 +7676,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(mul());
+			return concat(mul());
 		}
 	}
 
@@ -7694,7 +7701,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(div());
+			return concat(div());
 		}
 	}
 
@@ -7719,7 +7726,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(and());
+			return concat(and());
 		}
 
 	}
@@ -7745,7 +7752,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(menos());
+			return concat(menos());
 
 		}
 
@@ -7772,7 +7779,7 @@ ListaParametrosReales.tsh)
 		}
 
 		public List<Instruccion> cod_exp() {
-			return single(not());
+			return concat(not());
 		}
 
 	}
@@ -7789,7 +7796,8 @@ ListaParametrosReales.tsh)
 
 	// FUNCIONES DE AYUDA
 	// TODO CONTROLAR LO DE QUE EXISTAN VARIOS TS, creo que controlao ;O
-	public TS aniadeSimb(TS ts, String iden, CatLexica clase, ExpTipo expTipo,
+	// Añade un elemento a la tabla de simbolos
+	private TS aniadeSimb(TS ts, String iden, CatLexica clase, ExpTipo expTipo,
 			int dir, int nivelh) {
 		ArrayList<Object> a = new ArrayList<Object>();
 		a.add(expTipo);
@@ -7799,70 +7807,64 @@ ListaParametrosReales.tsh)
 		return ts.aniade(iden, a);
 	}
 
-	public boolean estaEn(String cte, TS ts) {
+	// Comprueba si cte esta en ts
+	private boolean estaEn(String cte, TS ts) {
 		return ts.estaEn(cte);
 	}
 
-	public ExpTipo tipoDe(String cte, TS ts) {
+	// Devuelve el tipo de cte mirando la ts, si no se encuentra devuelve error
+	// Internamente valDe hace uso de checkPadres(),metodo de ts que revisa las
+	// ts padres de la tabla ts
+	private ExpTipo tipoDe(String cte, TS ts) {
 		ArrayList<Object> o = ts.valDe(cte);
 		return (ExpTipo) (o == null ? ExpTipo.nuevaExpTipoError() : o.get(0));
 	}
 
-	public int dirDe(String lex, TS ts) {
+	// Devuelve la direccion de lex revisando la ts y sus padres
+	private int dirDe(String lex, TS ts) {
 		return Integer.valueOf((String) ts.valDe(lex).get(1));
 	}
 
-	public TS creaTS() {
+	// crea una ts vacia
+	private TS creaTS() {
 		return new TS();
 	}
 
-	public List<Instruccion> concat(List<Instruccion> c1, List<Instruccion> c2) {
+	private List<Instruccion> concat(List<Instruccion> c1, Instruccion i) {
 		List<Instruccion> result = new LinkedList<Instruccion>(c1);
-		result.addAll(c2);
+		result.add(i);
 		return result;
 	}
 
-	public List<Instruccion> concat(Instruccion c1, List<Instruccion> c2) {
+	private List<Instruccion> concat(Instruccion c1, List<Instruccion> c2) {
 		List<Instruccion> result = new LinkedList<Instruccion>();
 		result.add(c1);
 		result.addAll(c2);
 		return result;
 	}
 
-	public List<Instruccion> concat(Instruccion c1, Instruccion c2) {
-		List<Instruccion> result = new LinkedList<Instruccion>();
-		result.add(c1);
-		result.add(c2);
-		return result;
-	}
-
-	public List<Instruccion> concat(List<Instruccion>... cs) {
+	private List<Instruccion> concat(List<Instruccion>... cs) {
 		List<Instruccion> result = new LinkedList<Instruccion>();
 		for (List<Instruccion> c : cs)
 			result.addAll(c);
 		return result;
 	}
 
-	public List<Instruccion> concat(Instruccion... cs) {
+	private List<Instruccion> concat(Instruccion... cs) {
 		List<Instruccion> result = new LinkedList<Instruccion>();
 		for (Instruccion c : cs)
 			result.add(c);
 		return result;
 	}
 
-	public List<Instruccion> single(Instruccion i) {
-		List<Instruccion> is = new LinkedList<Instruccion>();
-		is.add(i);
-		return is;
-	}
+	// private List<Instruccion> concat(Instruccion i) {
+	// List<Instruccion> is = new LinkedList<Instruccion>();
+	// is.add(i);
+	// return is;
+	// }
 
-	public List<Instruccion> concat(List<Instruccion> c1, Instruccion i) {
-		List<Instruccion> result = new LinkedList<Instruccion>(c1);
-		result.add(i);
-		return result;
-	}
-
-	public ExpTipo tipoOpBin(CatLexica op, ExpTipo expTipo, ExpTipo expTipo2) {
+	// Comprueba el tipo de operador binario
+	private ExpTipo tipoOpBin(CatLexica op, ExpTipo expTipo, ExpTipo expTipo2) {
 		if (expTipo.t().equals(expTipo2.t())) {
 			if (op.equals(CatLexica.GT) || op.equals(CatLexica.EQ)
 					|| op.equals(CatLexica.NEQ) || op.equals(CatLexica.GE)
@@ -7877,104 +7879,106 @@ ListaParametrosReales.tsh)
 		return ExpTipo.nuevaExpTipoError();
 	}
 
-	public ExpTipo tipoOpUnario(CatLexica op, ExpTipo expTipo) {
-		if (op.equals(CatLexica.MENOS) && expTipo.equals(CatLexica.INT))
-			return ExpTipo.nuevaExpTipoBoolean();
-		else if (op.equals(CatLexica.NOT) && expTipo.equals(CatLexica.BOOLEAN))
+	// Comprueba el tipo de operador unario
+	private ExpTipo tipoOpUnario(CatLexica op, ExpTipo expTipo) {
+		if (op.equals(CatLexica.MENOS) && expTipo.t().equals(CatLexica.INT))
 			return ExpTipo.nuevaExpTipoInt();
+		else if (op.equals(CatLexica.NOT)
+				&& expTipo.t().equals(CatLexica.BOOLEAN))
+			return ExpTipo.nuevaExpTipoBoolean();
 		else
 			return ExpTipo.nuevaExpTipoError();
 	}
 
-	public Instruccion suma() {
+	private Instruccion suma() {
 		return Instruccion.nuevaISuma();
 	}
 
-	public Instruccion mul() {
+	private Instruccion mul() {
 		return Instruccion.nuevaIMul();
 	}
 
-	public Instruccion resta() {
+	private Instruccion resta() {
 		return Instruccion.nuevaIResta();
 	}
 
-	public Instruccion not() {
+	private Instruccion not() {
 		return Instruccion.nuevaINot();
 	}
 
-	public Instruccion menos() {
+	private Instruccion menos() {
 		return Instruccion.nuevaIMenos();
 	}
 
-	public Instruccion and() {
+	private Instruccion and() {
 		return Instruccion.nuevaIAnd();
 	}
 
-	public Instruccion div() {
+	private Instruccion div() {
 		return Instruccion.nuevaIDiv();
 	}
 
-	public Instruccion or() {
+	private Instruccion or() {
 		return Instruccion.nuevaIOr();
 	}
 
-	public Instruccion le() {
+	private Instruccion le() {
 		return Instruccion.nuevaILe();
 	}
 
-	public Instruccion lt() {
+	private Instruccion lt() {
 		return Instruccion.nuevaILt();
 	}
 
-	public Instruccion ge() {
+	private Instruccion ge() {
 		return Instruccion.nuevaIGe();
 	}
 
-	public Instruccion gt() {
+	private Instruccion gt() {
 		return Instruccion.nuevaIGt();
 	}
 
-	public Instruccion neq() {
+	private Instruccion neq() {
 		return Instruccion.nuevaINeq();
 	}
 
-	public Instruccion eq() {
+	private Instruccion eq() {
 		return Instruccion.nuevaIEq();
 	}
 
-	public Instruccion apila_dir(int val) {
+	private Instruccion apila_dir(int val) {
 		return Instruccion.nuevaIApilaDir(String.valueOf(val));
 	}
 
-	public Instruccion desapila_dir(int val) {
+	private Instruccion desapila_dir(int val) {
 		return Instruccion.nuevaIDesapilaDir(String.valueOf(val));
 	}
 
-	public Instruccion apila(String arg) {
+	private Instruccion apila(String arg) {
 		return Instruccion.nuevaIApila(arg);
 	}
 
-	public Instruccion desapila() {
+	private Instruccion desapila() {
 		return Instruccion.nuevaIDesapila();
 	}
 
-	public Instruccion apila_int(int i) {
+	private Instruccion apila_int(int i) {
 		return Instruccion.nuevaIApila(String.valueOf(i));
 	}
 
-	public Instruccion apila_true() {
+	private Instruccion apila_true() {
 		return Instruccion.nuevaIApilaTrue();
 	}
 
-	public Instruccion apila_false() {
+	private Instruccion apila_false() {
 		return Instruccion.nuevaIApilaFalse();
 	}
 
-	public Instruccion ir_f(int ir) {
+	private Instruccion ir_f(int ir) {
 		return Instruccion.nuevaIIr_f(ir);
 	}
 
-	public Instruccion ir_a(int ir) {
+	private Instruccion ir_a(int ir) {
 		return Instruccion.nuevaIIr_a(ir);
 	}
 
@@ -7994,59 +7998,142 @@ ListaParametrosReales.tsh)
 		return Instruccion.nuevaIDesApilaInd();
 	}
 
-	public Error noError() {
+	private Instruccion mueve(int tamMover) {
+		return Instruccion.nuevaIMueve(String.valueOf(tamMover));
+	}
+
+	private Instruccion reserva(int tamañoObjetoApuntado) {
+		return Instruccion.nuevaINew(String.valueOf(tamañoObjetoApuntado));
+	}
+
+	private Instruccion libera(int tamañoObjetoApuntado) {
+		return Instruccion.nuevaIDel(String.valueOf(tamañoObjetoApuntado));
+	}
+
+	private Instruccion codigoLectura(ExpTipo mem) {
+		return Instruccion.nuevaILectura(mem.t());
+	}
+
+	private List<Instruccion> codigoEscritura(ExpTipo mem, Boolean exp0EsDesig) {
+		List<Instruccion> cod = new LinkedList<Instruccion>();
+		if (exp0EsDesig)
+			cod = concat(apila_ind());
+
+		return concat(cod, Instruccion.nuevaIEscritura(mem.t()));
+	}
+
+	private Instruccion stop() {
+		return Instruccion.nuevaIStop();
+	}
+
+	private Error noError() {
 		return new Error();
 	}
 
-	public Error joinErrors(Error e1, Error e2) {
+	private Error joinErrors(Error e1, Error e2) {
 		return new Error(e1, e2);
 	}
 
-	public Error errorSi(boolean condicion, int fila, int col, String msg) {
-		if (condicion) {
-			return new Error("(" + fila + "," + col + ") ERROR CONTEXTUAL: "
-					+ msg);
-		} else
-			return new Error();
-	}
-
+	// comprueba
 	private boolean existeSimb(TS ts2, String iden) {
 		return ts2.estaEn(iden);
 	}
 
-	private boolean asignacionCorrecta(ExpTipo memTipo, ExpTipo expTipo) {
-		return memTipo.t().equals(expTipo.t());
+	// Comprueba que los tipos concuerden
+	private boolean asignacionCorrecta(ExpTipo memTipo, ExpTipo expTipo, TS tsh) {
+		// return memTipo.t().equals(expTipo.t());
+		return compatibles(memTipo, expTipo, tsh);
 	}
 
-	// TODO nodecs
-	private Error tiposNoDeclarados(List<ExpTipo> refsAcheck, TS tsDecs) {
-		String nodeclarados = "";// acumulador
-		boolean declarado = false;// bandera
-		// obtener tiposdeclarados
-		List<String> tiposDeclarados = tsDecs.getTiposDeclarados();
-		Iterator<String> itdeclarados = tiposDeclarados.iterator();
+	// Compatibilidad
+	private boolean compatibles(ExpTipo e1, ExpTipo e2, TS ts) {
+		List<Pair> visitadas = new LinkedList<Pair>();
+		return compatibles2(e1, e2, ts, visitadas);
+	}
 
-		// calculo de declarados
-		Iterator<ExpTipo> itacheck = refsAcheck.iterator();
-		while (itacheck.hasNext()) {
-			ExpTipo acheck = itacheck.next();
-			while (itdeclarados.hasNext()) {
-				String declarada = itdeclarados.next();
-				if (declarada.equals(acheck.id())) {
-					declarado = true;
+	// Funcion recursiva de compatibilidad
+	private boolean compatibles2(ExpTipo e1, ExpTipo e2, TS ts,
+			List<Pair> visitadas) {
+		Pair a = new Pair<ExpTipo, ExpTipo>(e1, e2);
+		if (visitadas.contains(a))
+			return true;
+		else
+			visitadas.add(a);
+		if (tipoBool(e1, e2) || tipoInt(e1, e2))
+			return true;
+		else if (tipoRef(e1))
+			return compatibles2(ts.getExpTipo(e1.id()), e2, ts, visitadas);
+		else if (tipoRef(e2))
+			return compatibles2(e1, ts.getExpTipo(e2.id()), ts, visitadas);
+		else if (tipoArray(e1, e2))
+			return compatibles2(e1.tbase(), e2.tbase(), ts, visitadas);
+		else if (tipoRec(e1, e2)) {
+			for (int i = 0; i < e1.campos().size(); i++)
+				if (!compatibles2(e1.campos().get(i).tipo(), e2.tipo().campos()
+						.get(i).tipo(), ts, visitadas))
+					return false;
+		} else if (tipoPuntero(e1, e2))
+			return compatibles2(e1.tbase(), e2.tbase(), ts, visitadas);
+		return false;
+	}
+
+	private boolean tipoPuntero(ExpTipo e1, ExpTipo e2) {
+		if (e1.t() == CatLexica.PUNTERO) {
+			if (e2.t() == CatLexica.PUNTERO)
+				return true;
+		} else
+			return false;
+		return false;
+	}
+
+	private boolean tipoRef(ExpTipo e1) {
+		return e1.t() == CatLexica.REF ? true : false;
+	}
+
+	private boolean tipoRec(ExpTipo e1, ExpTipo e2) {
+		if (e1.t() == CatLexica.REG) {
+			if (e2.t() == CatLexica.REG) {
+				if (e1.campos().size() == e2.campos().size()) {
+					return true;
 				}
 			}
-			// mirarSi declarados o no
-			if (declarado) {
-				declarado = false;
-			} else {
-				nodeclarados += acheck.id() + ", ";
-			}
-			itdeclarados = tiposDeclarados.iterator();// reseteo iterador
-		}
-		return nodeclarados.equals("") ? noError() : new Error(nodeclarados);
+		} else
+			return false;
+		return false;
 	}
 
+	private boolean tipoArray(ExpTipo e1, ExpTipo e2) {
+		if (e1.t() == CatLexica.ARRAY) {
+			if (e2.t() == CatLexica.ARRAY) {
+				if (e1.tam() == e2.tam()) {
+					return true;
+				}
+			}
+		} else
+			return false;
+		return false;
+	}
+
+	private boolean tipoInt(ExpTipo e1, ExpTipo e2) {
+		if (e1.t() == CatLexica.INT) {
+			if (e2.t() == CatLexica.INT)
+				return true;
+		} else
+			return false;
+		return false;
+	}
+
+	private boolean tipoBool(ExpTipo e1, ExpTipo e2) {
+		if (e1.t() == CatLexica.BOOLEAN) {
+			if (e2.t() == CatLexica.BOOLEAN)
+				return true;
+		} else
+			return false;
+		return false;
+	}
+
+	// Union de conjuntos normal de expTipo, se añaden los de val2 que no esten
+	// en val
 	private List<ExpTipo> union(List<ExpTipo> val, List<ExpTipo> val2) {
 		// Hace union de conjuntos
 		for (ExpTipo expTipo : val2)
@@ -8056,6 +8143,8 @@ ListaParametrosReales.tsh)
 		return val;
 	}
 
+	// Union de conjuntos normal de Integer, se añaden los de val2 que no esten
+	// en val
 	private List<Integer> unionInt(List<Integer> val, List<Integer> val2) {
 		// Hace union de conjuntos de tipo Integer
 		for (Integer expTipo : val2)
@@ -8065,67 +8154,64 @@ ListaParametrosReales.tsh)
 		return val;
 	}
 
+	// Devuelve una lista de instrucciones vacia
 	private List<Instruccion> programaVacio() {
 		return new LinkedList<Instruccion>();
 	}
 
+	// Comprueba si el tipo es una referencia, en ese caso comprueba si el tipo
+	// al que hace referencia no se ha declarado
 	private Error tipoRefIncorrecto(TS ts, ExpTipo tipo) {
 		// si tipo es ref y el tipo al que hace referencia no existe en la tabla
 		// de simbolos
 		boolean declarado = false;
 		if (tipo.t() == CatLexica.REF) {
-			Iterator<String> it = ts.getTiposDeclarados().iterator();
-			while (it.hasNext()) {
-				if (it.next().equals(tipo.id()))
-					declarado = true;
-			}
-			return declarado ? noError() : new Error(
-					"Tipo referenciado no declarado: " + tipo.id());
+			// bucle no necesario, porque en id tengo el tipo
+			// Iterator<String> it = ts.getTiposDeclarados().iterator();
+			// while (it.hasNext()) {
+			// if (it.next().equals(tipo.id()))
+			// declarado = true;
+			// }
+			if (!estaEn(tipo.id(), ts))
+				return declarado ? noError() : new Error(
+						"Tipo referenciado no declarado: " + tipo.id());
+			else
+				return noError();
 		} else {
 			return noError();
 		}
 	}
 
+	// crea una nueva ts con padre tsh
 	private TS creaNivel(Atributo<TS> tsh) {
 		return new TS(tsh.val());
 	}
 
+	// devuelve una lista de expresiones de tipo vacia
 	private List<ExpTipo> listaExpTipoVacia() {
 		return new LinkedList<ExpTipo>();
 	}
 
+	// añadie a params el parametro param
 	private List<ExpTipo> aniadeA(List<ExpTipo> params, ExpTipo param) {
 		List<ExpTipo> result = new LinkedList<ExpTipo>(params);
 		result.add(param);
 		return result;
 	}
 
+	// crea una nueva lista y añade el parametro param
 	private List<ExpTipo> nuevaLista(ExpTipo param) {
 		List<ExpTipo> result = new LinkedList<ExpTipo>();
 		result.add(param);
 		return result;
 	}
 
-	// TODO dudas si tipo no existe en ts,añadirlo a check
-	private List<ExpTipo> aChequear(TS ts, ExpTipo tipo) {
-		if (tipo.t() != CatLexica.REF)
-			return listaExpTipoVacia();
-		LinkedList<ExpTipo> a = new LinkedList<ExpTipo>();
-		boolean declarado = false;
-		Iterator<String> it = ts.getTiposDeclarados().iterator();
-		while (it.hasNext()) {
-			if (it.next().equals(tipo.id()))
-				declarado = true;
-		}
-		a.push(tipo);
-		return declarado ? listaExpTipoVacia() : a;
-
-	}
-
+	// obtiene el tamaño del tipo representado por lex
 	private int tamanioDeTipoRef(TS tsh, String lex) {
 		return tsh.getTamRef(lex);
 	}
 
+	// Comprueba si hay un campo duplicado en una declaracion de registro
 	private Error campoDuplicado(String idCampo, List<ExpTipo> campos) {
 		Iterator<ExpTipo> itcampos = campos.iterator();
 		boolean duplicado = false;
@@ -8151,13 +8237,15 @@ ListaParametrosReales.tsh)
 		return metodo.params().size() == nparams ? true : false;
 	}
 
-	private Integer nivelDe(String subProgh, TS ts) {
-		ArrayList<Object> o = ts.valDe(subProgh);
+	// devuelve el nivel de lex, revisando la tabla de simbolos
+	private Integer nivelDe(String lex, TS ts) {
+		ArrayList<Object> o = ts.valDe(lex);
 		return (Integer) o.get(3);
 	}
 
 	// TODO
-	// que coincida el tipo del parametro nparams con la definicion del metodo
+	// que exista el procedimiento en la tabla de simbolos
+	// que coincida el tipo del parametro nparams-1 con la definicion del metodo
 	// en caso de que sea designador no puede ser de tipo formal VALOR
 	private boolean parametroCorrecto(String subProg, int nParams,
 			ExpTipo tipo, Boolean designador, TS tsh) {
@@ -8186,6 +8274,8 @@ ListaParametrosReales.tsh)
 	}
 
 	// sacao lo de tam de transparencias
+	// concatena mueve o desapila_ind en funcion de si la expresion es un
+	// designador o solo un valor
 	private List<Instruccion> codigoAsignacion(List<Instruccion> memcod,
 			List<Instruccion> exp0cod, Boolean exp0EsDesig, int tamMover) {
 		List<Instruccion> cod;
@@ -8197,25 +8287,14 @@ ListaParametrosReales.tsh)
 		return cod;
 	}
 
-	private Instruccion mueve(int tamMover) {
-		return Instruccion.nuevaIMueve(String.valueOf(tamMover));
-	}
-
+	// Obtiene el tamaño del tipo referenciado
 	private int tamañoObjetoApuntado(ExpTipo tipo, TS ts) {
-		return ref(ts, tipo).tbase().tam();
+		return ref(ts, tipo.tbase()).tam();
 		// if (tipo.t() == CatLexica.REF) {
 		// return ts.getTamRef(tipo.id());
 		// } else {
 		// return tipo.tbase().tam();
 		// }
-	}
-
-	private Instruccion reserva(int tamañoObjetoApuntado) {
-		return Instruccion.nuevaINew(String.valueOf(tamañoObjetoApuntado));
-	}
-
-	private Instruccion libera(int tamañoObjetoApuntado) {
-		return Instruccion.nuevaIDel(String.valueOf(tamañoObjetoApuntado));
 	}
 
 	private boolean noEsbooleano(ExpTipo val) {
@@ -8228,6 +8307,8 @@ ListaParametrosReales.tsh)
 
 	// apila_ind para traerme el dato
 	// Exp1(0).cod || Exp1(1).cod || OpComparacion.cod
+	// genera el codigo de compracion, añadiendo apila_ind en caso de que se
+	// trate de designadores
 	private List<Instruccion> codigoOpComparacion(List<Instruccion> exp1cod,
 			List<Instruccion> exp1_1cod, List<Instruccion> opccod,
 			Boolean exp1EsDesig, Boolean exp1_1EsDesig) {
@@ -8275,6 +8356,8 @@ ListaParametrosReales.tsh)
 		return cod;
 	}
 
+	// obtieen el desplazamiento del campos en un registro, usando el nombre del
+	// campo (lex)
 	private String desplazamientoDeCampo(ExpTipo campos, String lex, TS ts) {
 		Iterator<ExpTipo> it = ref(ts, campos).campos().iterator();
 		while (it.hasNext()) {
@@ -8286,6 +8369,8 @@ ListaParametrosReales.tsh)
 		return null;// no debe entrar aki nunca :O
 	}
 
+	// obtiene el tipo del campo, recorriendo la lista de campos, y buscando el
+	// que se llama igual que lex
 	private ExpTipo tipoDeSelectorCampo(ExpTipo campos, String lex, TS ts) {
 
 		Iterator<ExpTipo> it = ref(ts, campos).campos().iterator();
@@ -8297,6 +8382,7 @@ ListaParametrosReales.tsh)
 		return ExpTipo.nuevaExpTipoError();
 	}
 
+	// devuelve el tipo base del puntero
 	private ExpTipo tipoDeIndireccion(ExpTipo punt) {
 		if (punt.t() == CatLexica.PUNTERO)
 			return punt.tbase();
@@ -8308,22 +8394,27 @@ ListaParametrosReales.tsh)
 		return Integer.parseInt(lex);
 	}
 
+	// comprueba que el tipo para la reserva de memoria sea un puntero,
 	private boolean reservaMemoriaCorrecta(ExpTipo val) {
 		return val.t() == CatLexica.PUNTERO;
 	}
 
+	// comprueba que el tipo para la liberacion de memoria sea un puntero,
 	private boolean liberaMemoriaCorrecta(ExpTipo val) {
 		return val.t() == CatLexica.PUNTERO;
 	}
 
-	// sacado de apuntes
-	private Error existeSimbEnUltimoNivel(TS decs1ts, String lex, Integer nivelh) {
+	// comprueba que no exista en el mismo nivel 2 variables con el mismo
+	// identificador
+	private Error existeSimbEnUltimoNivel(TS decs1ts, String lex,
+			Integer nivelh, Integer fila, Integer col) {
 		if (existeSimb(decs1ts, lex) && decs1ts.getNivel(lex) == nivelh) {
-			return new Error("Ya Existe: " + lex);
+			return new Error("Ya Existe: " + lex + "(" + fila + "," + col + ")");
 		} else
 			return noError();
 	}
 
+	// añade apila_ind o no si es un designador o no
 	private Integer numeroInstruccionesIndexacion(Boolean exp0esDesig) {
 		if (exp0esDesig)
 			return 4;// apila_ind,apila_int(tamBase),mul(),suma()
@@ -8331,6 +8422,7 @@ ListaParametrosReales.tsh)
 			return 3;// apila_int(tamBase),mul(),suma()
 	}
 
+	// codigo para [], apilas el tamaño base, multiplicas y sumas,
 	private List<Instruccion> codigoIndexacion(ExpTipo mem1tipo,
 			Boolean exp0EsDesig, TS ts) {
 		List<Instruccion> cod;
@@ -8339,10 +8431,11 @@ ListaParametrosReales.tsh)
 		if (exp0EsDesig)
 			cod = concat(apila_ind(), apila_int(tamBase));
 		else
-			cod = single(apila_int(tamBase));
+			cod = concat(apila_int(tamBase));
 		return concat(cod, concat(mul(), suma()));
 	}
 
+	// devuelve el tipobase de mem1tipo
 	private ExpTipo tipoDeIndexacion(ExpTipo mem1tipo, ExpTipo exp0tipo, TS ts) {
 		if (exp0tipo.t() == CatLexica.INT) {
 			// if (mem1tipo.t() == CatLexica.REF) {
@@ -8355,6 +8448,7 @@ ListaParametrosReales.tsh)
 		}
 	}
 
+	// sigue una cadena de referencias, usando la tabla de simbolos
 	private ExpTipo ref(TS ts, ExpTipo exp) {
 		if (exp.t() == CatLexica.REF) {
 			if (existeSimb(ts, exp.id()))
@@ -8364,6 +8458,8 @@ ListaParametrosReales.tsh)
 		return exp;
 	}
 
+	// devuelve el numero de instrucciones de activacion en base al numero de
+	// displays que existan
 	private int numeroInstruccionesActivacionProgramaPrincipal(int anidamiento) {
 		return 2 + 2 * anidamiento + 1;
 		// apila_int(inicioDatosEstaticos),desapilar_dir(1),*anidamiento
@@ -8374,35 +8470,39 @@ ListaParametrosReales.tsh)
 	// se guarda en posicion 0 la cima de la pila y en 1 el primer display
 	// dir inicio que representa? pos siguiente en base a tamDatos
 	// cp,disp,ret,oldis,inicio, por eso el 1+1+1
-	// Segunda Interpretacion
-	// Fijamos cp a pos ultima de displays, y el display a vacio, xk no se ha
+
+	// Segunda Interpretacion, creo que la correcta
+	// Fijamos cp a pos ultima de displays, y cada uno de los displays a vacio
+	// (a 0), xk no se ha
 	// activao aun ningun reg de act, el prologo lo hara despues
 	private List<Instruccion> codigoActivacionProgramaPrincipal(
 			Integer dirInicio, Integer anidamiento, Integer dirSalto) {
 		List<Instruccion> codigoDisplay = new LinkedList<Instruccion>();
 		int inicioDatosEstaticos = 0/* anidamiento + 1 + 1 + 1 */;
+		// Para cada display generamos un apila(0) y desapila_dir(Posdisplay)
 		for (int i = 0; i < anidamiento; i++) {
 			codigoDisplay = concat(codigoDisplay,
-					single(apila_int(inicioDatosEstaticos)),
-					single(desapila_dir(i + 1)));
+					concat(apila_int(inicioDatosEstaticos)),
+					concat(desapila_dir(i + 1)));
 		}
 		List<Instruccion> codigoCP;
 		int finDatosEstaticos = anidamiento;
-
 		// 1+ 1 + 1 + anidamiento + dirInicio-1
 		codigoCP = concat(apila_int(finDatosEstaticos), desapila_dir(0));
 
-		return concat(codigoDisplay, codigoCP, single(ir_a(dirSalto)));
+		return concat(codigoDisplay, codigoCP, concat(ir_a(dirSalto)));
 	}
 
 	private Integer numeroInstruccionesPrologo() {
 		return 13;
 	}
 
+	// instrucciones base mas el ir_ind
 	private Integer numeroInstruccionesEpilogo() {
-		return 13 + 1;// +1 o no si metes el ir_ind en el epilogo
+		return 13 + 1;// +1
 	}
 
+	// codigo de prologo a ejecutarse antes de un bloque
 	private List<Instruccion> codigoPrologo(Integer dir, Integer nivelh) {
 
 		List<Instruccion> saveOldDisplay, fijaNewDisplay, incrementaCP;
@@ -8421,6 +8521,7 @@ ListaParametrosReales.tsh)
 		return concat(saveOldDisplay, fijaNewDisplay, incrementaCP);
 	}
 
+	// codigo de prologo a ejecutarse despues de un bloque
 	private List<Instruccion> codigoEpilogo(Integer dir, Integer nivel) {
 		List<Instruccion> dirRetorno, fijaCP, recuperaOldDisplay;
 		// cojo display, sumo 2 y resto, para situarme en dir ret, y apilo_ind,
@@ -8437,9 +8538,10 @@ ListaParametrosReales.tsh)
 		recuperaOldDisplay = concat(apila_int(2), suma(), apila_ind(),
 				desapila_dir(1 + nivel));
 
-		return concat(dirRetorno, fijaCP, recuperaOldDisplay, single(ir_ind()));
+		return concat(dirRetorno, fijaCP, recuperaOldDisplay, concat(ir_ind()));
 	}
 
+	// si la expresion de tipo es de tipo error, devuelot un error de tipo
 	private Error tipoError(ExpTipo exp) {
 		return exp.t() == CatLexica.ERROR ? new Error("Error de tipo ")
 				: noError();
@@ -8465,10 +8567,6 @@ ListaParametrosReales.tsh)
 		}
 	}
 
-	private Instruccion codigoLectura(ExpTipo mem) {
-		return Instruccion.nuevaILectura(mem.t());
-	}
-
 	private boolean lecturaCorrecta(ExpTipo val) {
 		return val.t() == CatLexica.INT || val.t() == CatLexica.BOOLEAN;
 	}
@@ -8477,16 +8575,114 @@ ListaParametrosReales.tsh)
 		return val.t() == CatLexica.INT || val.t() == CatLexica.BOOLEAN;
 	}
 
-	private List<Instruccion> codigoEscritura(ExpTipo mem, Boolean exp0EsDesig) {
-		List<Instruccion> cod = new LinkedList<Instruccion>();
-		if (exp0EsDesig)
-			cod = concat(apila_ind());
-
-		return concat(cod, Instruccion.nuevaIEscritura(mem.t()));
+	private int numeroInstruccionesCodigoPaso() {
+		return 3;
 	}
 
-	private Instruccion stop() {
-		return Instruccion.nuevaIStop();
+	//Realiza el paso de parametros, en funcino de si es designador o no, y de si el paso es por valor o no,
+	private List<Instruccion> codigoPaso(String subProgramah, Integer nparams,
+			ExpTipo exp0tipo, Boolean exp0EsDesig, TS tsh) {
+		List<Instruccion> cod;
+		int size = exp0tipo.tam();
+		ExpTipo metodo = tsh.getExpTipo(subProgramah);
+		ExpTipo param = metodo.params().get(nparams - 1);
+		if (exp0EsDesig) {
+			if (param.modo() == CatLexica.VALOR) {
+				cod = concat(mueve(1), apila_int(1), suma());
+			} else {
+				cod = concat(desapila_ind(), apila_int(1), suma());
+			}
+		} else {
+			cod = concat(desapila_ind(), apila_int(size), suma());
+		}
+		return cod;
+	}
+
+	private int numeroInstruccionesInicioLlamada() {
+		return 3;// apila_dir(0), apila_int(3), suma()
+	}
+
+	private Integer numeroInstruccionesFinLlamada() {
+		return 6;// salva dir retorno y ir_a(fin call)
+	}
+
+	// solo prepara para paso de parametros
+	// apila la direccion de inicio del paso de parametros, cp+3, para saltar
+	// dir de retorno y antiguo display
+	private List<Instruccion> codigoInicioLlamada(Integer nivelDe) {
+		List<Instruccion> saveReturn, inicioPrimerParam;
+		// saveReturn = concat(apila_dir(0), apila_int(1), suma(),
+		// apila_int(parametqRet), desapila_ind());
+		// para inicio de parametros
+		// inicioPrimerParam = concat(apila_dir(nivelDe + 1), apila_int(0),
+		// suma());
+		inicioPrimerParam = concat(apila_dir(0), apila_int(3), suma());
+		return concat(inicioPrimerParam);
+	}
+
+	// apila la direccion de retorno en primera posicion del registro de
+	// activacion, que vendra representan por nInsts, ademas apilar el salto a
+	// la direccion de comienzo del bloque
+	private List<Instruccion> codigoFinLlamada(String idenLex, TS ts, int nInsts) {
+		List<Instruccion> saveReturn;
+		// CREO K ES ASI pero se pone en error, xk la direccion del
+		// procedimiento es -1 o 0 si quito lo de que no se modifique si existe
+		// en TS
+		saveReturn = concat(apila_dir(0), apila_int(1), suma(),
+				apila_int(nInsts), desapila_ind());
+		return concat(saveReturn, concat(ir_a(dirDe(idenLex, ts))));
+		// saveReturn = concat(apila_dir(0), apila_int(1), suma(),
+		// apila_int(dirDe(idenLex, ts)), desapila_ind());
+		// return concat(saveReturn,concat(ir_a(nInsts)));
+	}
+
+	// TODO dudas si tipo no existe en ts,añadirlo a check
+		private List<ExpTipo> aChequear(TS ts, ExpTipo tipo) {
+			if (tipo.t() != CatLexica.REF)
+				return listaExpTipoVacia();
+			LinkedList<ExpTipo> a = new LinkedList<ExpTipo>();
+			//boolean declarado = false;
+	//		Iterator<String> it = ts.getTiposDeclarados().iterator();
+	//		while (it.hasNext()) {
+	//			if (it.next().equals(tipo.id()))
+	//				declarado = true;
+	//		}
+			if(!estaEn(tipo.id(), ts))
+				a.push(tipo);
+			return a;
+	
+		}
+
+	// TODO nodecs
+	// Recorre la lista de tipos de la tabla de simbolos, comprobando si esta
+	// declarado los de refsACheck, si no se encuentra en ts, la añade a no
+	// declarados
+	private Error tiposNoDeclarados(List<ExpTipo> refsAcheck, TS tsDecs) {
+		String nodeclarados = "";// acumulador
+		boolean declarado = false;// bandera
+		// obtener tiposdeclarados
+		List<String> tiposDeclarados = tsDecs.getTiposDeclarados();
+		Iterator<String> itdeclarados = tiposDeclarados.iterator();
+	
+		// calculo de declarados
+		Iterator<ExpTipo> itacheck = refsAcheck.iterator();
+		while (itacheck.hasNext()) {
+			ExpTipo acheck = itacheck.next();
+			while (itdeclarados.hasNext()) {
+				String declarada = itdeclarados.next();
+				if (declarada.equals(acheck.id())) {
+					declarado = true;
+				}
+			}
+			// mirarSi declarados o no
+			if (declarado) {
+				declarado = false;
+			} else {
+				nodeclarados += acheck.id() + ", ";
+			}
+			itdeclarados = tiposDeclarados.iterator();// reseteo iterador
+		}
+		return nodeclarados.equals("") ? noError() : new Error(nodeclarados);
 	}
 
 	// TODO DUDA
@@ -8514,63 +8710,7 @@ ListaParametrosReales.tsh)
 				}
 			}
 		}
-
-		return cod;
-	}
-
-	// TODO solo prepara para paso de parametros
-	private List<Instruccion> codigoInicioLlamada(Integer nivelDe) {
-		List<Instruccion> saveReturn, inicioPrimerParam;
-		// saveReturn = concat(apila_dir(0), apila_int(1), suma(),
-		// apila_int(parametqRet), desapila_ind());
-		// para inicio de parametros
-		// inicioPrimerParam = concat(apila_dir(nivelDe + 1), apila_int(0),
-		// suma());
-		inicioPrimerParam = concat(apila_dir(0), apila_int(3), suma());
-		return concat(inicioPrimerParam);
-	}
-
-	private int numeroInstruccionesInicioLlamada() {
-		return 3;// apila_dir(0), apila_int(3), suma()
-	}
-
-	private Integer numeroInstruccionesFinLlamada() {
-		return 6;// salva dir retorno y ir_a(fin call)
-	}
-
-	// TODO ir_a fin de call?
-	private List<Instruccion> codigoFinLlamada(String idenLex, TS ts, int nInsts) {
-		List<Instruccion> saveReturn;
-		// CREO K ES ASI pero se pone en error, xk la direccion del
-		// procedimiento es -1 o 0 si quito lo de que no se modifique si existe
-		// en TS
-		saveReturn = concat(apila_dir(0), apila_int(1), suma(),
-				apila_int(nInsts), desapila_ind());
-		return concat(saveReturn, single(ir_a(dirDe(idenLex, ts))));
-		// saveReturn = concat(apila_dir(0), apila_int(1), suma(),
-		// apila_int(dirDe(idenLex, ts)), desapila_ind());
-		// return concat(saveReturn,single(ir_a(nInsts)));
-	}
-
-	private int numeroInstruccionesCodigoPaso() {
-		return 3;
-	}
-
-	private List<Instruccion> codigoPaso(String subProgramah, Integer nparams,
-			ExpTipo exp0tipo, Boolean exp0EsDesig, TS tsh) {
-		List<Instruccion> cod;
-		int size = exp0tipo.tam();
-		ExpTipo metodo = tsh.getExpTipo(subProgramah);
-		ExpTipo param = metodo.params().get(nparams - 1);
-		if (exp0EsDesig) {
-			if (param.modo() == CatLexica.VALOR) {
-				cod = concat(mueve(1), apila_int(1), suma());
-			} else {
-				cod = concat(desapila_ind(), apila_int(1), suma());
-			}
-		} else {
-			cod = concat(desapila_ind(), apila_int(size), suma());
-		}
+	
 		return cod;
 	}
 

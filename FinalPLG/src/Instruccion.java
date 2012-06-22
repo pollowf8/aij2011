@@ -20,6 +20,14 @@ abstract public class Instruccion implements Serializable {
 	private static IAnd iAnd = null;
 	private static IMenos iMenos = null;
 	private static INot iNot = null;
+	private static IIr_ind iIr_ind= null;
+	private static IApilaTrue iApilaTrue= null;
+	private static IDesapila iDesapila= null;
+	private static IApilaFalse iApilaFalse= null;
+	private static IApilaInd iApilaInd;
+	private static IDesapilaInd iDesapilaInd;
+	private static ICopia iCopia;
+	private static IStop iStop;
 
 	abstract public void ejecuta(VM vm);
 
@@ -575,11 +583,7 @@ abstract public class Instruccion implements Serializable {
 	public static class IDesapilaInd extends Instruccion {
 
 		private IDesapilaInd() {
-			// try {
-			// this.dir = Integer.valueOf(dir).intValue();
-			// } catch (NumberFormatException e) {
-			// this.dir = 0;
-			// }
+
 		}
 
 		public void ejecuta(VM vm) {
@@ -593,16 +597,9 @@ abstract public class Instruccion implements Serializable {
 			return ICOD.DESAPILA_IND;
 		}
 
-		// public int arg1() {
-		// return dir;
-		// }
-
 		public String toString() {
-			// return "DESAPILA_IND(" + dir + ")";
 			return "DESAPILA_IND()";
 		}
-
-		// private int dir;
 
 	}
 
@@ -616,7 +613,8 @@ abstract public class Instruccion implements Serializable {
 		public void ejecuta(VM vm) {
 			VM.PValue dir = vm.pop();
 			VM.PValue a = vm.getValMem(dir.asInt());
-			// sino definido pone posicion de fin
+			// sino definido pone posicion de fin, MEJORABLE
+			//para solventar problema de ir_ind sin dir de retorno
 			vm.push((a == null ? vm.getStop() : a));
 			vm.incCP();
 		}
@@ -660,6 +658,8 @@ abstract public class Instruccion implements Serializable {
 		}
 	}
 
+	// Reserva en el heap tamReserva, apilando la direccion de comienzo de esta
+	// reserva en la cima de la pila
 	public static class INew extends Instruccion {
 
 		private INew(String tamReserva) {
@@ -696,6 +696,7 @@ abstract public class Instruccion implements Serializable {
 
 	}
 
+	//Modifica la asignacion de memoria de la maquina P, asignando para la memoria estatica sizeMemStatica
 	public static class ISeg extends Instruccion {
 
 		private ISeg(String sizeMemEstatica) {
@@ -727,6 +728,7 @@ abstract public class Instruccion implements Serializable {
 
 	}
 
+	//Libera tamReserva posiciones a partir de una direccion de comienzo que encuentra en la cima de la pila
 	public static class IDel extends Instruccion {
 
 		private IDel(String tamReserva) {
@@ -739,7 +741,7 @@ abstract public class Instruccion implements Serializable {
 
 		public void ejecuta(VM vm) {
 			VM.PValue posInicio = vm.pop();
-			vm.libera(posInicio.asInt(),tamReserva);
+			vm.libera(posInicio.asInt(), tamReserva);
 			vm.incCP();
 		}
 
@@ -759,6 +761,7 @@ abstract public class Instruccion implements Serializable {
 
 	}
 
+	//Lee un valor de teclado, sea de tipo int o boolean, y apila su valor en la cima de la pila
 	public static class ILectura extends Instruccion {
 
 		private ILectura(CatLexica tipo) {
@@ -792,6 +795,7 @@ abstract public class Instruccion implements Serializable {
 		private CatLexica tipo;
 	}
 
+	//Escribe un valor en pantalla obteniendolo de la cima de la pila
 	public static class IEscritura extends Instruccion {
 
 		private IEscritura(CatLexica tipo) {
@@ -819,6 +823,7 @@ abstract public class Instruccion implements Serializable {
 		private CatLexica tipo;
 	}
 
+	//Coge el valor de la cima de la pila y lo apila de nuevo
 	public static class ICopia extends Instruccion {
 
 		private ICopia() {
@@ -826,8 +831,7 @@ abstract public class Instruccion implements Serializable {
 		}
 
 		public void ejecuta(VM vm) {
-			VM.PValue op1 = vm.pop();
-			vm.push(op1);
+			VM.PValue op1 = vm.peek();
 			vm.push(op1);
 			vm.incCP();
 		}
@@ -841,6 +845,7 @@ abstract public class Instruccion implements Serializable {
 		}
 	}
 
+	//Para la ejecucion de la maquina p, poniendo una posicion no valida
 	public static class IStop extends Instruccion {
 
 		private IStop() {
@@ -967,7 +972,10 @@ abstract public class Instruccion implements Serializable {
 	}
 
 	public static Instruccion nuevaIIr_ind() {
-		return new IIr_ind();
+		if (iIr_ind == null) {
+			iIr_ind = new IIr_ind();
+		}
+		return iIr_ind;
 	}
 
 	public static Instruccion nuevaIApila(String val) {
@@ -983,15 +991,24 @@ abstract public class Instruccion implements Serializable {
 	}
 
 	public static Instruccion nuevaIDesapila() {
-		return new IDesapila();
+		if (iDesapila == null) {
+			iDesapila = new IDesapila();
+		}
+		return iDesapila;
 	}
 
 	public static Instruccion nuevaIApilaTrue() {
-		return new IApilaTrue();
+		if (iApilaTrue == null) {
+			iApilaTrue = new IApilaTrue();
+		}
+		return iApilaTrue;
 	}
 
 	public static Instruccion nuevaIApilaFalse() {
-		return new IApilaFalse();
+		if (iApilaFalse == null) {
+			iApilaFalse = new IApilaFalse();
+		}
+		return iApilaFalse;
 	}
 
 	public static Instruccion nuevaIApilaInt(String val) {
@@ -999,11 +1016,17 @@ abstract public class Instruccion implements Serializable {
 	}
 
 	public static Instruccion nuevaIApilaInd() {
-		return new IApilaInd();
+		if (iApilaInd == null) {
+			iApilaInd = new IApilaInd();
+		}
+		return iApilaInd;
 	}
 
 	public static Instruccion nuevaIDesApilaInd() {
-		return new IDesapilaInd();
+		if (iDesapilaInd == null) {
+			iDesapilaInd = new IDesapilaInd();
+		}
+		return iDesapilaInd;
 	}
 
 	public static Instruccion nuevaIMueve(String tamMover) {
@@ -1019,9 +1042,17 @@ abstract public class Instruccion implements Serializable {
 	}
 
 	public static Instruccion nuevaICopia() {
-		return new ICopia();
+		if (iCopia == null) {
+			iCopia = new ICopia();
+		}
+		return iCopia;
 	}
-
+	public static Instruccion nuevaIStop() {
+		if (iStop == null) {
+			iStop = new IStop();
+		}
+		return iStop;
+	}
 	public static Instruccion nuevaILectura(CatLexica tipo) {
 		return new ILectura(tipo);
 	}
@@ -1030,7 +1061,5 @@ abstract public class Instruccion implements Serializable {
 		return new IEscritura(tipo);
 	}
 
-	public static Instruccion nuevaIStop() {
-		return new IStop();
-	}
+	
 }

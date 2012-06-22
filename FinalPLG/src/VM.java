@@ -67,6 +67,16 @@ public class VM {
 			return new Boolean(value).toString();
 		}
 	}
+	
+	public static class ReservaPValue extends PValue {
+
+		public ReservaPValue() {
+		}
+
+		public String toString() {
+			return String.valueOf("R");
+		}
+	}
 
 	public VM(String fprograma, String statica) {
 		try {
@@ -112,6 +122,10 @@ public class VM {
 
 	public PValue pop() {
 		return pilaEvaluacion.pop();
+	}
+	
+	public PValue peek() {
+		return pilaEvaluacion.peek();
 	}
 
 	public void incCP() {
@@ -170,12 +184,6 @@ public class VM {
 	}
 
 	public PValue getValMem(int dir) {
-		// try {
-		// Integer a = memoria.get(dir);
-		// return a;
-		// } catch (ArrayIndexOutOfBoundsException e) {
-		// return new Integer(-1);
-		// }
 		try {
 			PValue a = memoria[dir];
 			return a;
@@ -185,19 +193,38 @@ public class VM {
 	}
 
 	public Integer reserva(int tamReserva) {
-		for (int j = 0; j < memoria.length; j++) {
-			int i = memStatica;
-			for (; memoria[i] != null; i++)
+		int i = memStatica-1;//donde se inicia el heap
+		for (int j = 0; j < memoria.length-memStatica; j++) {
+			for (; reservado(i); i++)
 				;// primera pos
 
-			int z = i+1;
-			for (; z < tamReserva && memoria[z] != null; z++)
+			//probar tamaño reserva
+			int z = i;
+			int y=0;
+			for (; y < tamReserva &&  !reservado(z) ; z++,y++)
 				;
-			if (z - i >= tamReserva)
+			if (y >= tamReserva){
+				z = i;
+				for (y=0; y < tamReserva &&  !reservado(z) ; z++,y++)
+					memoria[z]=new ReservaPValue();
 				return i;// suficiente tamaño
+			}
 		}
 		return null;
+	}
 
+	/**
+	 * @param z
+	 * @return
+	 */
+	private boolean reservado(int z) {
+		return memoria[z] instanceof ReservaPValue;
+	}
+	
+
+	public void libera(int posInicio, int tamReserva) {
+		for (int j = posInicio; j < posInicio+tamReserva; j++)
+			memoria[j] = null;
 	}
 
 	public void setMemStatica(int s) {
@@ -211,11 +238,6 @@ public class VM {
 	public void parar(String msg) {
 		programa[stop.asInt()].ejecuta(this);
 		System.err.print(msg);
-	}
-
-	public void libera(int posInicio, int tamReserva) {
-		for (int j = posInicio; j < tamReserva; j++)
-			memoria[j] = null;
 	}
 
 }

@@ -1,5 +1,4 @@
-puntero int p
+puntero boolean z;
+puntero boolean p
 &
-new p;
-p^:=1000;
-delete p
+new z

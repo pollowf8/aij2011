@@ -4,11 +4,11 @@ llamadasPendientes lista de int?
 Direccion si salto indefinido no se ejecuta porque y se keda el ir_a -1
 Arreglado poniendo la dir de salto al declarar el metodo usando el bloque.DirSalto
 
+Pasar tipos complejos como parametros, peta la tsh() heredada, aunque esta calculada o eso parece
+
 funciones semanticas hechas con dudas
 direccionSiSaltoIndefinido()
 fijaLlamadasPendientes
-fijaDireccsion
 tipoRefIncorrecto()
 tiposNoDeclarados()
 aChequear()
-nivelDe()

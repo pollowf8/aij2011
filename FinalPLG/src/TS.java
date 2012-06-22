@@ -22,7 +22,12 @@ public class TS {
 	}
 
 	public boolean estaEn(String cte) {
-		return tabla.containsKey(cte);
+		if (tabla.containsKey(cte)) {
+			return true;
+		} else {
+			return checkPadres(cte)!=null?true:false;
+		}
+		//return tabla.containsKey(cte);
 	}
 
 	// 0 TIPO una expresion de tipo
@@ -42,7 +47,7 @@ public class TS {
 		TS sig = padre;
 		while (sig != null) {
 			if (sig.tabla.containsKey(cte))
-				return tabla.get(cte);
+				return sig.tabla.get(cte);
 			else
 				sig = sig.padre;
 		}
@@ -58,15 +63,30 @@ public class TS {
 	}
 
 	public ExpTipo getExpTipo(String cte) {
-		return (ExpTipo) tabla.get(cte).get(0);
+		if (tabla.containsKey(cte)) {
+			return (ExpTipo) tabla.get(cte).get(0);
+		} else {
+			return (ExpTipo) checkPadres(cte).get(0);
+		}
+		//return (ExpTipo) tabla.get(cte).get(0);
 	}
 
 	public Integer getNivel(String cte) {
-		return (Integer) tabla.get(cte).get(3);
+		if (tabla.containsKey(cte)) {
+			return (Integer) tabla.get(cte).get(3);
+		} else {
+			return (Integer) checkPadres(cte).get(3);
+		}
+//		return (Integer) tabla.get(cte).get(3);
 	}
 
 	public CatLexica getClase(String cte) {
-		return (CatLexica) tabla.get(cte).get(2);
+		if (tabla.containsKey(cte)) {
+			return (CatLexica) tabla.get(cte).get(2);
+		} else {
+			return (CatLexica) checkPadres(cte).get(2);
+		}
+		//return (CatLexica) tabla.get(cte).get(2);
 	}
 
 	public String toString() {
@@ -87,7 +107,7 @@ public class TS {
 		ArrayList<Object> o = tabla.get(lex);
 		ArrayList<Object> oNew = new ArrayList<Object>();
 		oNew.add(o.get(0));
-		oNew.add(dir);
+		oNew.add(String.valueOf(dir));
 		oNew.add(o.get(2));
 		oNew.add(o.get(3));
 		tabla.put(lex, oNew);

@@ -1,0 +1,8 @@
+tipo puntero int puntz;
+puntz z;
+int x
+&
+new z;
+z^:=5;
+x:=z^;
+delete z

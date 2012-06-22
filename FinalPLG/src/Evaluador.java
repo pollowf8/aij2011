@@ -1,4 +1,3 @@
-
 import java.util.Stack;
 
 public class Evaluador {
@@ -10,7 +9,8 @@ public class Evaluador {
 		atributos.push(atributo);
 		while (!atributos.isEmpty()) {
 			Atributo top = atributos.peek();
-			//System.out.println(top.descripcion());
+			if (top.descripcion().contains("ente"))
+				System.out.println(top.descripcion());
 			Atributo newTop = top.siguienteDependencia();
 			if (newTop == null) {
 				if (Config.DEBUG)

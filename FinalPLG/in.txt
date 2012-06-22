@@ -1,4 +1,5 @@
-puntero boolean z;
-puntero boolean p
+tipo registro { int x} reg;
+proc p1 (reg x) {escribir x.x}
 &
-new z
+reg.x:=5;
+p1(reg)

@@ -1,0 +1,14 @@
+int i;
+tipo tabla [5] de int tvect;
+tipo puntero tvect punt;
+punt vect
+&
+new vect;
+i:=0;
+do 
+	case i lt 5 ->
+		vect^[i]:=i*10;
+		escribir vect^[i];
+		i:=i+1	
+od;
+delete vect

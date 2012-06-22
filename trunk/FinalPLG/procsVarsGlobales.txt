@@ -1,0 +1,7 @@
+int y;
+tipo tabla [5] de int tvect;
+tvect vect;
+proc p1 () { y:=80;vect[0]:=120 }
+&
+y:=50;
+p1()

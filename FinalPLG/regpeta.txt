@@ -1,0 +1,5 @@
+tipo registro { int x} reg;
+proc p1 (reg x) {escribir x.x}
+&
+reg.x:=5;
+p1(reg)

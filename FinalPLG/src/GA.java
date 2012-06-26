@@ -2883,7 +2883,7 @@ public class GA {
 	 * ParametrosFormales.nivelh = Declaracion.nivelh + 1
 	 * Bloque.nivelh = Declaracion.nivelh + 1
 	 * ParametrosFormales.tsh = añadeSimb(creaNivel(Declaracion.tsh),IDEN.lex,proc,
-	 * <t:proc, params: ParametrosFormales.params>,&Bloque.dirSalto&, Declaracion.nivelh+1)
+	 * <t:proc, params: ParametrosFormales.params>,Bloque.dirSalto&, Declaracion.nivelh+1)
 	 * Bloque.tsh = ParametrosFormales.ts
 	 * Bloque.dirh = ParametrosFormales.dir
 	 * Comprobación de las restricciones contextuales
@@ -2907,19 +2907,18 @@ public class GA {
 			paramsForms.registraCtx(new ParamsFormalesCtx() {
 				@Override
 				public TS tsh_exp() {
-					// TODO chanchullo para guardar la direccion de salto
-					// correctametne :O
-					// Creo que la dir del procedimiento guarda el inicio de su
-					// codigo, no consigo que funcionen llamadasPendientes
+					//a la tsh padre
 					aniadeSimb(tsh().val(), DecR3.this.iden.lex(),
 							CatLexica.PROC, ExpTipo.nuevaExpTipoProc(
 									CatLexica.PROC, DecR3.this.paramsForms
 											.params().val()), DecR3.this.bloque
 									.dirSalto().val(), nivelh().val() + 1);
+					//a la tsh hija
 					return aniadeSimb(creaNivel(tsh().val()), DecR3.this.iden
 							.lex(), CatLexica.PROC, ExpTipo.nuevaExpTipoProc(
 							CatLexica.PROC, DecR3.this.paramsForms.params()
-									.val()), -1, nivelh().val() + 1);
+									.val()), DecR3.this.bloque
+									.dirSalto().val(), nivelh().val() + 1);
 				}
 
 				@Override
@@ -2951,7 +2950,7 @@ public class GA {
 			});
 			//TODO cambiao el orden de esto, tsh al principio
 			paramsForms.tsh().ponDependencias(paramsForms.params(),
-					tsh(),nivelh());
+					tsh(),nivelh(),bloque.dirSalto());
 			paramsForms.nivelh().ponDependencias(nivelh());
 			
 			err().ponDependencias(bloque.err(), paramsForms.err());
@@ -5704,7 +5703,7 @@ ListaParametrosReales.tsh)
 	 * IEscritura.error = not escrituraCorrecta(Exp0.tipo)
 	 * Generación de código
 	 * Exp0.etqh = IEscritura.etqh
-	 * IEscritura.etq = Exp0.etq + orig(1) &unoSiCierto(Exp0.esDesignador)& + 1
+	 * IEscritura.etq = Exp0.etq + &unoSiCierto(Exp0.esDesignador)& + 1
 	 * IEscritura.cod = Exp0.cod || codigoEscritura(Exp0.tipo,&Exp0.esDesignador&)
 	 */
 	public class IEscrituraR1 extends Inst {
@@ -7340,12 +7339,12 @@ ListaParametrosReales.tsh)
 	 * Mem(1).tsh = Mem(0).tsh
 	 * Exp0.tsh = Mem(0).tsh
 	 * Comprobación de las restricciones contextuales
-	 * Mem(0).tipo = tipoDeIndexacion(Mem(1).tipo,Exp0.tipo,*Mem(0).tsh()*)
+	 * Mem(0).tipo = tipoDeIndexacion(Mem(1).tipo,Exp0.tipo,&Mem(0).tsh()&)
 	 * Generación de código
 	 * Mem(1).etqh = Mem(0).etqh
 	 * Exp0.etqh = Mem(1).etq
 	 * Mem(0).etq = Exp0.etq + numeroInstruccionesIndexacion(Exp0.esDesignador)
-	 * Mem(0).cod = Mem(1).cod || Exp0.cod || codigoIndexacion(Mem(1).tipo,Exp0.esDesignador*,Mem(0).tsh()*))
+	 * Mem(0).cod = Mem(1).cod || Exp0.cod || codigoIndexacion(Mem(1).tipo,Exp0.esDesignador&,Mem(0).tsh()&))
 	 */
 	public class MemR4 extends Mem {
 

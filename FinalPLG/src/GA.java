@@ -2883,7 +2883,7 @@ public class GA {
 	 * ParametrosFormales.nivelh = Declaracion.nivelh + 1
 	 * Bloque.nivelh = Declaracion.nivelh + 1
 	 * ParametrosFormales.tsh = añadeSimb(creaNivel(Declaracion.tsh),IDEN.lex,proc,
-	 * <t:proc, params: ParametrosFormales.params>,Bloque.dirSalto&, Declaracion.nivelh+1)
+	 * <t:proc, params: ParametrosFormales.params>,-1, Declaracion.nivelh+1)
 	 * Bloque.tsh = ParametrosFormales.ts
 	 * Bloque.dirh = ParametrosFormales.dir
 	 * Comprobación de las restricciones contextuales
@@ -2917,8 +2917,7 @@ public class GA {
 					return aniadeSimb(creaNivel(tsh().val()), DecR3.this.iden
 							.lex(), CatLexica.PROC, ExpTipo.nuevaExpTipoProc(
 							CatLexica.PROC, DecR3.this.paramsForms.params()
-									.val()), DecR3.this.bloque
-									.dirSalto().val(), nivelh().val() + 1);
+									.val()), -1, nivelh().val() + 1);
 				}
 
 				@Override
@@ -2956,8 +2955,7 @@ public class GA {
 			err().ponDependencias(bloque.err(), paramsForms.err());
 			anidamiento().ponDependencias(bloque.anidamiento());
 			etq().ponDependencias(bloque.etq());
-			cod().ponDependencias(bloque.cod(), bloque.llamadasPendientes(),
-					bloque.dirSalto());
+			cod().ponDependencias(bloque.cod(), bloque.llamadasPendientes());
 			tipo().ponDependencias(paramsForms.params());
 			tsh().ponDependencias(bloque.dirSalto());
 

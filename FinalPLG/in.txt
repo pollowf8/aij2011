@@ -1,16 +1,6 @@
-int x;
-int y;
-int tmp
+tipo registro { int x} treg;
+treg reg;
+proc p1 (treg x) {escribir x.x}
 &
-x:=456;
-y:=342;
-if 
-	case x gt y ->
-		tmp:=x;
-		x:=y;
-		y:=tmp
-[]
-	case true ->
-		x:=0;
-		y:=2*y		
-fi
+reg.x:=5;
+p1(reg)

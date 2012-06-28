@@ -9,11 +9,13 @@ public class ConstructorArboles {
 
 	private GA gramaticaAtributos = new GA();
 
-	String[] c = new String[]{"p1","p2","p3"};
-	ArrayList a=new ArrayList<String>();
+
+	//Variables auxiliares para solventar problemas del constructor de arboles
+	Token save2,save3;
+	
+	
 	public ConstructorArboles(AnalizadorLexico analizadorLexico) {
 		this.analizadorLexico = analizadorLexico;
-		a.add(c[0]);a.add(c[1]);a.add(c[2]);
 	}
 
 	public GA.Programa parse() throws IOException {
@@ -34,23 +36,12 @@ public class ConstructorArboles {
 	// Bloque.a = bloqueR1(Declaraciones.a,Instrucciones.a)
 	// Bloque ::= Instrucciones
 	// Bloque.a = bloqueR2(Instrucciones.a)
+	// Bloque ::= IDEN RBloque
+	// RBloque.ah=IDEN.lex
+	// Bloque.a = RBloque.a
 	private GA.Bloque recBloque() throws IOException {
-		// un bloque empieza por decs o por insts
-		// un decs empieza por Tipo,tipo o proc
-		// un Tipo empieza por catLexica int,boolean,tabla,registro,puntero,IDEN
-		// un insts empieza por IAsig, INew, IDispose, Ilectura, IEscritura,
-		// ILlamada, IIF, IDO
-		// IAsig por Mem, q es un IDEN
-		// Inew por new, IDispose por delete
-		// ILectura por leer y IEscritura por escribir
-		// IILamada empieza por IDEN
-		// IIF por if y IDO por do
-
-		if ((tokenActual(CatLexica.IDEN)) // porq decs tb puede empezar por iden
-				|| tokenActual(CatLexica.IF)
-				|| tokenActual(CatLexica.DO)
-				|| tokenActual(CatLexica.NEW)
-				|| tokenActual(CatLexica.DELETE)
+		if (tokenActual(CatLexica.IF) || tokenActual(CatLexica.DO)
+				|| tokenActual(CatLexica.NEW) || tokenActual(CatLexica.DELETE)
 				|| tokenActual(CatLexica.LEER)
 				|| tokenActual(CatLexica.ESCRIBIR)) {
 			GA.Insts aInsts = recInsts();
@@ -60,7 +51,6 @@ public class ConstructorArboles {
 					|| tokenActual(CatLexica.TABLA)
 					|| tokenActual(CatLexica.REG)
 					|| tokenActual(CatLexica.PUNTERO)
-					|| tokenActual(CatLexica.IDEN)
 					|| tokenActual(CatLexica.TIPO)
 					|| tokenActual(CatLexica.PROC)) {
 				GA.Decs aDecs = recDecs();
@@ -69,10 +59,59 @@ public class ConstructorArboles {
 					GA.Insts aInsts = recInsts();
 					return bloqueR1(aDecs, aInsts);
 				}
+			} else {
+				if ((tokenActual(CatLexica.IDEN))) {
+					Token tIden = tact;
+					rec(CatLexica.IDEN);
+					GA.Bloque aRBloque = recRBloque(tIden);
+					return aRBloque;
+				}
 			}
 		}
 		errorSintactico();
 		return null;
+	}
+
+	// /////////////////NUEVO
+
+	// RBloque ::= IDEN RDecs & Instrucciones
+	// RBloque.a=bloqueR1(decsR2(decR2(tipoR6(RBloque.ah),IDEN.lex)),
+	// Instrucciones.a)
+	// RBloque ::= ( ParametrosReales ) RInsts
+	// RBloque.a =
+	// bloqueR2(instsR2(instR6(illamadaR1(RBloque.ah,ParametrosReales.a))))
+	// RBloque ::= RMem =Exp0 RInsts
+	// RBloque.a = bloqueR2(instsR2(instR1(iasigR1(memR1(RBloque.ah),Exp0.a))))
+	private GA.Bloque recRBloque(Token ahRBloque0) throws IOException {
+		if (tokenActual(CatLexica.PAP)) {
+			rec(CatLexica.PAP);
+			GA.ParamsReales aParamsReales = recParamsReals();
+			GA.Insts aRInsts = recRInsts(instsR2(instR6(illamadaR1(ahRBloque0,
+					aParamsReales)))); // prueba
+			return bloqueR2(aRInsts);
+
+		} else {
+			if (tokenActual(CatLexica.IDEN)) {
+				Token tIden = tact;
+				rec(CatLexica.IDEN);
+				GA.Decs aRDecs = recRDecs(decsR2(decR2(tipoR6(ahRBloque0),
+						tIden))); // prueba
+				GA.Insts aInsts = recInsts();
+				return bloqueR1(aRDecs, aInsts);
+				// return bloqueR4(ahRBloque0,tIden,aRDecs,aInsts);
+				// return
+				// bloqueR1(decsR2(decR1(tipoR6(ahRBloque0),tIden)),aInsts);
+
+			} else { // como incluye lambda, no pongo condiciones
+				Token tIden = tact;
+				rec(CatLexica.IGUAL);//TODO CAMBIADO A IGUAL
+				GA.Mem aRMem = recRMem(memR1(ahRBloque0)); // prueba
+				GA.Exp0 aExp0 = recExp0();
+				GA.Insts aRInsts = recRInsts(instsR2(instR1(iasigR1(aRMem,
+						aExp0)))); // prueba
+				return bloqueR2(aRInsts);
+			}
+		}
 	}
 
 	// Declaraciones ::= Declaracion RDecs
@@ -372,11 +411,12 @@ public class ConstructorArboles {
 	// Instruccion.a = instR7(IIF.a)
 	// Instruccion ::= IDO
 	// Instruccion.a = instR8(IDO.a)
-	private GA.Inst recInst() throws IOException {
 
+	private GA.Inst recInst() throws IOException {
+		save2 = tact;
 		if (tokenActual(CatLexica.IDEN)) {// mem ->Iden
-			//TODO apaño para poder reconocer procedimientos, solo nombre k este en c
-			if (a.contains(tact.lex())) {
+			rec(CatLexica.IDEN);
+			if (tokenActual(CatLexica.PAP)) {
 				GA.Inst aILlamada = recILamada();
 				return instR6(aILlamada);
 			} else {
@@ -413,15 +453,13 @@ public class ConstructorArboles {
 
 	// ILlamada ::= IDEN ( ParametrosReales )
 	// ILlamada.a = illamadaR1(IDEN.lex, ParametrosReales.a)
-
 	private GA.Inst recILamada() throws IOException {
-		if (tokenActual(CatLexica.IDEN)) {
-			Token tIdem = tact;
-			rec(CatLexica.IDEN);
+		if (tokenActual(CatLexica.PAP)) {
+			save3=save2;
 			rec(CatLexica.PAP);
 			GA.ParamsReales aParametrosReales = recParamsReals();
 			rec(CatLexica.PCIERRE);
-			return illamadaR1(tIdem, aParametrosReales);
+			return illamadaR1(save3, aParametrosReales);
 		} else {
 			// rec(CatLexica.lambda);
 			errorSintactico();
@@ -484,9 +522,9 @@ public class ConstructorArboles {
 	// IAsignacion.a = iasigR1(Mem.a,Exp0.a)
 
 	private GA.Inst recIAsig() throws IOException {
-		if (tokenActual(CatLexica.IDEN) || tokenActual(CatLexica.CAP)
-				|| tokenActual(CatLexica.PUNTO)
-				|| tokenActual(CatLexica.ACENTO)) {
+//		if (tokenActual(CatLexica.IDEN) || tokenActual(CatLexica.CAP)
+//				|| tokenActual(CatLexica.PUNTO)
+//				|| tokenActual(CatLexica.ACENTO)) {
 			GA.Mem aMem = recMem();
 			if (tokenActual(CatLexica.IGUAL)) {
 				rec(CatLexica.IGUAL);
@@ -496,10 +534,10 @@ public class ConstructorArboles {
 				errorSintactico(CatLexica.IGUAL);
 				return null;
 			}
-		} else {
-			errorSintactico();
-			return null;
-		}
+//		} else {
+//			errorSintactico();
+//			return null;
+//		}
 	}
 
 	// INew ::= new Mem
@@ -507,6 +545,8 @@ public class ConstructorArboles {
 	private GA.Inst recINew() throws IOException {
 		if (tokenActual(CatLexica.NEW)) {
 			rec(CatLexica.NEW);
+			save2=tact;
+			rec(CatLexica.IDEN);
 			GA.Mem aMem = recMem();
 			return inewR1(aMem);
 		} else {
@@ -520,6 +560,8 @@ public class ConstructorArboles {
 	private GA.Inst recIDispose() throws IOException {
 		if (tokenActual(CatLexica.DELETE)) {
 			rec(CatLexica.DELETE);
+			save2=tact;
+			rec(CatLexica.IDEN);
 			GA.Mem aMem = recMem();
 			return idisposeR1(aMem);
 		} else {
@@ -533,6 +575,8 @@ public class ConstructorArboles {
 	private GA.Inst recILectura() throws IOException {
 		if (tokenActual(CatLexica.LEER)) {
 			rec(CatLexica.LEER);
+			save2=tact;
+			rec(CatLexica.IDEN);
 			GA.Mem aMem = recMem();
 			return ilecturaR1(aMem);
 		} else {
@@ -608,7 +652,7 @@ public class ConstructorArboles {
 	// RCasos ::= lambda
 	// RCasos.a = RCasos.ah
 	private GA.Casos recRCasos(GA.Casos ahRCasos0) throws IOException {
-		if (tokenActual(CatLexica.CORCHETES)) {// TODO CAMBIADO
+		if (tokenActual(CatLexica.CORCHETES)) {
 			rec(CatLexica.CORCHETES);
 			GA.Caso aCaso = recCaso();
 			GA.Casos aRCasos = recRCasos(casosR1(ahRCasos0, aCaso));
@@ -739,6 +783,7 @@ public class ConstructorArboles {
 	// Exp4 ::= ( Exp0 )
 	// Exp4.a = exp4R5(Exp0.a)
 	private GA.Exp4 recExp4() throws IOException {
+		
 		if (tokenActual(CatLexica.TRUE)) {
 			rec(CatLexica.TRUE);
 			return exp4R1();
@@ -750,6 +795,8 @@ public class ConstructorArboles {
 			rec(CatLexica.NUM);
 			return exp4R3(tNum);
 		} else if (tokenActual(CatLexica.IDEN)) {
+			save2=tact;//cambiado
+			rec(CatLexica.IDEN);//TODO cambiado
 			GA.Mem aMem = recMem();
 			return exp4R4(aMem);
 		} else if (tokenActual(CatLexica.PAP)) {
@@ -767,8 +814,8 @@ public class ConstructorArboles {
 	// RMem.ah = memR1(IDEN.lex)
 	private GA.Mem recMem() throws IOException {
 
-		Token tIdem = tact;
-		rec(CatLexica.IDEN);
+		Token tIdem = save2;
+		//rec(CatLexica.IDEN);
 
 		GA.Mem aRMem = recRMem(memR1(tIdem));
 		return aRMem;

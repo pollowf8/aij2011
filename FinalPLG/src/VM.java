@@ -112,7 +112,7 @@ public class VM {
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
-			System.out.print("FIN DE PROGRAMA");
+			System.out.println("FIN DE PROGRAMA");
 		}
 	}
 

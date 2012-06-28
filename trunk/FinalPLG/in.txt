@@ -1,6 +1,5 @@
-tipo registro { int x} treg;
-treg reg;
-proc p1 (treg x) {escribir x.x}
+int z;
+proc p1 (var int q,boolean z) { int j;boolean x & j:=30000;q:=1000;x:=z}
 &
-reg.x:=5;
-p1(reg)
+z:=500;
+p1(z,false)

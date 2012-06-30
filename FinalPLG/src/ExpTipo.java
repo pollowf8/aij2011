@@ -1,11 +1,4 @@
 import java.util.List;
-//
-// Universidad Complutense de Madrid
-// Ingeniería Informática
-//
-// PRACTICA : Practica 1
-// ASIGNATURA : Inteligencia Artificial e Ingeniería del Conocimiento
-//
 
 /**
  * Representa un registro

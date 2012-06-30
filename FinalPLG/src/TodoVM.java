@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Ejecuta el tiny y el VM
+ * Ejecuta el tiny y el VM de todos los archivos de prueba
  * 
  * @author Jose Angel Garcia Fernandez
  * @version 1.0 18/05/2012

@@ -5,16 +5,18 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Ejecuta el tiny y el VM de todos los archivos de prueba
+ * Ejecuta el tiny y el VM de todos los archivos de prueba Toma 2 parametros, el
+ * archivo objeto y el tamaño de memoria estatica
  * 
  * @author Jose Angel Garcia Fernandez
  * @version 1.0 18/05/2012
  */
 public class TodoVM {
 	public static void main(String[] args) throws IOException {
-		String[] progs = { "casedo.txt", "caseif.txt", "inreg.txt", "invect.txt", "invectpunt.txt",
-				"procs.txt", "procsVarsGlobales.txt", "punteroArray.txt", "punteros.txt",
-				"punteros2.txt", "pvar_var.txt", "pvar.txt" };
+		String[] progs = { "casedo.txt", "caseif.txt", "inreg.txt",
+				"invect.txt", "invectpunt.txt", "procs.txt",
+				"procsVarsGlobales.txt", "punteroArray.txt", "punteros.txt",
+				"punteros2.txt", "pvar_var.txt", "pvar.txt","regsyarray.txt" };
 		try {
 			if (args.length != 2) {
 				System.err
@@ -22,7 +24,7 @@ public class TodoVM {
 				System.exit(0);
 			}
 			for (int i = 0; i < progs.length; i++) {
-				System.out.println("EJECUTANDO: "+progs[i]);
+				System.out.println("EJECUTANDO: " + progs[i]);
 				InputStream input = new FileInputStream(progs[i]);
 				AnalizadorLexico analizadorLexico = new AnalizadorLexico(input);
 				ConstructorArboles constructorArboles = new ConstructorArboles(

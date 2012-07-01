@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Ejecuta el tiny y el VM
+ * Ejecuta el tiny y el VM Toma 3 parametros, archivo fuente, archivo objeto y
+ * memoria estatica
  * 
  * @author Jose Angel Garcia Fernandez
  * @version 1.0 18/05/2012
@@ -32,8 +33,8 @@ public class TinyVM {
 				ObjectOutputStream out = new ObjectOutputStream(
 						new FileOutputStream(args[1]));
 				out.writeObject(evaluador.evalua(programa.cod()).val());
-				 VM vm = new VM(args[1],args[2]);
-			     vm.run(true);
+				VM vm = new VM(args[1], args[2]);
+				vm.run(true);
 			}
 		} catch (Exception e) {
 			System.err.println("ERROR:" + e);

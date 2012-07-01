@@ -1,7 +1,7 @@
-puntero entero punt;
 tipo registro {int x} entero;
 tipo tabla [5] de entero tvect;
 tvect vect;
+puntero entero punt;
 int y
 &
 y := 5;
